@@ -10,45 +10,45 @@ fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams)
     let mut basin = HashMap::new();
     basin.insert(attractor, params.clone());
 
-    let mut foundSomething = true;
+    let mut found_something = true;
 
-    while foundSomething {
-        foundSomething = false;
+    while found_something {
+        found_something = false;
         let mut current_basin = Vec::new();
         for (node, _) in &basin {
             current_basin.push(node.clone());
         }
 
         for node in current_basin {
-            let nodeParents = bwd.step(node);
-            for (parent, param) in nodeParents {
+            let node_parents = bwd.step(node);
+            for (parent, param) in node_parents {
                 if basin.contains_key(&parent) {
                     if !basin[&parent].intersect(&param).is_empty() {
                         continue
                     }
                 }
 
-                let mut isInBasin = true;
-                for (parentSuccessor, parentParam) in fwd.step(parent) {
-                    if parentParam != param {
+                let mut is_in_basin = true;
+                for (parent_successor, parent_param) in fwd.step(parent) {
+                    if parent_param != param {
                         continue
                     }
-                    match basin.get(&parentSuccessor) {
+                    match basin.get(&parent_successor) {
                         Some(basin_params) => {
-                            if !basin_params.intersect(&parentParam).is_empty() {
-                                isInBasin = false;
+                            if !basin_params.intersect(&parent_param).is_empty() {
+                                is_in_basin = false;
                                 break;
                             }
                         },
                         None => {
-                            isInBasin = false;
+                            is_in_basin = false;
                             break;
                         }
                     }
                 }
 
-                if isInBasin {
-                    foundSomething = true;
+                if is_in_basin {
+                    found_something = true;
                     match basin.get_mut(&parent) {
                         Some(basin_params) => {
                             let params = basin_params.union(&param);
