@@ -4,11 +4,11 @@ use biodivine_lib_param_bn::bdd_params::BddParams;
 use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params};
 use biodivine_lib_std::{IdState};
 
-fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: BddParams) -> HashMap<IdState, BddParams> {
+fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
     let bwd = graph.bwd();
     let fwd = graph.fwd();
     let mut basin = HashMap::new();
-    basin.insert(attractor, params);
+    basin.insert(attractor, params.clone());
 
     let mut foundSomething = true;
 
@@ -85,8 +85,7 @@ mod tests {
         let graph = &AsyncGraph::new(model).unwrap();
         let state = IdState::from(0b10101 as usize);
 
-        let params = graph.unit_params().clone();
-        let basin = find_strong_basin(graph, state, params);
+        let basin = find_strong_basin(graph, state, graph.unit_params());
         for (id, param) in basin {
             println!("{} {:?}", id, param);
         }
