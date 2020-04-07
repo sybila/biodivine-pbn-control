@@ -14,10 +14,7 @@ fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams)
 
     while found_something {
         found_something = false;
-        let mut current_basin = Vec::new();
-        for (node, _) in &basin {
-            current_basin.push(node.clone());
-        }
+        let current_basin: Vec<IdState> = basin.keys().cloned().collect();
 
         for node in current_basin {
             let node_parents = bwd.step(node);
