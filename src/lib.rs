@@ -80,9 +80,9 @@ mod tests {
 
     #[test]
     fn test_reach() {
-        let sbmlStr = fs::read_to_string("src/g2b.sbml").expect("Something went wrong");
-        let (model, _) = BooleanNetwork::from_sbml(&sbmlStr).expect("Something went wrong");
-        let graph = &AsyncGraph::new(model).expect("tadida");
+        let sbml_str = fs::read_to_string("src/g2b.sbml").unwrap();
+        let (model, _) = BooleanNetwork::from_sbml(&sbml_str).unwrap();
+        let graph = &AsyncGraph::new(model).unwrap();
         let state = IdState::from(0b10101 as usize);
 
         let params = graph.unit_params().clone();
