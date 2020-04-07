@@ -1,10 +1,13 @@
 [package]
-name = "biodivine-lib-name"
+name = "biodivine-pbn-control"
 version = "0.1.0"
-authors = ["Samuel Pastva <daemontus@gmail.com>"]
+authors = ["Samuel Pastva <daemontus@gmail.com>, Eva Smijakova <smijakova.eva@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+biodivine-lib-bdd = { git = "https://github.com/sybila/biodivine-lib-bdd.git" }
+biodivine-lib-std = { git = "https://github.com/sybila/biodivine-lib-std.git" }
+biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git" }
 
 [dev-dependencies]
 
