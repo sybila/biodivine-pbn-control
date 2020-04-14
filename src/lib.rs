@@ -1,15 +1,12 @@
 use biodivine_lib_param_bn::async_graph::{AsyncGraph};
 use std::collections::HashMap;
-use biodivine_lib_param_bn::bdd_params::BddParams;
+use biodivine_lib_param_bn::bdd_params::{BddParams};
 use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params};
 use biodivine_lib_std::{IdState};
 
-fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
-    let bwd = graph.bwd();
-    let fwd = graph.fwd();
-    let mut basin = HashMap::new();
-    basin.insert(attractor, params.clone());
 
+fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
+    let fwd = graph.fwd();
     // Just a quick sanity check to verify that the given `attractor` state is really a sink for
     // all parameters requested in `params`. If a successor has non-empty intersection with
     // `params`, then we have a problem.
@@ -20,6 +17,58 @@ fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams)
         panic!("Given state ({:?}) is not an attractor. It has {} successor(s).", attractor, successor_count);
     }
 
+    let empty_params = graph.empty_params();
+    let mut basin = find_weak_basin(graph, attractor, params);
+
+    loop {
+        let mut to_remove = HashMap::new();
+        let current_basin: Vec<IdState> = basin.keys().cloned().collect();
+
+        for node in current_basin {
+            // Find all nodes+params which have successors outside the basin
+            // therefore they are not part of the strong basin
+            let successors = fwd.step(node);
+            for (suc, suc_params) in successors {
+                // Under what parameters is successor a part of the basin
+                let basin_params = basin.get(&suc).unwrap_or(&empty_params);
+
+                let difference = suc_params.minus(basin_params);
+                if !difference.is_empty() {
+                    // There are params which lead outside the basin
+                    match to_remove.get_mut(&node) {
+                        None => {
+                            to_remove.insert(node, difference);
+                        },
+                        Some(value) => {
+                            *value = value.union(&difference);
+                        }
+                    }
+                }
+            }
+        }
+
+        if to_remove.is_empty() {
+            break;
+        }
+
+        for (node, params) in to_remove {
+            *basin.get_mut(&node).unwrap() = basin[&node].minus(&params);
+
+            if basin.get(&node).unwrap().is_empty() {
+                // Clean up node which does not belong to basin under some parameter
+                basin.remove(&node);
+            }
+        }
+    }
+
+    return basin;
+}
+
+
+fn find_weak_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
+    let bwd = graph.bwd();
+    let mut basin = HashMap::new();
+    basin.insert(attractor, params.clone());
 
     let empty_params = &graph.empty_params();
     let mut found_something = true;
@@ -39,30 +88,14 @@ fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams)
                     continue;
                 }
 
-                // We start with all potential parameters and remove any parametrisation that
-                // has a successor which is not in the basin.
-                let mut add_to_basin = can_become_basin;
-                for (successor, successor_edge_params) in fwd.step(parent) {
-                    if add_to_basin.is_empty() {
-                        break;  // We might as well end this if we know there is nothing to add.
-                    }
-                    // Reference to parameters for which successor is currently in basin.
-                    let successor_in_basin = basin.get(&successor).unwrap_or(empty_params);
-                    // Parameters for which successor is reachable, but not in basin.
-                    let reachable_but_not_in_basin = successor_edge_params.minus(successor_in_basin);
-                    add_to_basin = add_to_basin.minus(&reachable_but_not_in_basin);
-                }
-
                 // If something still remains in add_to_basin, actually add it to basin!
-                if !add_to_basin.is_empty() {
-                    found_something = true;
-                    match basin.get_mut(&parent) {
-                        None => {
-                            basin.insert(parent, add_to_basin);
-                        },
-                        Some(value) => {
-                            *value = value.union(&add_to_basin);
-                        }
+                found_something = true;
+                match basin.get_mut(&parent) {
+                    None => {
+                        basin.insert(parent, can_become_basin);
+                    },
+                    Some(value) => {
+                        *value = value.union(&can_become_basin);
                     }
                 }
             }
@@ -75,13 +108,7 @@ fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams)
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
     use biodivine_lib_param_bn::BooleanNetwork;
-    use biodivine_lib_bdd::{Bdd, BddVariableSet};
-    use biodivine_lib_param_bn::bdd_params::BddParameterEncoder;
-    use std::env::var;
-    use std::path::Path;
-    use std::fmt::Debug;
     use std::convert::TryFrom;
 
     const TEST_MODEL: &str = "\
