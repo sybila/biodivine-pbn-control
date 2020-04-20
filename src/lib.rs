@@ -112,34 +112,44 @@ mod tests {
     use std::convert::TryFrom;
 
     const TEST_MODEL: &str = "\
-        # Since the model is fully instantiated, we don't really care about the exact
-        # types of regulations. But whatever...
-
         CtrA -> CtrA
         GcrA -> CtrA
         CcrM -| CtrA
         SciP -| CtrA
-        $CtrA: !CcrM | CtrA | (GcrA & !SciP)
 
         CtrA -| GcrA
         DnaA -> GcrA
-        $GcrA: !CtrA & DnaA
 
         CtrA -> SciP
         DnaA -| SciP
-        $SciP: CtrA & !DnaA
 
         CtrA -> CcrM
         CcrM -| CcrM
         SciP -| CcrM
-        $CcrM: !CcrM | CtrA | !SciP
 
         CcrM -> DnaA
         CtrA -> DnaA
         GcrA -| DnaA
         DnaA -| DnaA
-        $DnaA: (CcrM & CtrA) | (!CcrM & CtrA & (!DnaA | !GcrA))
     ";
+
+    fn get_all_params_with_attractor(graph: &AsyncGraph, state: IdState) -> BddParams {
+        let fwd = graph.fwd();
+        let successors = fwd.step(state);
+
+        let mut bad_params = graph.empty_params();
+        for (succ, par) in successors {
+            //if !succ.eq(&state) {
+                bad_params = bad_params.union(&par);
+            //}
+        }
+
+        // println!("{}", graph.unit_params().cardinality());
+        // println!("{}", bad_params.cardinality());
+        // println!("{}", graph.unit_params().minus(&bad_params).cardinality());
+
+        return graph.unit_params().minus(&bad_params);
+    }
 
     #[test]
     fn test_reach() {
@@ -157,6 +167,7 @@ mod tests {
         // Note that bits are reversed because first variable corresponds to least significant bit.
         let state = IdState::from(0b00111 as usize);
 
+        let relevant_params = get_all_params_with_attractor(graph, state);
         let basin = find_strong_basin(graph, state, graph.unit_params());
         println!("Strong basin has {} states.", basin.len());
         for (id, param) in basin {
