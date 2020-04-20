@@ -27,12 +27,16 @@ fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams)
         for node in current_basin {
             // Find all nodes+params which have successors outside the basin
             // therefore they are not part of the strong basin
+            let node_in_basin = basin.get(&node).unwrap(); // nodes are keys in basin
             let successors = fwd.step(node);
             for (suc, suc_params) in successors {
                 // Under what parameters is successor a part of the basin
                 let basin_params = basin.get(&suc).unwrap_or(&empty_params);
 
-                let difference = suc_params.minus(basin_params);
+                // The parameters which lead outside of basin. These are the params which node
+                // currently has assigned, for which there is an edge outside (and suc_params)
+                // and these are NOT in the basin (and !basin_params).
+                let difference = node_in_basin.intersect(&suc_params).minus(basin_params);
                 if !difference.is_empty() {
                     // There are params which lead outside the basin
                     match to_remove.get_mut(&node) {
@@ -46,6 +50,17 @@ fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams)
                 }
             }
         }
+
+        let mut total = 0.0;
+        for (s, p) in basin.iter() {
+            total += p.cardinality();
+        }
+        println!("Remaining: {}", total);
+        total = 0.0;
+        for (s, p) in to_remove.iter() {
+            total += p.cardinality();
+        }
+        println!("Removing: {}", total);
 
         if to_remove.is_empty() {
             break;
@@ -79,10 +94,11 @@ fn find_weak_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams) -
 
         for node in current_basin {
             for (parent, parent_edge_params) in bwd.step(node) {
+                let node_in_basin = basin.get(&node).unwrap();  // unwrap ok because nodes are keys from basin
                 // Reference to parameters for which parent is currently in basin.
                 let parent_in_basin = basin.get(&parent).unwrap_or(empty_params);
                 // Parameters which can be potentially still added to the basin.
-                let can_become_basin = parent_edge_params.minus(parent_in_basin);
+                let can_become_basin = node_in_basin.intersect(&parent_edge_params).minus(parent_in_basin);
 
                 if can_become_basin.is_empty() {    // skip useless states
                     continue;
@@ -143,10 +159,7 @@ mod tests {
                 bad_params = bad_params.union(&par);
             //}
         }
-
-        // println!("{}", graph.unit_params().cardinality());
-        // println!("{}", bad_params.cardinality());
-        // println!("{}", graph.unit_params().minus(&bad_params).cardinality());
+        bad_params = bad_params.intersect(graph.unit_params());
 
         return graph.unit_params().minus(&bad_params);
     }
@@ -168,7 +181,8 @@ mod tests {
         let state = IdState::from(0b00111 as usize);
 
         let relevant_params = get_all_params_with_attractor(graph, state);
-        let basin = find_strong_basin(graph, state, graph.unit_params());
+        println!("Attractor parameter set cardinality: {}", relevant_params.cardinality());
+        let basin = find_strong_basin(graph, state, &relevant_params);
         println!("Strong basin has {} states.", basin.len());
         for (id, param) in basin {
             println!("{} {:?}", id, param.cardinality());
