@@ -143,10 +143,7 @@ mod tests {
                 bad_params = bad_params.union(&par);
             //}
         }
-
-        // println!("{}", graph.unit_params().cardinality());
-        // println!("{}", bad_params.cardinality());
-        // println!("{}", graph.unit_params().minus(&bad_params).cardinality());
+        bad_params = bad_params.intersect(graph.unit_params());
 
         return graph.unit_params().minus(&bad_params);
     }
@@ -168,7 +165,8 @@ mod tests {
         let state = IdState::from(0b00111 as usize);
 
         let relevant_params = get_all_params_with_attractor(graph, state);
-        let basin = find_strong_basin(graph, state, graph.unit_params());
+        println!("Attractor parameter set cardinality: {}", relevant_params.cardinality());
+        let basin = find_strong_basin(graph, state, &relevant_params);
         println!("Strong basin has {} states.", basin.len());
         for (id, param) in basin {
             println!("{} {:?}", id, param.cardinality());
