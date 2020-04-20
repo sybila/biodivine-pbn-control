@@ -89,8 +89,8 @@ fn find_weak_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams) -
         let current_basin: Vec<IdState> = basin.keys().cloned().collect();
 
         for node in current_basin {
-            let node_in_basin = basin.get(&node).unwrap();  // unwrap ok because nodes are keys from basin
             for (parent, parent_edge_params) in bwd.step(node) {
+                let node_in_basin = basin.get(&node).unwrap();  // unwrap ok because nodes are keys from basin
                 // Reference to parameters for which parent is currently in basin.
                 let parent_in_basin = basin.get(&parent).unwrap_or(empty_params);
                 // Parameters which can be potentially still added to the basin.
