@@ -47,6 +47,17 @@ fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams)
             }
         }
 
+        let mut total = 0.0;
+        for (s, p) in basin.iter() {
+            total += p.cardinality();
+        }
+        println!("Remaining: {}", total);
+        total = 0.0;
+        for (s, p) in to_remove.iter() {
+            total += p.cardinality();
+        }
+        println!("Removing: {}", total);
+
         if to_remove.is_empty() {
             break;
         }
