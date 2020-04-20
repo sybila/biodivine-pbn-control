@@ -27,12 +27,16 @@ fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams)
         for node in current_basin {
             // Find all nodes+params which have successors outside the basin
             // therefore they are not part of the strong basin
+            let node_in_basin = basin.get(&node).unwrap(); // nodes are keys in basin
             let successors = fwd.step(node);
             for (suc, suc_params) in successors {
                 // Under what parameters is successor a part of the basin
                 let basin_params = basin.get(&suc).unwrap_or(&empty_params);
 
-                let difference = suc_params.minus(basin_params);
+                // The parameters which lead outside of basin. These are the params which node
+                // currently has assigned, for which there is an edge outside (and suc_params)
+                // and these are NOT in the basin (and !basin_params).
+                let difference = node_in_basin.intersect(&suc_params).minus(basin_params);
                 if !difference.is_empty() {
                     // There are params which lead outside the basin
                     match to_remove.get_mut(&node) {
