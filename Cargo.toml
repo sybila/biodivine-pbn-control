@@ -8,6 +8,7 @@ edition = "2018"
 biodivine-lib-bdd = { git = "https://github.com/sybila/biodivine-lib-bdd.git" }
 biodivine-lib-std = { git = "https://github.com/sybila/biodivine-lib-std.git" }
 biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git" }
+biodivine-aeon-server = { git = "https://github.com/sybila/biodivine-aeon-server.git" }
 
 [dev-dependencies]
 

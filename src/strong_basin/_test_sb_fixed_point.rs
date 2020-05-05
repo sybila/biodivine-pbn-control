@@ -22,7 +22,7 @@ mod tests {
         let state = IdState::from(0b00111 as usize);
 
         let relevant_params = get_all_params_with_attractor(graph, state);
-        let basin = find_strong_basin(graph, state, &relevant_params);
+        let basin = find_strong_basin(graph, state, relevant_params);
 
         assert_eq!(basin.len(), 16);
     }
@@ -40,7 +40,7 @@ mod tests {
         let state = IdState::from(0b00111 as usize);
 
         let relevant_params = get_all_params_with_attractor(graph, state);
-        let basin = find_strong_basin(graph, state, &relevant_params);
+        let basin = find_strong_basin(graph, state, relevant_params);
 
         assert_eq!(basin.len(), 32);
     }

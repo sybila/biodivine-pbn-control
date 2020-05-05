@@ -25,10 +25,11 @@ pub fn find_attractors(graph: &AsyncGraph) -> Vec<IdState> {
 
     for n in 0..nodes {
         let state = IdState::from(n);
-        let has_successor = fwd
+        let no_successors = fwd
             .step(state)
-            .fold(graph.empty_params(), |a, (_, b)| a.union(&b));
-        if has_successor.is_empty() {
+            .count() == 0;
+        if no_successors {
+            println!("Attractor {}", state);
             attractors.push(state);
         }
     }
