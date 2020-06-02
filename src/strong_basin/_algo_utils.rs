@@ -23,13 +23,14 @@ pub fn find_attractors(graph: &AsyncGraph) -> Vec<IdState> {
     let nodes = graph.num_states();
     let mut attractors = Vec::new();
 
+
+
     for n in 0..nodes {
         let state = IdState::from(n);
-        let no_successors = fwd
+        let has_successor = fwd
             .step(state)
-            .count() == 0;
-        if no_successors {
-            println!("Attractor {}", state);
+            .fold(graph.empty_params(), |a, (_, b)| a.union(&b));
+        if has_successor.is_empty() {
             attractors.push(state);
         }
     }

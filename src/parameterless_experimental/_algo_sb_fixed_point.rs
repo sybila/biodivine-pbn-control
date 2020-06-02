@@ -10,12 +10,11 @@ use std::io::Write;
 use biodivine_aeon_server::scc::algo_reach::guarded_reach;
 use std::borrow::Borrow;
 
-
-pub fn find_strong_basin(graph: &AsyncGraph, attractor: IdState) -> HashSet<IdState> {
+pub fn paremeterless_find_strong_basin(graph: &AsyncGraph, attractor: IdState) -> HashSet<IdState> {
     let fwd = graph.fwd();
 
     let mut basin= find_weak_basin(graph, attractor);
-    println!("Weak basin computation finished.");
+    println!("Weak basin has {} states.", basin.len());
 
     loop {
         let mut removed_something = false;
@@ -23,8 +22,8 @@ pub fn find_strong_basin(graph: &AsyncGraph, attractor: IdState) -> HashSet<IdSt
         for node in basin.clone() {
             // Find all nodes which have successors outside the basin
             // therefore they are not part of the strong basin
-            for (suc, _) in fwd.step(node) {
-                if !basin.contains(&suc) {
+            for (suc, p) in fwd.step(node) {
+                if !basin.contains(&suc) && !p.is_empty(){
                     // Node has successor outside of the basin, the node is not a part of the SB
                     removed_something = true;
                     basin.remove(&node);
@@ -56,8 +55,10 @@ fn find_weak_basin(graph: &AsyncGraph, attractor: IdState) -> HashSet<IdState> {
         }
 
         basin.insert(current);
-        for (next, _) in bwd.step(current) {
-            queue.push_back(next);
+        for (next, p) in bwd.step(current) {
+            if !p.is_empty() {
+                queue.push_back(next);
+            }
         }
     }
     return basin;

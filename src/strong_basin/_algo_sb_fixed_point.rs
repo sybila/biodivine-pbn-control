@@ -35,8 +35,7 @@ pub fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: BddPara
         basin.insert(n, p.clone());
     }
 
-    println!("Weak basin size: {}.", basin.len());
-    println!("Weak basin computation finished.");
+    println!("Weak basin has {} states.", basin.len());
     loop {
         let mut to_remove = HashMap::new();
         let current_basin: Vec<IdState> = basin.keys().cloned().collect();
@@ -72,12 +71,10 @@ pub fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: BddPara
         for (s, p) in basin.iter() {
             total += p.cardinality();
         }
-        println!("Remaining: {}", total);
         total = 0.0;
         for (s, p) in to_remove.iter() {
             total += p.cardinality();
         }
-        println!("Removing: {}", total);
         io::stdout().flush();
         if to_remove.is_empty() {
             break;
