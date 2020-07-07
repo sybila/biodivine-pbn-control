@@ -15,26 +15,6 @@ pub fn find_robust_control_to_basin(basin: &HashMap<IdState, BddParams>) -> Vec<
     return robust_vec;
 }
 
-pub fn find_best_control_to_basin(source:&IdState, basin: &HashSet<IdState>) -> IdState {
-    if basin.is_empty() {
-        return source.clone();
-    }
-
-    let mut b_iter = basin.iter();
-    let mut best_state = b_iter.next().unwrap();
-    let mut best_dist = control_dist(source, best_state);
-
-    for i in b_iter {
-        let dist = control_dist(source, i);
-        if dist < best_dist {
-            best_state = i;
-            best_dist = dist;
-        }
-    }
-
-    return best_state.clone();
-}
-
 pub fn control_dist(source:&IdState, target:&IdState) -> u32 {
     let s: usize = source.clone().into();
     let t: usize = target.clone().into();
