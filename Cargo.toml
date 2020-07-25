@@ -5,6 +5,7 @@ authors = ["Samuel Pastva <daemontus@gmail.com>, Eva Smijakova <smijakova.eva@gm
 edition = "2018"
 
 [dependencies]
+rayon = "1.3.0"
 biodivine-lib-bdd = { git = "https://github.com/sybila/biodivine-lib-bdd.git" }
 biodivine-lib-std = { git = "https://github.com/sybila/biodivine-lib-std.git" }
 biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git" }

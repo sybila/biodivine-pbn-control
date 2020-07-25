@@ -7,7 +7,7 @@ mod tests {
     use biodivine_lib_param_bn::async_graph::AsyncGraph;
     use biodivine_lib_std::{IdState};
     use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
-    use crate::strong_basin::_algo_sb_fixed_point::find_strong_basin;
+    use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
 
     #[test]
     fn test_witness() {
