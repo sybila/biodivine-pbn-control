@@ -3,13 +3,14 @@ use std::collections::{HashMap, HashSet};
 use biodivine_lib_param_bn::bdd_params::{BddParams};
 use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params, InvertibleEvolutionOperator};
 use biodivine_lib_std::{IdState};
-use biodivine_aeon_server::scc::{StateSet};
+use biodivine_aeon_server::scc::{StateSet, ProgressTracker};
 use std::clone::Clone;
 use std::io;
 use std::io::Write;
-use biodivine_aeon_server::scc::algo_reach::guarded_par_reach;
 use std::borrow::Borrow;
 use rayon::prelude::*;
+use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
+use std::sync::atomic::AtomicBool;
 
 fn all_possible_predecessors<F>(bwd: &F, set: &HashSet<IdState>) -> HashSet<IdState>
     where
@@ -58,7 +59,9 @@ pub fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: BddPara
     let state_count = graph.states().count();
     let seed = StateSet::new_with_fun(state_count, |s| if s.eq(&attractor) { Some(params.clone()) } else { None });
     let no_guard = StateSet::new_with_initial(state_count, graph.unit_params());
-    let backward_reach = guarded_par_reach(&bwd, &seed, &no_guard);
+
+    // AtomicBool and ProgressTracker would be used for cancellation and interactivity, but we don't do that here.
+    let backward_reach = guarded_reach(&bwd, &seed, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(graph));
     let mut basin = HashMap::new();
     for (n, p) in backward_reach.iter() {
         basin.insert(n, p.clone());
