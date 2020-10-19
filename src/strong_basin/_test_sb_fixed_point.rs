@@ -8,13 +8,15 @@ mod tests {
     use biodivine_lib_std::{IdState};
     use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
     use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
+    use crate::controlled_async_graph::ControlledAsyncGraph;
+    use biodivine_aeon_server::scc::StateSet;
 
     #[test]
     fn test_witness() {
         let aeon_str: &str = &fs::read_to_string("models/g2b_2stable_attractors.aeon").unwrap();
         let model = BooleanNetwork::try_from(aeon_str).unwrap();
 
-        let graph = &AsyncGraph::new(model).unwrap();
+        let graph = &ControlledAsyncGraph::new(model);
         // We want to start from state
         // CcrM | CtrA | DnaA | GcrA | SciP
         //  1   |  1   |  1   |  0   |  0
@@ -22,7 +24,8 @@ mod tests {
         let state = IdState::from(0b00111 as usize);
 
         let relevant_params = get_all_params_with_attractor(graph, state);
-        let basin = find_strong_basin(graph, state, relevant_params);
+        let seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&state) { Some(relevant_params.clone()) } else { None });
+        let basin = find_strong_basin(graph, seed);
 
         assert_eq!(basin.len(), 16);
     }
@@ -32,7 +35,7 @@ mod tests {
         let aeon_str: &str = &fs::read_to_string("models/g2b.aeon").unwrap();
         let model = BooleanNetwork::try_from(aeon_str).unwrap();
 
-        let graph = &AsyncGraph::new(model).unwrap();
+        let graph = &ControlledAsyncGraph::new(model);
         // We want to start from state
         // CcrM | CtrA | DnaA | GcrA | SciP
         //  1   |  1   |  1   |  0   |  0
@@ -40,8 +43,8 @@ mod tests {
         let state = IdState::from(0b00111 as usize);
 
         let relevant_params = get_all_params_with_attractor(graph, state);
-        let basin = find_strong_basin(graph, state, relevant_params);
+        let seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&state) { Some(relevant_params.clone()) } else { None });
+        let basin = find_strong_basin(graph, seed);
 
         assert_eq!(basin.len(), 32);
     }
-}

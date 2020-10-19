@@ -11,6 +11,7 @@ use std::borrow::Borrow;
 use rayon::prelude::*;
 use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
 use std::sync::atomic::AtomicBool;
+use crate::controlled_async_graph::{FwdIterator, BwdIterator, ControlledAsyncGraph};
 
 fn all_possible_predecessors<F>(bwd: &F, set: &HashSet<IdState>) -> HashSet<IdState>
     where
@@ -40,28 +41,19 @@ impl<I> FoldUnion for I
     }
 }
 
-pub fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: BddParams) -> HashMap<IdState, BddParams>
+pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashMap<IdState, BddParams>
 {
     let fwd = graph.fwd();
     let bwd = graph.bwd();
-    // Just a quick sanity check to verify that the given `attractor` state is really a sink for
-    // all parameters requested in `params`. If a successor has non-empty intersection with
-    // `params`, then we have a problem.
-    let successor_count = fwd.step(attractor).filter(|(_, p)| {
-        !params.intersect(p).is_empty()
-    }).count();
-    if successor_count != 0 {
-        panic!("Given state ({:?}) is not an attractor. It has {} successor(s).", attractor, successor_count);
-    }
-
+    let state_count = graph.num_states();
+    let unit_params = graph.unit_params();
     let empty_params = graph.empty_params();
 
-    let state_count = graph.states().count();
-    let seed = StateSet::new_with_fun(state_count, |s| if s.eq(&attractor) { Some(params.clone()) } else { None });
-    let no_guard = StateSet::new_with_initial(state_count, graph.unit_params());
+    let no_guard = StateSet::new_with_initial(state_count, unit_params);
 
     // AtomicBool and ProgressTracker would be used for cancellation and interactivity, but we don't do that here.
-    let backward_reach = guarded_reach(&bwd, &seed, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(graph));
+    let backward_reach = guarded_reach(&bwd, seed, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(&graph.graph));
+
     let mut basin = HashMap::new();
     for (n, p) in backward_reach.iter() {
         basin.insert(n, p.clone());
