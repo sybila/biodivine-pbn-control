@@ -10,14 +10,13 @@ mod tests {
     use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
     use crate::async_graph_with_control::AsyncGraphWithControl;
     use biodivine_aeon_server::scc::StateSet;
-    use crate::controlled_async_graph::ControlledAsyncGraph;
 
     #[test]
     fn test_witness() {
         let aeon_str: &str = &fs::read_to_string("models/g2b_2stable_attractors.aeon").unwrap();
         let model = BooleanNetwork::try_from(aeon_str).unwrap();
 
-        let graph = &ControlledAsyncGraph::new(model);
+        let graph = &AsyncGraphWithControl::new(model);
         // We want to start from state
         // CcrM | CtrA | DnaA | GcrA | SciP
         //  1   |  1   |  1   |  0   |  0
@@ -36,9 +35,9 @@ mod tests {
         let aeon_str: &str = &fs::read_to_string("models/g2b.aeon").unwrap();
         let model = BooleanNetwork::try_from(aeon_str).unwrap();
 
-        let graph = &ControlledAsyncGraph::new(model);
+        let graph = &AsyncGraphWithControl::new(model);
         // We want to start from state
-        // CcrM | CtrA | DnaA | GcrA | SciPw
+        // CcrM | CtrA | DnaA | GcrA | SciP
         //  1   |  1   |  1   |  0   |  0
         // Note that bits are reversed because first variable corresponds to least significant bit.
         let state = IdState::from(0b00111 as usize);
@@ -49,4 +48,3 @@ mod tests {
 
         assert_eq!(basin.len(), 32);
     }
-}

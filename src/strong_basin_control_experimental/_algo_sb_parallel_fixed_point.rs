@@ -12,7 +12,6 @@ use rayon::prelude::*;
 use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
 use std::sync::atomic::AtomicBool;
 use crate::async_graph_with_control::{FwdIterator, BwdIterator, AsyncGraphWithControl};
-use crate::controlled_async_graph::ControlledAsyncGraph;
 
 fn all_possible_predecessors<F>(bwd: &F, set: &HashSet<IdState>) -> HashSet<IdState>
     where
@@ -42,7 +41,7 @@ impl<I> FoldUnion for I
     }
 }
 
-pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashMap<IdState, BddParams>
+pub fn find_strong_basin(graph: &AsyncGraphWithControl, seed: &StateSet) -> HashMap<IdState, BddParams>
 {
     let fwd = graph.fwd();
     let bwd = graph.bwd();
@@ -75,7 +74,7 @@ pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashM
                         .step(*t)
                         .map(|(s, edge)| {
                             // Under what parameters is successor a part of the basin
-                            let params_s = basin.get(&s).unwrap_or(empty_params);
+                            let params_s = basin.get(&s).unwrap_or(&empty_params);
 
                             // The parameters which lead outside of basin. These are the params which node
                             // currently has assigned, for which there is an edge outside (and suc_params)
