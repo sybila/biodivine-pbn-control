@@ -1,14 +1,14 @@
-use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
-use biodivine_lib_std::IdState;
-use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params};
-use biodivine_lib_param_bn::bdd_params::BddParams;
 use crate::async_graph_with_control::AsyncGraphWithControl;
+use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
+use biodivine_lib_param_bn::bdd_params::BddParams;
+use biodivine_lib_std::param_graph::{EvolutionOperator, Graph, Params};
+use biodivine_lib_std::IdState;
 
 pub fn get_all_params_with_attractor(graph: &AsyncGraphWithControl, state: IdState) -> BddParams {
     let fwd = graph.fwd();
     let successors = fwd.step(state);
 
-    let mut bad_params = graph.empty_params();
+    let mut bad_params = graph.empty_params().clone();
     for (_, par) in successors {
         //if !succ.eq(&state) {
         bad_params = bad_params.union(&par);
@@ -28,7 +28,7 @@ pub fn find_attractors(graph: &AsyncGraph<DefaultEdgeParams>) -> Vec<IdState> {
         let state = IdState::from(n);
         let has_successor = fwd
             .step(state)
-            .fold(graph.empty_params(), |a, (_, b)| a.union(&b));
+            .fold(graph.empty_params().clone(), |a, (_, b)| a.union(&b));
         if has_successor.is_empty() {
             attractors.push(state);
         }

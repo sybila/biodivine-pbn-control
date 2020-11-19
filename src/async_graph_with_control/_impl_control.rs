@@ -1,5 +1,5 @@
 use biodivine_lib_param_bn::{VariableId, BooleanNetwork};
-use biodivine_lib_param_bn::async_graph::AsyncGraph;
+use biodivine_lib_param_bn::async_graph::{AsyncGraph, AsyncGraphEdgeParams};
 use std::collections::HashMap;
 use crate::async_graph_with_control::{AsyncGraphWithControl, Bwd};
 use biodivine_lib_param_bn::bdd_params::{BddParams};
@@ -57,14 +57,16 @@ impl AsyncGraphWithControl {
         }
 
         for v in self.network.graph().variable_ids() {
-            let c = self.controls.get(&v);
-            if c.is_some() && state.get_bit(variable.into()) != c.unwrap() {
-                // State is not valid as it does not fulfill the control condition
-                return self.empty_params().clone();
+            match self.controls.get(&v) {
+                Some(c) if *c != state.get_bit(variable.into()) => {
+                    // State is not valid as it does not fulfill the control condition
+                    return self.empty_params().clone()
+                },
+                _ => ()
             }
         }
 
-        return self.graph.edge_params(state, variable)
+        return self.graph.edges().edge_params(state, variable)
     }
 
     pub fn make_witness(&self, params: &BddParams) -> BooleanNetwork {
