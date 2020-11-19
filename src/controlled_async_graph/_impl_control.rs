@@ -1,39 +1,44 @@
-use biodivine_lib_param_bn::{VariableId, BooleanNetwork, VariableIdIterator};
+use biodivine_lib_param_bn::{VariableId, BooleanNetwork};
 use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
 use std::collections::HashMap;
-use crate::controlled_async_graph::{ControlledAsyncGraph, Fwd, FwdIterator, Bwd, BwdIterator};
+use crate::controlled_async_graph::{ControlledAsyncGraph, Bwd, ControlVariable};
 use biodivine_lib_param_bn::bdd_params::{BddParams, BddParameterEncoder};
 use biodivine_lib_std::IdState;
-use std::env::var;
-use biodivine_aeon_server::scc::algo_reach::reach;
 use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
 use std::sync::atomic::AtomicBool;
 use biodivine_aeon_server::scc::{ProgressTracker, StateSet};
 use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
-use biodivine_lib_std::param_graph::{Params, EvolutionOperator, InvertibleEvolutionOperator};
-use biodivine_lib_bdd::BddVariableSetBuilder;
-use crate::async_graph_with_control::AsyncGraphWithControl;
+use biodivine_lib_std::param_graph::{Params};
+use biodivine_lib_bdd::{BddVariableSetBuilder, Bdd};
 
 impl ControlledAsyncGraph {
     /// Create a new `AsyncGraph` from the given `BooleanNetwork`.
     pub fn new(network: BooleanNetwork) -> ControlledAsyncGraph {
         let bn = network.clone();
         let mut vars = BddVariableSetBuilder::new();
+        let mut control_vars = HashMap::new();
 
         for vid in bn.graph().variable_ids() {
             let v = bn.graph().get_variable(vid);
             let bdd_name = format!("{}_is_controlled", v.get_name());
-            bdd.make_variable(&bdd_name);
+            let is_controlled = vars.make_variable(&bdd_name);
             let bdd_name2 = format!("{}_control_value", v.get_name());
-            bdd.make_variable(&bdd_name2);
+            let control_val = vars.make_variable(&bdd_name2);
+            control_vars.insert(vid,ControlVariable {
+                original_name: v.get_name(),
+                is_controlled_variable: is_controlled,
+                control_value_variable: control_val,
+            });
         }
 
-        let encoder = BddParameterEncoder::new_with_custom_variables(&n, vars);
-        let edges = DefaultEdgeParams::new_with_custom_encoder(n, encoder).unwrap();
+        let encoder = BddParameterEncoder::new_with_custom_variables(&bn, vars);
+        let edges = DefaultEdgeParams::new_with_custom_encoder(bn, encoder).unwrap();
         let g = AsyncGraph::new_with_edges(edges).unwrap();
         return ControlledAsyncGraph {
-            network: n,
+            network: bn,
+            encoder: encoder.clone(),
             graph: g,
+            controlVariables: control_vars
         }
     }
 
@@ -43,12 +48,10 @@ impl ControlledAsyncGraph {
     }
 
     /// Return an empty parameter set.
-    pub fn empty_params(&self) -> BddParams { return self.graph.empty_params() }
+    pub fn empty_params(&self) -> &BddParams { return &self.graph.empty_params().clone(); }
 
     /// Return a unit parameter set, i.e. all parameters that satisfy all static conditions.
-    pub fn unit_params(&self) -> BddParams {
-        return self.graph.unit_params().clone();
-    }
+    pub fn unit_params(&self) -> &BddParams { return &self.graph.unit_params().clone(); }
 
     /// Compute the parameter set which enables the value of `variable` to be flipped
     /// in the given `state`.
@@ -56,12 +59,38 @@ impl ControlledAsyncGraph {
     /// Note that this set is not a subset of the `unit_set`! It is really just the flip condition.
     pub fn edge_params(&self, state: IdState, variable: VariableId) -> BddParams {
         let default_edge_params = self.graph.edge_params(state, variable);
-        //TODO ensure, that in edge params:
+        let mut allowed_control_params =  self.unit_params();
+        //Ensure, that in edge params:;
         // * variableId_is_controlled = FALSE && variableId_control_value = FALSE
         // * for all other variables V:
         // ** V_is_controlled=FALSE && V_control_value=FALSE
         // ** V_is_controlled=TRUE && V_control_value=state.V
-        return default_edge_params;
+        for v in self.network.graph().variable_ids() {
+            let controlled_var = self.controlVariables.get(&v).unwrap();
+            if v == variable {
+                let i_c = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
+                let c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
+                let not_controlled = i_c.and(&c_v);
+                allowed_control_params = allowed_control_params.intersect(not_controlled);
+            } else {
+                let i_c1 = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
+                let c_v1 = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
+                let i_c2 = self.encoder.bdd_variables.mk_var(controlled_var.is_controlled_variable);
+                let c_v2;
+                if state.get_bit(v.into()) {
+                    c_v2 = self.encoder.bdd_variables.mk_var(controlled_var.control_value_variable);
+                } else {
+                    c_v2 = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
+                }
+                let not_controlled = i_c1.and(&c_v1);
+                let controlled_correctly = i_c2.and(&c_v2);
+                let viable_params = not_controlled.or(&controlled_correctly);
+
+                allowed_control_params = allowed_control_params.intersect(&BddParams::from(&viable_params));
+            }
+        }
+
+        return default_edge_params.intersect(&allowed_control_params);
     }
 
     pub fn make_witness(&self, params: &BddParams) -> BooleanNetwork {
@@ -83,13 +112,34 @@ impl ControlledAsyncGraph {
             weakBasin.insert(n, p.clone());
         }
 
-        let strongBasings = find_strong_basin(self, target);
+        let strongBasins = find_strong_basin(self, target);
         for (state, params) in weakBasin {
-            let params_t = permanentStrongBasin.get(&state);
+            let params_t = strongBasins.get(&state);
             if params_t.is_some() {
-                let params = params_t.unwrap();
+                let mut params = params_t.unwrap();
                 if !params.is_empty() {
-                    //TODO filter params so that there are only params where is control set to Hamming difference of state and target, insert these params
+                    // Get strong basin of the control
+                    let mut control_params = Bdd::new();
+                    for v in self.network.graph().variable_ids() {
+                        let controlled_var = self.controlVariables.get(&v).unwrap();
+                        if state.get_bit(v.into()) != source.get_bit(v.into()) {
+                            let i_c = self.encoder.bdd_variables.mk_var(controlled_var.is_controlled_variable);
+                            let c_v;
+                            if state.get_bit(v.into()) {
+                                c_v = self.encoder.bdd_variables.mk_var(controlled_var.control_value_variable);
+                            } else {
+                                c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
+                            }
+                            let is_controlled = i_c.and(&c_v);
+                            control_params = control_params.and(&is_controlled);
+                        } else {
+                            let i_c = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
+                            let c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
+                            let not_controlled = i_c.and(&c_v);
+                            control_params = control_params.and(&not_controlled);
+                        }
+                    }
+                    params = params.intersect(&BddParams::from(&control_params));
                     controls.insert(state, params.clone());
                 }
             }
@@ -111,7 +161,7 @@ impl ControlledAsyncGraph {
         }
 
         let strongBasin = find_strong_basin(self, target);
-        let strongBasinSeed = &StateSet::new_with_fun(graph.num_states(), |s| if strongBasin.contains_key(&s) { Some(strongBasin.get(&s).unwrap().clone()) } else { None });
+        let strongBasinSeed = &StateSet::new_with_fun(self.graph.num_states(), |s| if strongBasin.contains_key(&s) { Some(strongBasin.get(&s).unwrap().clone()) } else { None });
         let extendedStrongBasin = find_strong_basin(self, strongBasinSeed);
 
         for (state, params) in weakBasin {
@@ -120,7 +170,27 @@ impl ControlledAsyncGraph {
             if params_t.is_some() {
                 let params = params_t.unwrap();
                 if !params.is_empty() {
-                    //TODO filter params so that there are only params where is control set to Hamming difference of state and target, insert these params
+                    let mut control_params = Bdd::new();
+                    for v in self.network.graph().variable_ids() {
+                        let controlled_var = self.controlVariables.get(&v).unwrap();
+                        if state.get_bit(v.into()) != source.get_bit(v.into()) {
+                            let i_c = self.encoder.bdd_variables.mk_var(controlled_var.is_controlled_variable);
+                            let c_v;
+                            if state.get_bit(v.into()) {
+                                c_v = self.encoder.bdd_variables.mk_var(controlled_var.control_value_variable);
+                            } else {
+                                c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
+                            }
+                            let is_controlled = i_c.and(&c_v);
+                            control_params = control_params.and(&is_controlled);
+                        } else {
+                            let i_c = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
+                            let c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
+                            let not_controlled = i_c.and(&c_v);
+                            control_params = control_params.and(&not_controlled);
+                        }
+                    }
+                    params = params.intersect(&BddParams::from(control_params));
                     controls.insert(state, params.clone());
                 }
             }

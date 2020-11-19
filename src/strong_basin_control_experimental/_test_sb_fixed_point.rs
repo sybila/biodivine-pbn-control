@@ -48,3 +48,4 @@ mod tests {
 
         assert_eq!(basin.len(), 32);
     }
+}

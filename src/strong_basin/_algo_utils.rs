@@ -1,4 +1,4 @@
-use biodivine_lib_param_bn::async_graph::AsyncGraph;
+use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
 use biodivine_lib_std::IdState;
 use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params};
 use biodivine_lib_param_bn::bdd_params::BddParams;
@@ -19,7 +19,7 @@ pub fn get_all_params_with_attractor(graph: &ControlledAsyncGraph, state: IdStat
     return graph.unit_params().minus(&bad_params);
 }
 
-pub fn find_attractors(graph: &AsyncGraph) -> Vec<IdState> {
+pub fn find_attractors(graph: &AsyncGraph<DefaultEdgeParams>) -> Vec<IdState> {
     let fwd = graph.fwd();
     let nodes = graph.num_states();
     let mut attractors = Vec::new();

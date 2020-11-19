@@ -1,17 +1,12 @@
-use biodivine_lib_param_bn::async_graph::{AsyncGraph};
 use std::collections::{HashMap, HashSet};
 use biodivine_lib_param_bn::bdd_params::{BddParams};
-use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params, InvertibleEvolutionOperator};
+use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params};
 use biodivine_lib_std::{IdState};
 use biodivine_aeon_server::scc::{StateSet, ProgressTracker};
 use std::clone::Clone;
-use std::io;
-use std::io::Write;
-use std::borrow::Borrow;
 use rayon::prelude::*;
 use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
 use std::sync::atomic::AtomicBool;
-use crate::async_graph_with_control::{FwdIterator, BwdIterator, AsyncGraphWithControl};
 use crate::controlled_async_graph::ControlledAsyncGraph;
 
 fn all_possible_predecessors<F>(bwd: &F, set: &HashSet<IdState>) -> HashSet<IdState>
