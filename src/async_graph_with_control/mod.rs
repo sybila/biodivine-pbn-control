@@ -1,5 +1,6 @@
 mod _impl_control;
 mod _impl_evolution_operators;
+mod _test_async_graph_with_control;
 
 use biodivine_lib_param_bn::{VariableId, BooleanNetwork, VariableIdIterator};
 use std::collections::HashMap;

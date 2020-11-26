@@ -9,7 +9,10 @@ use std::sync::atomic::AtomicBool;
 use biodivine_aeon_server::scc::{ProgressTracker, StateSet};
 use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
 use biodivine_lib_std::param_graph::{Params};
-use biodivine_lib_bdd::{BddVariableSetBuilder, Bdd};
+use biodivine_lib_bdd::{BddVariableSetBuilder};
+use std::borrow::Borrow;
+use std::fs::read_to_string;
+use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
 
 impl ControlledAsyncGraph {
     /// Create a new `AsyncGraph` from the given `BooleanNetwork`.
@@ -32,13 +35,14 @@ impl ControlledAsyncGraph {
         }
 
         let encoder = BddParameterEncoder::new_with_custom_variables(&bn, vars);
-        let edges = DefaultEdgeParams::new_with_custom_encoder(bn, encoder).unwrap();
+        let edges = DefaultEdgeParams::new_with_custom_encoder(bn.clone(), encoder.clone()).unwrap();
         let g = AsyncGraph::new_with_edges(edges).unwrap();
+
         return ControlledAsyncGraph {
-            network: bn,
+            network: bn.clone(),
             encoder: encoder.clone(),
             graph: g,
-            controlVariables: control_vars
+            controlVariables: control_vars,
         }
     }
 
@@ -48,10 +52,10 @@ impl ControlledAsyncGraph {
     }
 
     /// Return an empty parameter set.
-    pub fn empty_params(&self) -> &BddParams { return &self.graph.empty_params().clone(); }
+    pub fn empty_params(&self) -> &BddParams { return &self.graph.empty_params(); }
 
     /// Return a unit parameter set, i.e. all parameters that satisfy all static conditions.
-    pub fn unit_params(&self) -> &BddParams { return &self.graph.unit_params().clone(); }
+    pub fn unit_params(&self) -> &BddParams { return &self.graph.unit_params(); }
 
     /// Compute the parameter set which enables the value of `variable` to be flipped
     /// in the given `state`.
@@ -97,10 +101,7 @@ impl ControlledAsyncGraph {
         return self.graph.make_witness(params);
     }
 
-    pub fn find_permanent_control(&mut self, source: IdState, target: &StateSet) -> HashMap<IdState, BddParams> {
-        let mut currentParams = self.graph.unit_params();
-        let bdd = currentParams.into_bdd();
-
+    pub fn find_permanent_control(&self, source: IdState, target: &StateSet) -> HashMap<IdState, BddParams> {
         let mut controls: HashMap<IdState, BddParams> = HashMap::new();
         let no_guard = StateSet::new_with_initial(self.num_states(), self.unit_params());
 
@@ -112,14 +113,15 @@ impl ControlledAsyncGraph {
             weakBasin.insert(n, p.clone());
         }
 
-        let strongBasins = find_strong_basin(self, target);
+        let strongBasins = find_strong_basin(self, target, self.unit_params());
+        print!("Strong basin has {} states", strongBasins.len());
         for (state, params) in weakBasin {
             let params_t = strongBasins.get(&state);
             if params_t.is_some() {
                 let mut params = params_t.unwrap().clone();
                 if !params.is_empty() {
                     // Get strong basin of the control
-                    let mut control_params = Bdd::new();
+                    let mut control_params = self.encoder.bdd_variables.mk_true();
                     for v in self.network.graph().variable_ids() {
                         let controlled_var = self.controlVariables.get(&v).unwrap();
                         if state.get_bit(v.into()) != source.get_bit(v.into()) {
@@ -140,7 +142,9 @@ impl ControlledAsyncGraph {
                         }
                     }
                     params = params.intersect(&BddParams::from(control_params));
-                    controls.insert(state, params.clone());
+                    if !params.is_empty() {
+                        controls.insert(state, params.clone());
+                    }
                 }
             }
         }
@@ -148,29 +152,39 @@ impl ControlledAsyncGraph {
         return controls
     }
 
-    pub fn find_temporary_control(&mut self, source: IdState, target: &StateSet) -> HashMap<IdState, BddParams> {
+    pub fn find_temporary_control(&self, source: IdState, target: &StateSet) -> HashMap<IdState, BddParams> {
         let mut controls: HashMap<IdState, BddParams> = HashMap::new();
         let no_guard = StateSet::new_with_initial(self.num_states(), self.unit_params());
 
         let b = Bwd { graph: self };
 
         let backward_reach = guarded_reach(&b, target, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(&self.graph));
-        let mut weakBasin = HashMap::new();
+        let mut weak_basin = HashMap::new();
         for (n, p) in backward_reach.iter() {
-            weakBasin.insert(n, p.clone());
+            weak_basin.insert(n, p.clone());
         }
 
-        let strongBasin = find_strong_basin(self, target);
-        let strongBasinSeed = &StateSet::new_with_fun(self.graph.num_states(), |s| if strongBasin.contains_key(&s) { Some(strongBasin.get(&s).unwrap().clone()) } else { None });
-        let extendedStrongBasin = find_strong_basin(self, strongBasinSeed);
+        let mut without_control = self.encoder.bdd_variables.mk_true();
+        for v in self.network.graph().variable_ids() {
+            let controlled_var = self.controlVariables.get(&v).unwrap();
+            let i_c = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
+            let c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
+            let not_controlled = i_c.and(&c_v);
+            without_control = without_control.and(&not_controlled);
+        }
 
-        for (state, params) in weakBasin {
-            self.set_controls(source, state);
+        let strong_basin = find_strong_basin(self, target, &self.unit_params().intersect(&BddParams::from(without_control)));
+        print!("Strong basin has {} states", strong_basin.len());
+
+        let strong_basin_seed = &StateSet::new_with_fun(self.graph.num_states(), |s| if strong_basin.contains_key(&s) { Some(BddParams::from(self.encoder.bdd_variables.mk_true())) } else { None });
+        let extendedStrongBasin = find_strong_basin(self, strong_basin_seed, self.unit_params());
+
+        for (state, params) in weak_basin {
             let params_t = extendedStrongBasin.get(&state);
             if params_t.is_some() {
-                let params = params_t.unwrap().clone();
+                let mut params = params_t.unwrap().clone();
                 if !params.is_empty() {
-                    let mut control_params = Bdd::new();
+                    let mut control_params = self.encoder.bdd_variables.mk_true();
                     for v in self.network.graph().variable_ids() {
                         let controlled_var = self.controlVariables.get(&v).unwrap();
                         if state.get_bit(v.into()) != source.get_bit(v.into()) {
@@ -191,7 +205,9 @@ impl ControlledAsyncGraph {
                         }
                     }
                     params = params.intersect(&BddParams::from(control_params));
-                    controls.insert(state, params.clone());
+                    if !params.is_empty() {
+                        controls.insert(state, params.clone());
+                    }
                 }
             }
         }
