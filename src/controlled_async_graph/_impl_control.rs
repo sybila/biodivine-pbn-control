@@ -114,7 +114,6 @@ impl ControlledAsyncGraph {
         }
 
         let strongBasins = find_strong_basin(self, target, self.unit_params());
-        print!("Strong basin has {} states", strongBasins.len());
         for (state, params) in weakBasin {
             let params_t = strongBasins.get(&state);
             if params_t.is_some() {
@@ -174,7 +173,6 @@ impl ControlledAsyncGraph {
         }
 
         let strong_basin = find_strong_basin(self, target, &self.unit_params().intersect(&BddParams::from(without_control)));
-        print!("Strong basin has {} states", strong_basin.len());
 
         let strong_basin_seed = &StateSet::new_with_fun(self.graph.num_states(), |s| if strong_basin.contains_key(&s) { Some(BddParams::from(self.encoder.bdd_variables.mk_true())) } else { None });
         let extendedStrongBasin = find_strong_basin(self, strong_basin_seed, self.unit_params());
