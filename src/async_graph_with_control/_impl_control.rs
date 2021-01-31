@@ -1,14 +1,17 @@
-use biodivine_lib_param_bn::{VariableId, BooleanNetwork};
+use biodivine_lib_param_bn::{VariableId, BooleanNetwork, VariableIdIterator};
 use biodivine_lib_param_bn::async_graph::AsyncGraph;
 use std::collections::HashMap;
-use crate::async_graph_with_control::{AsyncGraphWithControl, Bwd};
-use biodivine_lib_param_bn::bdd_params::{BddParams};
+use crate::async_graph_with_control::{AsyncGraphWithControl, Fwd, FwdIterator, Bwd, BwdIterator};
+use biodivine_lib_param_bn::bdd_params::{BddParams, BddParameterEncoder};
 use biodivine_lib_std::IdState;
+use std::env::var;
+use biodivine_aeon_server::scc::algo_reach::reach;
 use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
 use std::sync::atomic::AtomicBool;
 use biodivine_aeon_server::scc::{ProgressTracker, StateSet};
 use crate::strong_basin_control_experimental::_algo_sb_parallel_fixed_point::find_strong_basin;
-use biodivine_lib_std::param_graph::{Params};
+use biodivine_lib_std::param_graph::{Params, EvolutionOperator, InvertibleEvolutionOperator};
+use biodivine_lib_bdd::BddVariableSetBuilder;
 
 impl AsyncGraphWithControl {
     /// Create a new `AsyncGraph` from the given `BooleanNetwork`.
@@ -16,7 +19,7 @@ impl AsyncGraphWithControl {
 
         let g = AsyncGraph::new(network);
            AsyncGraphWithControl {
-               network: network.clone(),
+               network: n,
                graph: g.unwrap(),
                controls: HashMap::new(),
            }
@@ -58,7 +61,7 @@ impl AsyncGraphWithControl {
 
         for v in self.network.graph().variable_ids() {
             let c = self.controls.get(&v);
-            if c.is_some() && state.get_bit(variable.into()) != c.unwrap() {
+            if c.is_some() && state.get_bit(variable.into()) != *qc.unwrap() {
                 // State is not valid as it does not fulfill the control condition
                 return self.empty_params().clone();
             }
@@ -74,6 +77,7 @@ impl AsyncGraphWithControl {
     pub fn find_permanent_control(&mut self, source: IdState, target: &StateSet) -> HashMap<IdState, BddParams> {
         let mut currentParams = self.graph.unit_params();
         let bdd = currentParams.into_bdd();
+
 
         let mut controls: HashMap<IdState, BddParams> = HashMap::new();
         let no_guard = StateSet::new_with_initial(self.num_states(), self.unit_params());
@@ -114,7 +118,7 @@ impl AsyncGraphWithControl {
         }
 
         let strongBasin = find_strong_basin(self, target);
-        let strongBasinSeed = &StateSet::new_with_fun(self.graph.num_states(), |s| if strongBasin.contains_key(&s) { Some(strongBasin.get(&s).unwrap().clone()) } else { None });
+        let strongBasinSeed = &StateSet::new_with_fun(graph.num_states(), |s| if strongBasin.contains_key(&s) { Some(strongBasin.get(&s).unwrap().clone()) } else { None });
 
         for (state, params) in weakBasin {
             self.set_controls(source, state);

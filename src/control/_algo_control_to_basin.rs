@@ -1,6 +1,7 @@
-use std::collections::{HashMap};
+use std::collections::{HashMap, HashSet};
 use biodivine_lib_std::IdState;
 use biodivine_lib_param_bn::bdd_params::BddParams;
+use biodivine_lib_bdd::Bdd;
 
 pub fn find_smallest_control_to_basin(source:&IdState, basin: &HashMap<IdState, BddParams>) -> Vec<(IdState, BddParams)> {
     let mut smallest_vec: Vec<(IdState, BddParams)> = basin.iter().map(|(k, val)| (k.clone(), val.clone())).collect();

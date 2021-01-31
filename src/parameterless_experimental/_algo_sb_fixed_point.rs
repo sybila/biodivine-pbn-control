@@ -1,10 +1,16 @@
-use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
-use std::collections::{HashSet, VecDeque};
+use biodivine_lib_param_bn::async_graph::{AsyncGraph};
+use std::collections::{HashMap, HashSet, VecDeque};
+use biodivine_lib_param_bn::bdd_params::{BddParams};
 use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params};
 use biodivine_lib_std::{IdState};
+use biodivine_aeon_server::scc::{StateSet};
 use std::clone::Clone;
+use std::io;
+use std::io::Write;
+use biodivine_aeon_server::scc::algo_reach::guarded_reach;
+use std::borrow::Borrow;
 
-pub fn paremeterless_find_strong_basin(graph: &AsyncGraph<DefaultEdgeParams>, attractor: IdState) -> HashSet<IdState> {
+pub fn paremeterless_find_strong_basin(graph: &AsyncGraph, attractor: IdState) -> HashSet<IdState> {
     let fwd = graph.fwd();
 
     let mut basin= find_weak_basin(graph, attractor);
@@ -35,7 +41,7 @@ pub fn paremeterless_find_strong_basin(graph: &AsyncGraph<DefaultEdgeParams>, at
 }
 
 
-fn find_weak_basin(graph: &AsyncGraph<DefaultEdgeParams>, attractor: IdState) -> HashSet<IdState> {
+fn find_weak_basin(graph: &AsyncGraph, attractor: IdState) -> HashSet<IdState> {
     let bwd = graph.bwd();
     let mut basin = HashSet::new();
     let mut queue = VecDeque::new();
