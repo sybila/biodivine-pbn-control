@@ -1,5 +1,5 @@
 use biodivine_lib_param_bn::{VariableId, BooleanNetwork};
-use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams, AsyncGraphEdgeParams};
+use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
 use std::collections::HashMap;
 use crate::controlled_async_graph::{ControlledAsyncGraph, Bwd, ControlVariable};
 use biodivine_lib_param_bn::bdd_params::{BddParams, BddParameterEncoder};
@@ -25,7 +25,7 @@ impl ControlledAsyncGraph {
             let bdd_name2 = format!("{}_control_value", v.get_name());
             let control_val = vars.make_variable(&bdd_name2);
             control_vars.insert(vid,ControlVariable {
-                original_name: v.get_name().clone(),
+                original_name: v.get_name(),
                 is_controlled_variable: is_controlled,
                 control_value_variable: control_val,
             });
@@ -58,8 +58,8 @@ impl ControlledAsyncGraph {
     ///
     /// Note that this set is not a subset of the `unit_set`! It is really just the flip condition.
     pub fn edge_params(&self, state: IdState, variable: VariableId) -> BddParams {
-        let default_edge_params = self.graph.edges().edge_params(state, variable);
-        let mut allowed_control_params =  self.unit_params().clone();
+        let default_edge_params = self.graph.edge_params(state, variable);
+        let mut allowed_control_params =  self.unit_params();
         //Ensure, that in edge params:;
         // * variableId_is_controlled = FALSE && variableId_control_value = FALSE
         // * for all other variables V:
@@ -71,7 +71,7 @@ impl ControlledAsyncGraph {
                 let i_c = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
                 let c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
                 let not_controlled = i_c.and(&c_v);
-                allowed_control_params = allowed_control_params.intersect(&BddParams::from(not_controlled));
+                allowed_control_params = allowed_control_params.intersect(not_controlled);
             } else {
                 let i_c1 = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
                 let c_v1 = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
@@ -86,7 +86,7 @@ impl ControlledAsyncGraph {
                 let controlled_correctly = i_c2.and(&c_v2);
                 let viable_params = not_controlled.or(&controlled_correctly);
 
-                allowed_control_params = allowed_control_params.intersect(&BddParams::from(viable_params));
+                allowed_control_params = allowed_control_params.intersect(&BddParams::from(&viable_params));
             }
         }
 
@@ -116,7 +116,7 @@ impl ControlledAsyncGraph {
         for (state, params) in weakBasin {
             let params_t = strongBasins.get(&state);
             if params_t.is_some() {
-                let mut params = params_t.unwrap().clone();
+                let mut params = params_t.unwrap();
                 if !params.is_empty() {
                     // Get strong basin of the control
                     let mut control_params = Bdd::new();
@@ -139,7 +139,7 @@ impl ControlledAsyncGraph {
                             control_params = control_params.and(&not_controlled);
                         }
                     }
-                    params = params.intersect(&BddParams::from(control_params));
+                    params = params.intersect(&BddParams::from(&control_params));
                     controls.insert(state, params.clone());
                 }
             }
@@ -168,7 +168,7 @@ impl ControlledAsyncGraph {
             self.set_controls(source, state);
             let params_t = extendedStrongBasin.get(&state);
             if params_t.is_some() {
-                let params = params_t.unwrap().clone();
+                let params = params_t.unwrap();
                 if !params.is_empty() {
                     let mut control_params = Bdd::new();
                     for v in self.network.graph().variable_ids() {
