@@ -11,9 +11,6 @@ use std::fs::File;
 use std::io::{LineWriter, Write};
 use biodivine_pbn_control::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
 use biodivine_pbn_control::control::_algo_control_to_basin::{find_smallest_control_to_basin, find_robust_control_to_basin, control_dist};
-use biodivine_aeon_server::scc::StateSet;
-use biodivine_lib_std::param_graph::Graph;
-use biodivine_pbn_control::controlled_async_graph::ControlledAsyncGraph;
 
 fn main() {
     // let cell_fate_witness: &str = &fs::read_to_string("models/cell_fate_7stable_attractors.aeon").unwrap();
@@ -43,7 +40,7 @@ fn analyse_model(model_file_name: &str, attractors: &Vec<IdState>) {
     let aeon_str: &str = &fs::read_to_string(model_file_name).unwrap();
     let model = BooleanNetwork::try_from(aeon_str).unwrap();
 
-    let graph = &ControlledAsyncGraph::new(model);
+    let graph = &AsyncGraph::new(model).unwrap();
 
     for a in attractors.clone() {
         println!("Attractor : {}", a);
@@ -53,8 +50,7 @@ fn analyse_model(model_file_name: &str, attractors: &Vec<IdState>) {
 
         let begin = Instant::now();
 
-        let seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&a) { Some(relevant_params.clone()) } else { None });
-        let basin = find_strong_basin(graph, seed);
+        let basin = find_strong_basin(graph, a, relevant_params);
         println!("Strong basin has {} states.", basin.len());
         println!("Strong basin computation time (ms): {:?}", begin.elapsed().as_millis());
 
@@ -69,7 +65,7 @@ fn source_target_controls(model_file_name: &str, source: IdState, target: IdStat
     let aeon_str: &str = &fs::read_to_string(model_file_name).unwrap();
     let model = BooleanNetwork::try_from(aeon_str).unwrap();
 
-    let graph = &ControlledAsyncGraph::new(model);
+    let graph = &AsyncGraph::new(model).unwrap();
 
     let relevant_params = get_all_params_with_attractor(graph, target);
     let relevant_params_cardinality =  relevant_params.cardinality();
@@ -77,8 +73,7 @@ fn source_target_controls(model_file_name: &str, source: IdState, target: IdStat
 
     let begin = Instant::now();
 
-    let seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&target) { Some(relevant_params.clone()) } else { None });
-    let basin = find_strong_basin(graph, seed);
+    let basin = find_strong_basin(graph, target, relevant_params);
     println!("Strong basin has {} states.", basin.len());
     println!("Strong basin computation time (ms): {:?}", begin.elapsed().as_millis());
 
