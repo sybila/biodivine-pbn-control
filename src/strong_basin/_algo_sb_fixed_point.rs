@@ -9,8 +9,7 @@ use std::io;
 use std::io::Write;
 use biodivine_aeon_server::scc::algo_reach::guarded_reach;
 use std::borrow::Borrow;
-use crate::async_graph_with_control::{FwdIterator, BwdIterator, AsyncGraphWithControl};
-use crate::controlled_async_graph::ControlledAsyncGraph;
+use crate::controlled_async_graph::{FwdIterator, BwdIterator, ControlledAsyncGraph};
 
 pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashMap<IdState, BddParams>
 {
@@ -86,7 +85,7 @@ pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashM
 }
 
 
-fn find_weak_basin(graph: &ControlledAsyncGraph, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
+fn find_weak_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
     let bwd = graph.bwd();
     let mut basin = HashMap::new();
     basin.insert(attractor, params.clone());

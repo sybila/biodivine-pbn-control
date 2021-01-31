@@ -3,14 +3,15 @@ mod _impl_evolution_operators;
 
 use biodivine_lib_param_bn::{VariableId, BooleanNetwork, VariableIdIterator};
 use std::collections::HashMap;
-use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
+use biodivine_lib_param_bn::async_graph::AsyncGraph;
 use biodivine_lib_std::param_graph::{InvertibleGraph, Graph};
 use biodivine_lib_std::{IdStateRange, IdState};
 use biodivine_lib_param_bn::bdd_params::BddParams;
 
 pub struct ControlledAsyncGraph {
-    pub graph: AsyncGraph<DefaultEdgeParams>,
+    pub graph: AsyncGraph,
     network: BooleanNetwork,
+    controls: HashMap<VariableId, bool>
 }
 
 /// A forward `EvolutionOperator` of the `ControlledAsyncGraph`.

@@ -8,9 +8,8 @@ mod tests {
     use biodivine_lib_std::{IdState};
     use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
     use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
-    use crate::async_graph_with_control::AsyncGraphWithControl;
-    use biodivine_aeon_server::scc::StateSet;
     use crate::controlled_async_graph::ControlledAsyncGraph;
+    use biodivine_aeon_server::scc::StateSet;
 
     #[test]
     fn test_witness() {
@@ -38,7 +37,7 @@ mod tests {
 
         let graph = &ControlledAsyncGraph::new(model);
         // We want to start from state
-        // CcrM | CtrA | DnaA | GcrA | SciPw
+        // CcrM | CtrA | DnaA | GcrA | SciP
         //  1   |  1   |  1   |  0   |  0
         // Note that bits are reversed because first variable corresponds to least significant bit.
         let state = IdState::from(0b00111 as usize);
@@ -49,4 +48,3 @@ mod tests {
 
         assert_eq!(basin.len(), 32);
     }
-}
