@@ -56,6 +56,15 @@ pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashM
             }
         }
 
+        let mut total = 0.0;
+        for (s, p) in basin.iter() {
+            total += p.cardinality();
+        }
+        total = 0.0;
+        for (s, p) in to_remove.iter() {
+            total += p.cardinality();
+        }
+        io::stdout().flush();
         if to_remove.is_empty() {
             break;
         }

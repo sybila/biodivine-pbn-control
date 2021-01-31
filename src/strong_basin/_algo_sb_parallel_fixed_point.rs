@@ -37,11 +37,12 @@ impl<I> FoldUnion for I
     }
 }
 
-pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet, unit_params: &BddParams) -> HashMap<IdState, BddParams>
+pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashMap<IdState, BddParams>
 {
     let fwd = graph.fwd();
     let bwd = graph.bwd();
     let state_count = graph.num_states();
+    let unit_params = graph.unit_params();
     let empty_params = graph.empty_params();
 
     let no_guard = StateSet::new_with_initial(state_count, unit_params);

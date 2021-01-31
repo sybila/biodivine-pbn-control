@@ -14,7 +14,7 @@ impl AsyncGraphWithControl {
     /// Create a new `AsyncGraph` from the given `BooleanNetwork`.
     pub fn new(network: BooleanNetwork) -> AsyncGraphWithControl {
 
-        let g = AsyncGraph::new(network.clone());
+        let g = AsyncGraph::new(network);
            AsyncGraphWithControl {
                network: network.clone(),
                graph: g.unwrap(),
@@ -58,7 +58,7 @@ impl AsyncGraphWithControl {
 
         for v in self.network.graph().variable_ids() {
             match self.controls.get(&v) {
-                Some(c) if *c != state.get_bit(v.into()) => {
+                Some(c) if *c != state.get_bit(variable.into()) => {
                     // State is not valid as it does not fulfill the control condition
                     return self.empty_params().clone()
                 },
@@ -74,6 +74,9 @@ impl AsyncGraphWithControl {
     }
 
     pub fn find_permanent_control(&mut self, source: IdState, target: &StateSet) -> HashMap<IdState, BddParams> {
+        let mut currentParams = self.graph.unit_params();
+        let bdd = currentParams.into_bdd();
+
         let mut controls: HashMap<IdState, BddParams> = HashMap::new();
         let no_guard = StateSet::new_with_initial(self.num_states(), self.unit_params());
 
@@ -97,7 +100,6 @@ impl AsyncGraphWithControl {
             }
         }
 
-        self.set_controls(source, source);
         return controls
     }
 
@@ -128,7 +130,6 @@ impl AsyncGraphWithControl {
             }
         }
 
-        self.set_controls(source, source);
         return controls
     }
 }

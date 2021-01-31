@@ -23,7 +23,7 @@ mod tests {
 
         let relevant_params = get_all_params_with_attractor(graph, state);
         let seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&state) { Some(relevant_params.clone()) } else { None });
-        let basin = find_strong_basin(graph, seed, graph.unit_params());
+        let basin = find_strong_basin(graph, seed);
 
         assert_eq!(basin.len(), 16);
     }
@@ -42,7 +42,7 @@ mod tests {
 
         let relevant_params = get_all_params_with_attractor(graph, state);
         let seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&state) { Some(relevant_params.clone()) } else { None });
-        let basin = find_strong_basin(graph, seed, graph.unit_params());
+        let basin = find_strong_basin(graph, seed);
 
         assert_eq!(basin.len(), 32);
     }

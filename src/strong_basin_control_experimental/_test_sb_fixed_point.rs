@@ -4,8 +4,8 @@ mod tests {
     use std::convert::TryFrom;
     use std::fs;
     use biodivine_lib_std::{IdState};
-    use crate::strong_basin_control_experimental::_algo_utils::get_all_params_with_attractor;
-    use crate::strong_basin_control_experimental::_algo_sb_parallel_fixed_point::find_strong_basin;
+    use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
+    use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
     use crate::async_graph_with_control::AsyncGraphWithControl;
     use biodivine_aeon_server::scc::StateSet;
 

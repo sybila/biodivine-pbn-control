@@ -55,6 +55,8 @@ pub fn find_strong_basin(graph: &AsyncGraphWithControl, seed: &StateSet) -> Hash
         basin.insert(n, p.clone());
     }
 
+    println!("Weak basin has {} states.", basin.len());
+
     let mut changed: HashSet<IdState> = basin.keys().cloned().collect();
     loop {
         let recompute: HashSet<IdState> = all_possible_predecessors(&bwd, &changed);
