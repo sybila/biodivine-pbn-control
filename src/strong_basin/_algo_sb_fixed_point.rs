@@ -1,4 +1,4 @@
-use biodivine_lib_param_bn::async_graph::{AsyncGraph};
+use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
 use std::collections::HashMap;
 use biodivine_lib_param_bn::bdd_params::{BddParams};
 use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params};
@@ -11,7 +11,7 @@ use biodivine_aeon_server::scc::algo_reach::guarded_reach;
 use std::borrow::Borrow;
 
 
-pub fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: BddParams) -> HashMap<IdState, BddParams> {
+pub fn find_strong_basin(graph: &AsyncGraph<DefaultEdgeParams>, attractor: IdState, params: BddParams) -> HashMap<IdState, BddParams> {
     let fwd = graph.fwd();
     let bwd = graph.bwd();
     // Just a quick sanity check to verify that the given `attractor` state is really a sink for
@@ -94,7 +94,7 @@ pub fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: BddPara
 }
 
 
-fn find_weak_basin(graph: &AsyncGraph, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
+fn find_weak_basin(graph: &AsyncGraph<DefaultEdgeParams>, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
     let bwd = graph.bwd();
     let mut basin = HashMap::new();
     basin.insert(attractor, params.clone());

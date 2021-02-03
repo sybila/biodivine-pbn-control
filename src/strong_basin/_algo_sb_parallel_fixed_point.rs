@@ -1,4 +1,4 @@
-use biodivine_lib_param_bn::async_graph::{AsyncGraph};
+use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
 use std::collections::{HashMap, HashSet};
 use biodivine_lib_param_bn::bdd_params::{BddParams};
 use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params, InvertibleEvolutionOperator};
@@ -40,7 +40,7 @@ impl<I> FoldUnion for I
     }
 }
 
-pub fn find_strong_basin(graph: &AsyncGraph, attractor: IdState, params: BddParams) -> HashMap<IdState, BddParams>
+pub fn find_strong_basin(graph: &AsyncGraph<DefaultEdgeParams>, attractor: IdState, params: BddParams) -> HashMap<IdState, BddParams>
 {
     let fwd = graph.fwd();
     let bwd = graph.bwd();
