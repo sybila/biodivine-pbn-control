@@ -10,7 +10,7 @@ clap = "2.33.3"
 serde_json = "1.0.59"
 biodivine-lib-bdd = "0.1.0" #{ git = "https://github.com/sybila/biodivine-lib-bdd.git" }
 biodivine-lib-std = { git = "https://github.com/sybila/biodivine-lib-std.git" }
-biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git" }
+biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git", branch = "0.1.0" }
 biodivine-aeon-server = { git = "https://github.com/sybila/biodivine-aeon-server.git", branch = "free-dependencies" }
 
 
