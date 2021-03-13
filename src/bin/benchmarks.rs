@@ -6,7 +6,7 @@ use biodivine_pbn_control::strong_basin::_algo_sb_parallel_fixed_point::find_str
 use biodivine_pbn_control::controlled_async_graph::ControlledAsyncGraph;
 use biodivine_aeon_server::scc::StateSet;
 use std::time::{Instant, Duration, SystemTime};
-use serde_json::json;
+use serde_json::{json, Value};
 use std::path::Path;
 use biodivine_lib_std::{IdState};
 use biodivine_lib_param_bn::BooleanNetwork;
@@ -84,10 +84,8 @@ fn main() {
     create_csv(out_file);
     let config_str: &str = &fs::read_to_string(config_file).unwrap();
 
-    println!("{}", config_str);
-    println!("{:?}", json!(config_str).as_object());
-
-    for (model_name, attractors) in json!(config_str).as_object().unwrap() {
+    let parsed_json: Value = serde_json::from_str(config_str).unwrap();
+    for (model_name, attractors) in parsed_json.as_object().unwrap() {
         let path = Path::new(models_path).join(model_name);
         let content: &str = &fs::read_to_string(path).unwrap();
         let model = BooleanNetwork::try_from(content).unwrap();
@@ -104,7 +102,7 @@ fn main() {
             let basin = find_strong_basin(graph, target_seed, graph.unit_params());
             println!("Strong basin computation time (ms): {:?}", begin.elapsed().as_millis());
             if measure_basin {
-                write_to_csv(out_file, 4, "SB", begin.elapsed().as_millis(),
+                write_to_csv(out_file, "SB", begin.elapsed().as_millis(),
                              model_name,target, target, graph.num_states(),
                                 relevant_params_cardinality, basin.len(), tag)
             }
@@ -118,7 +116,7 @@ fn main() {
                     println!("Temporary control can be done in {} ways.", temporary.len());
                     println!("Temporary control computation time (ms): {:?}", begin.elapsed().as_millis());
 
-                    write_to_csv(out_file, 4, "TEMP", begin.elapsed().as_millis(),
+                    write_to_csv(out_file, "TEMP", begin.elapsed().as_millis(),
                                  model_name,source, target, graph.num_states(),
                                  relevant_params_cardinality, basin.len(), tag)
                 }
@@ -129,7 +127,7 @@ fn main() {
                     println!("Permanent control can be done in {} ways.", permanent.len());
                     println!("Permanent control computation time (ms): {:?}", begin.elapsed().as_millis());
 
-                    write_to_csv(out_file, 4, "PERM", begin.elapsed().as_millis(),
+                    write_to_csv(out_file, "PERM", begin.elapsed().as_millis(),
                                  model_name,source, target, graph.num_states(),
                                  relevant_params_cardinality, basin.len(), tag)
                 }
@@ -147,13 +145,13 @@ fn create_csv(file_path: &str) {
             .create(true)
             .open(file_path)
             .unwrap();
-        if let Err(e) = writeln!(file, "time,parallelism,method,duration,model,source,target,model_size,parameters_size,sb_size,tag") {
+        if let Err(e) = writeln!(file, "time,method,duration,model,source,target,model_size,parameters_size,sb_size,tag") {
             eprintln!("Couldn't write to file: {}", e);
         }
     }
 }
 
-fn write_to_csv(file_path: &str, parallelism: i64, method: &str, duration: u128, model_name: &str,
+fn write_to_csv(file_path: &str, method: &str, duration: u128, model_name: &str,
                 source: IdState, target: IdState, model_size: usize, param_size: f64, sb_size: usize, tag: &str) {
     let mut file = OpenOptions::new()
         .write(true)
@@ -161,8 +159,8 @@ fn write_to_csv(file_path: &str, parallelism: i64, method: &str, duration: u128,
         .open(file_path)
         .unwrap();
 
-    if let Err(e) = writeln!(file, "{:?},{},{},{:?},{},{},{},{},{},{},{}",
-                             SystemTime::now(), parallelism, method, duration, model_name, source,
+    if let Err(e) = writeln!(file, "{:?},{},{:?},{},{},{},{},{},{},{}",
+                             SystemTime::now(), method, duration, model_name, source,
                              target, model_size, param_size, sb_size, tag) {
         eprintln!("Couldn't write to file: {}", e);
     }
