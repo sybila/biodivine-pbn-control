@@ -1,18 +1,14 @@
 use std::fs;
 use biodivine_lib_param_bn::async_graph::AsyncGraph;
-use biodivine_pbn_control::strong_basin::_algo_utils::{find_attractors, get_all_params_with_attractor};
 use clap::{Arg, App, ArgMatches};
-use biodivine_pbn_control::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
-use biodivine_pbn_control::controlled_async_graph::ControlledAsyncGraph;
-use biodivine_aeon_server::scc::StateSet;
 use std::time::{Instant, Duration, SystemTime};
 use serde_json::{json, Value};
 use std::path::Path;
-use biodivine_lib_std::{IdState};
 use biodivine_lib_param_bn::BooleanNetwork;
 use std::convert::TryFrom;
 use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
+use biodivine_lib_param_bn::biodivine_std::structs::IdState;
 
 
 const STRONG_BASIN_ARG: &str = "strong-basin";
@@ -85,57 +81,57 @@ fn main() {
     let config_str: &str = &fs::read_to_string(config_file).unwrap();
 
     let parsed_json: Value = serde_json::from_str(config_str).unwrap();
-    for (model_name, attractors) in parsed_json.as_object().unwrap() {
-        let path = Path::new(models_path).join(model_name);
-        let content: &str = &fs::read_to_string(path).unwrap();
-        let model = BooleanNetwork::try_from(content).unwrap();
-        let graph = &ControlledAsyncGraph::new(model);
-
-        for a in attractors.as_array().unwrap() {
-            let target = IdState::from(a.as_u64().unwrap() as usize);
-            let target_seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&target) { Some(graph.unit_params().clone()) } else { None });
-
-            let relevant_params = get_all_params_with_attractor(graph, target);
-            let relevant_params_cardinality =  relevant_params.cardinality();
-
-            let begin = Instant::now();
-            let basin = find_strong_basin(graph, target_seed, graph.unit_params());
-            println!("Strong basin computation time (ms): {:?}", begin.elapsed().as_millis());
-            if measure_basin {
-                write_to_csv(out_file, "SB", begin.elapsed().as_millis(),
-                             model_name,target, target, graph.num_states(),
-                                relevant_params_cardinality, basin.len(), tag)
-            }
-
-            for b in attractors.as_array().unwrap() {
-                let source = IdState::from(b.as_u64().unwrap() as usize);
-
-                if measure_temp {
-                    let begin = Instant::now();
-                    let temporary = graph.find_temporary_control(source, target_seed);
-                    println!("Temporary control can be done in {} ways.", temporary.len());
-                    println!("Temporary control computation time (ms): {:?}", begin.elapsed().as_millis());
-
-                    write_to_csv(out_file, "TEMP", begin.elapsed().as_millis(),
-                                 model_name,source, target, graph.num_states(),
-                                 relevant_params_cardinality, basin.len(), tag)
-                }
-
-                if measure_perm {
-                    let begin = Instant::now();
-                    let permanent = graph.find_permanent_control(source, target_seed);
-                    println!("Permanent control can be done in {} ways.", permanent.len());
-                    println!("Permanent control computation time (ms): {:?}", begin.elapsed().as_millis());
-
-                    write_to_csv(out_file, "PERM", begin.elapsed().as_millis(),
-                                 model_name,source, target, graph.num_states(),
-                                 relevant_params_cardinality, basin.len(), tag)
-                }
-
-                println!();
-            }
-        }
-    }
+    // for (model_name, attractors) in parsed_json.as_object().unwrap() {
+    //     let path = Path::new(models_path).join(model_name);
+    //     let content: &str = &fs::read_to_string(path).unwrap();
+    //     let model = BooleanNetwork::try_from(content).unwrap();
+    //     let graph = &ControlledAsyncGraph::new(model);
+    //
+    //     for a in attractors.as_array().unwrap() {
+        //     let target = IdState::from(a.as_u64().unwrap() as usize);
+        //     let target_seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&target) { Some(graph.unit_params().clone()) } else { None });
+        //
+        //     let relevant_params = get_all_params_with_attractor(graph, target);
+        //     let relevant_params_cardinality =  relevant_params.cardinality();
+        //
+        //     let begin = Instant::now();
+        //     let basin = find_strong_basin(graph, target_seed, graph.unit_params());
+        //     println!("Strong basin computation time (ms): {:?}", begin.elapsed().as_millis());
+        //     if measure_basin {
+        //         write_to_csv(out_file, "SB", begin.elapsed().as_millis(),
+        //                      model_name,target, target, graph.num_states(),
+        //                         relevant_params_cardinality, basin.len(), tag)
+        //     }
+        //
+        //     for b in attractors.as_array().unwrap() {
+        //         let source = IdState::from(b.as_u64().unwrap() as usize);
+        //
+        //         if measure_temp {
+        //             let begin = Instant::now();
+        //             let temporary = graph.find_temporary_control(source, target_seed);
+        //             println!("Temporary control can be done in {} ways.", temporary.len());
+        //             println!("Temporary control computation time (ms): {:?}", begin.elapsed().as_millis());
+        //
+        //             write_to_csv(out_file, "TEMP", begin.elapsed().as_millis(),
+        //                          model_name,source, target, graph.num_states(),
+        //                          relevant_params_cardinality, basin.len(), tag)
+        //         }
+        //
+        //         if measure_perm {
+        //             let begin = Instant::now();
+        //             let permanent = graph.find_permanent_control(source, target_seed);
+        //             println!("Permanent control can be done in {} ways.", permanent.len());
+        //             println!("Permanent control computation time (ms): {:?}", begin.elapsed().as_millis());
+        //
+        //             write_to_csv(out_file, "PERM", begin.elapsed().as_millis(),
+        //                          model_name,source, target, graph.num_states(),
+        //                          relevant_params_cardinality, basin.len(), tag)
+        //         }
+        //
+        //         println!();
+        //     }
+      //  }
+    //}
 }
 
 fn create_csv(file_path: &str) {
