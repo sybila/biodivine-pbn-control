@@ -3,9 +3,10 @@ use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::{BooleanNetwork, VariableId, FnUpdate};
 use std::collections::HashMap;
 use std::convert::TryFrom;
+use crate::control::_algo_tgr_reduction::tgr_reduction;
 
 
-fn reach_bwd_with_saturation(graph: &SymbolicAsyncGraph, initial: GraphColoredVertices) -> GraphColoredVertices {
+pub fn reach_bwd_with_saturation(graph: &SymbolicAsyncGraph, initial: GraphColoredVertices) -> GraphColoredVertices {
     let mut result = initial;
 
     loop {
@@ -25,7 +26,7 @@ fn reach_bwd_with_saturation(graph: &SymbolicAsyncGraph, initial: GraphColoredVe
     }
 }
 
-fn reach_fwd_with_saturation(graph: &SymbolicAsyncGraph, initial: GraphColoredVertices) -> GraphColoredVertices {
+pub fn reach_fwd_with_saturation(graph: &SymbolicAsyncGraph, initial: GraphColoredVertices) -> GraphColoredVertices {
     let mut result = initial;
 
     loop {
@@ -69,7 +70,7 @@ fn strong_basin(graph: &SymbolicAsyncGraph, initial: GraphColoredVertices) -> Gr
 
 pub fn find_attractors(graph: &SymbolicAsyncGraph) -> Vec<GraphColoredVertices> {
     let mut result = Vec::new();
-    let mut universe = graph.mk_unit_colored_vertices();
+    let mut universe = tgr_reduction(graph, graph.mk_unit_colored_vertices());
     while !universe.is_empty(){
         let pivot = universe.pick_vertex();
         let fwd = reach_fwd_with_saturation(graph, pivot.clone());
