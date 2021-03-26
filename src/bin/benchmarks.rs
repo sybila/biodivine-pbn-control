@@ -8,7 +8,7 @@ use biodivine_aeon_server::scc::StateSet;
 use std::time::{Instant, Duration, SystemTime};
 use serde_json::{json, Value};
 use std::path::Path;
-use biodivine_lib_std::{IdState};
+use biodivine_lib_param_bn::biodivine_std::structs::IdState;
 use biodivine_lib_param_bn::BooleanNetwork;
 use std::convert::TryFrom;
 use std::fs::{File, OpenOptions};

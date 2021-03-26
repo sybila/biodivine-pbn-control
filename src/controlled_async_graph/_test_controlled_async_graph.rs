@@ -3,7 +3,7 @@ mod tests {
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::convert::TryFrom;
     use std::fs;
-    use biodivine_lib_std::{IdState};
+    use biodivine_lib_param_bn::biodivine_std::structs::IdState;
     use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
     use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
     use biodivine_aeon_server::scc::StateSet;

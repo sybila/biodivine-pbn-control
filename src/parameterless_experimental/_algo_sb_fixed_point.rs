@@ -1,8 +1,8 @@
 use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
 use std::collections::{HashSet, VecDeque};
-use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params};
-use biodivine_lib_std::{IdState};
 use std::clone::Clone;
+use biodivine_lib_param_bn::biodivine_std::traits::{Graph, EvolutionOperator, Set};
+use biodivine_lib_param_bn::biodivine_std::structs::IdState;
 
 pub fn paremeterless_find_strong_basin(graph: &AsyncGraph<DefaultEdgeParams>, attractor: IdState) -> HashSet<IdState> {
     let fwd = graph.fwd();

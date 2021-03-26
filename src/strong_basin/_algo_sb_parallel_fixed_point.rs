@@ -1,13 +1,13 @@
 use std::collections::{HashMap, HashSet};
 use biodivine_lib_param_bn::bdd_params::{BddParams};
-use biodivine_lib_std::param_graph::{Graph, EvolutionOperator, Params};
-use biodivine_lib_std::{IdState};
 use biodivine_aeon_server::scc::{StateSet, ProgressTracker};
 use std::clone::Clone;
 use rayon::prelude::*;
 use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
 use std::sync::atomic::AtomicBool;
 use crate::controlled_async_graph::ControlledAsyncGraph;
+use biodivine_lib_param_bn::biodivine_std::structs::IdState;
+use biodivine_lib_param_bn::biodivine_std::traits::{EvolutionOperator, Set, Graph};
 
 fn all_possible_predecessors<F>(bwd: &F, set: &HashSet<IdState>) -> HashSet<IdState>
     where

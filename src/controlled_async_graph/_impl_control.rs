@@ -3,16 +3,16 @@ use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams, AsyncGr
 use std::collections::HashMap;
 use crate::controlled_async_graph::{ControlledAsyncGraph, Bwd, ControlVariable};
 use biodivine_lib_param_bn::bdd_params::{BddParams, BddParameterEncoder};
-use biodivine_lib_std::IdState;
 use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
 use std::sync::atomic::AtomicBool;
 use biodivine_aeon_server::scc::{ProgressTracker, StateSet};
 use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
-use biodivine_lib_std::param_graph::{Params};
 use biodivine_lib_bdd::{BddVariableSetBuilder};
 use std::borrow::Borrow;
 use std::fs::read_to_string;
 use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
+use biodivine_lib_param_bn::biodivine_std::structs::IdState;
+use biodivine_lib_param_bn::biodivine_std::traits::Set;
 
 impl ControlledAsyncGraph {
     /// Create a new `AsyncGraph` from the given `BooleanNetwork`.
@@ -21,8 +21,8 @@ impl ControlledAsyncGraph {
         let mut vars = BddVariableSetBuilder::new();
         let mut control_vars = HashMap::new();
 
-        for vid in bn.graph().variable_ids() {
-            let v = bn.graph().get_variable(vid);
+        for vid in bn.variables() {
+            let v = bn.as_graph().get_variable(vid);
             let bdd_name = format!("{}_is_controlled", v.get_name());
             let is_controlled = vars.make_variable(&bdd_name);
             let bdd_name2 = format!("{}_control_value", v.get_name());
@@ -69,7 +69,7 @@ impl ControlledAsyncGraph {
         // * for all other variables V:
         // ** V_is_controlled=FALSE && V_control_value=FALSE
         // ** V_is_controlled=TRUE && V_control_value=state.V
-        for v in self.network.graph().variable_ids() {
+        for v in self.network.variables() {
             let controlled_var = self.controlVariables.get(&v).unwrap();
             if v == variable {
                 let i_c = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
@@ -121,7 +121,7 @@ impl ControlledAsyncGraph {
                 if !params.is_empty() {
                     // Get strong basin of the control
                     let mut control_params = self.encoder.bdd_variables.mk_true();
-                    for v in self.network.graph().variable_ids() {
+                    for v in self.network.variables() {
                         let controlled_var = self.controlVariables.get(&v).unwrap();
                         if state.get_bit(v.into()) != source.get_bit(v.into()) {
                             let i_c = self.encoder.bdd_variables.mk_var(controlled_var.is_controlled_variable);
@@ -164,7 +164,7 @@ impl ControlledAsyncGraph {
         }
 
         let mut without_control = self.encoder.bdd_variables.mk_true();
-        for v in self.network.graph().variable_ids() {
+        for v in self.network.variables() {
             let controlled_var = self.controlVariables.get(&v).unwrap();
             let i_c = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
             let c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
@@ -183,7 +183,7 @@ impl ControlledAsyncGraph {
                 let mut params = params_t.unwrap().clone();
                 if !params.is_empty() {
                     let mut control_params = self.encoder.bdd_variables.mk_true();
-                    for v in self.network.graph().variable_ids() {
+                    for v in self.network.variables() {
                         let controlled_var = self.controlVariables.get(&v).unwrap();
                         if state.get_bit(v.into()) != source.get_bit(v.into()) {
                             let i_c = self.encoder.bdd_variables.mk_var(controlled_var.is_controlled_variable);

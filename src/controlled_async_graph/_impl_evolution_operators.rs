@@ -1,7 +1,7 @@
-use biodivine_lib_std::param_graph::{EvolutionOperator, InvertibleEvolutionOperator};
 use crate::controlled_async_graph::{Fwd, FwdIterator, Bwd, BwdIterator};
-use biodivine_lib_std::IdState;
 use biodivine_lib_param_bn::bdd_params::BddParams;
+use biodivine_lib_param_bn::biodivine_std::traits::{EvolutionOperator, InvertibleEvolutionOperator};
+use biodivine_lib_param_bn::biodivine_std::structs::IdState;
 
 impl<'a> EvolutionOperator for Fwd<'a> {
     type State = IdState;
@@ -11,7 +11,7 @@ impl<'a> EvolutionOperator for Fwd<'a> {
     fn step(&self, current: IdState) -> Self::Iterator {
         return FwdIterator {
             graph: self.graph,
-            variables: self.graph.network.graph().variable_ids(),
+            variables: self.graph.network.variables(),
             state: current,
         };
     }
@@ -47,7 +47,7 @@ impl<'a> EvolutionOperator for Bwd<'a> {
     fn step(&self, current: IdState) -> Self::Iterator {
         return BwdIterator {
             graph: self.graph,
-            variables: self.graph.network.graph().variable_ids(),
+            variables: self.graph.network.variables(),
             state: current,
         };
     }

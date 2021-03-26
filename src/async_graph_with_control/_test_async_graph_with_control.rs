@@ -3,8 +3,8 @@ mod tests {
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::convert::TryFrom;
     use std::fs;
-    use biodivine_lib_std::{IdState};
     use biodivine_aeon_server::scc::StateSet;
+    use biodivine_lib_param_bn::biodivine_std::structs::IdState;
     use crate::controlled_async_graph::ControlledAsyncGraph;
     use crate::async_graph_with_control::AsyncGraphWithControl;
     use crate::strong_basin_control_experimental::_algo_utils::get_all_params_with_attractor;

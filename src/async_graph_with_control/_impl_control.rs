@@ -3,12 +3,12 @@ use biodivine_lib_param_bn::async_graph::{AsyncGraph, AsyncGraphEdgeParams};
 use std::collections::HashMap;
 use crate::async_graph_with_control::{AsyncGraphWithControl, Bwd};
 use biodivine_lib_param_bn::bdd_params::{BddParams};
-use biodivine_lib_std::IdState;
 use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
 use std::sync::atomic::AtomicBool;
 use biodivine_aeon_server::scc::{ProgressTracker, StateSet};
 use crate::strong_basin_control_experimental::_algo_sb_parallel_fixed_point::find_strong_basin;
-use biodivine_lib_std::param_graph::{Params};
+use biodivine_lib_param_bn::biodivine_std::structs::IdState;
+use biodivine_lib_param_bn::biodivine_std::traits::Set;
 
 impl AsyncGraphWithControl {
     /// Create a new `AsyncGraph` from the given `BooleanNetwork`.
@@ -25,7 +25,7 @@ impl AsyncGraphWithControl {
     pub fn set_controls(&mut self, from: IdState, to: IdState) {
         self.controls.clear();
 
-        for v in self.network.graph().variable_ids() {
+        for v in self.network.variables() {
             if from.get_bit(v.into()) != to.get_bit(v.into()) {
                 self.controls.insert(v, to.get_bit(v.into()));
             }
@@ -56,7 +56,7 @@ impl AsyncGraphWithControl {
             return self.empty_params().clone();
         }
 
-        for v in self.network.graph().variable_ids() {
+        for v in self.network.variables() {
             match self.controls.get(&v) {
                 Some(c) if *c != state.get_bit(v.into()) => {
                     // State is not valid as it does not fulfill the control condition

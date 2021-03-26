@@ -1,8 +1,8 @@
 use crate::async_graph_with_control::AsyncGraphWithControl;
 use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
 use biodivine_lib_param_bn::bdd_params::BddParams;
-use biodivine_lib_std::param_graph::{EvolutionOperator, Graph, Params};
-use biodivine_lib_std::IdState;
+use biodivine_lib_param_bn::biodivine_std::structs::IdState;
+use biodivine_lib_param_bn::biodivine_std::traits::{Graph, EvolutionOperator, Set};
 
 pub fn get_all_params_with_attractor(graph: &AsyncGraphWithControl, state: IdState) -> BddParams {
     let fwd = graph.fwd();
