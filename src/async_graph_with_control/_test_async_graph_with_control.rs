@@ -1,12 +1,12 @@
 #[cfg(test)]
 mod tests {
+    use crate::async_graph_with_control::AsyncGraphWithControl;
+    use crate::strong_basin_control_experimental::_algo_utils::get_all_params_with_attractor;
+    use biodivine_aeon_server::scc::StateSet;
+    use biodivine_lib_param_bn::biodivine_std::structs::IdState;
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::convert::TryFrom;
     use std::fs;
-    use biodivine_aeon_server::scc::StateSet;
-    use biodivine_lib_param_bn::biodivine_std::structs::IdState;
-    use crate::async_graph_with_control::AsyncGraphWithControl;
-    use crate::strong_basin_control_experimental::_algo_utils::get_all_params_with_attractor;
 
     #[test]
     fn test_witness_permanent() {
@@ -25,12 +25,17 @@ mod tests {
         let target = IdState::from(0b1111 as usize);
 
         let relevant_params = get_all_params_with_attractor(&graph, target);
-        let target_attractor = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&target) { Some(relevant_params.clone()) } else { None });
+        let target_attractor = &StateSet::new_with_fun(graph.num_states(), |s| {
+            if s.eq(&target) {
+                Some(relevant_params.clone())
+            } else {
+                None
+            }
+        });
         let controls = graph.find_permanent_control(source, target_attractor);
 
         assert_eq!(controls.len(), 5);
     }
-
 
     #[test]
     fn test_witness_temporary() {
@@ -49,7 +54,13 @@ mod tests {
         let target = IdState::from(0b1100 as usize);
 
         let relevant_params = get_all_params_with_attractor(&graph, target);
-        let target_attractor = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&target) { Some(relevant_params.clone()) } else { None });
+        let target_attractor = &StateSet::new_with_fun(graph.num_states(), |s| {
+            if s.eq(&target) {
+                Some(relevant_params.clone())
+            } else {
+                None
+            }
+        });
         let controls = graph.find_temporary_control(source, target_attractor);
 
         assert_eq!(controls.len(), 6);

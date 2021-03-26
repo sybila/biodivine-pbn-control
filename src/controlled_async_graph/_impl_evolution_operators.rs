@@ -1,7 +1,9 @@
-use crate::controlled_async_graph::{Fwd, FwdIterator, Bwd, BwdIterator};
+use crate::controlled_async_graph::{Bwd, BwdIterator, Fwd, FwdIterator};
 use biodivine_lib_param_bn::bdd_params::BddParams;
-use biodivine_lib_param_bn::biodivine_std::traits::{EvolutionOperator, InvertibleEvolutionOperator};
 use biodivine_lib_param_bn::biodivine_std::structs::IdState;
+use biodivine_lib_param_bn::biodivine_std::traits::{
+    EvolutionOperator, InvertibleEvolutionOperator,
+};
 
 impl<'a> EvolutionOperator for Fwd<'a> {
     type State = IdState;

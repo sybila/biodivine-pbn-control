@@ -2,17 +2,17 @@ mod _impl_control;
 mod _impl_evolution_operators;
 mod _test_controlled_async_graph;
 
-use biodivine_lib_param_bn::{VariableId, BooleanNetwork, VariableIdIterator};
-use std::collections::HashMap;
-use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
-use biodivine_lib_param_bn::bdd_params::{BddParams, BddParameterEncoder};
 use biodivine_lib_bdd::BddVariable;
+use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
+use biodivine_lib_param_bn::bdd_params::{BddParameterEncoder, BddParams};
 use biodivine_lib_param_bn::biodivine_std::structs::{IdState, IdStateRange};
 use biodivine_lib_param_bn::biodivine_std::traits::{Graph, InvertibleGraph};
+use biodivine_lib_param_bn::{BooleanNetwork, VariableId, VariableIdIterator};
+use std::collections::HashMap;
 
 pub struct ControlledAsyncGraph {
     pub graph: AsyncGraph<DefaultEdgeParams>,
-    encoder : BddParameterEncoder,
+    encoder: BddParameterEncoder,
     network: BooleanNetwork,
     control_variables: HashMap<VariableId, ControlVariable>,
 }

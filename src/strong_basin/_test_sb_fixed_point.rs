@@ -1,13 +1,13 @@
 #[cfg(test)]
 mod tests {
+    use crate::controlled_async_graph::ControlledAsyncGraph;
+    use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
+    use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
+    use biodivine_aeon_server::scc::StateSet;
+    use biodivine_lib_param_bn::biodivine_std::structs::IdState;
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::convert::TryFrom;
     use std::fs;
-    use biodivine_lib_param_bn::biodivine_std::structs::IdState;
-    use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
-    use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
-    use biodivine_aeon_server::scc::StateSet;
-    use crate::controlled_async_graph::ControlledAsyncGraph;
 
     #[test]
     fn test_witness() {
@@ -22,7 +22,13 @@ mod tests {
         let state = IdState::from(0b00111 as usize);
 
         let relevant_params = get_all_params_with_attractor(graph, state);
-        let seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&state) { Some(relevant_params.clone()) } else { None });
+        let seed = &StateSet::new_with_fun(graph.num_states(), |s| {
+            if s.eq(&state) {
+                Some(relevant_params.clone())
+            } else {
+                None
+            }
+        });
         let basin = find_strong_basin(graph, seed, graph.unit_params());
 
         assert_eq!(basin.len(), 16);
@@ -41,7 +47,13 @@ mod tests {
         let state = IdState::from(0b00111 as usize);
 
         let relevant_params = get_all_params_with_attractor(graph, state);
-        let seed = &StateSet::new_with_fun(graph.num_states(), |s| if s.eq(&state) { Some(relevant_params.clone()) } else { None });
+        let seed = &StateSet::new_with_fun(graph.num_states(), |s| {
+            if s.eq(&state) {
+                Some(relevant_params.clone())
+            } else {
+                None
+            }
+        });
         let basin = find_strong_basin(graph, seed, graph.unit_params());
 
         assert_eq!(basin.len(), 32);

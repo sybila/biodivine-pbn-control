@@ -1,25 +1,24 @@
-use biodivine_lib_param_bn::{VariableId, BooleanNetwork};
-use biodivine_lib_param_bn::async_graph::{AsyncGraph, AsyncGraphEdgeParams};
-use std::collections::HashMap;
 use crate::async_graph_with_control::{AsyncGraphWithControl, Bwd};
-use biodivine_lib_param_bn::bdd_params::{BddParams};
-use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
-use std::sync::atomic::AtomicBool;
-use biodivine_aeon_server::scc::{ProgressTracker, StateSet};
 use crate::strong_basin_control_experimental::_algo_sb_parallel_fixed_point::find_strong_basin;
+use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
+use biodivine_aeon_server::scc::{ProgressTracker, StateSet};
+use biodivine_lib_param_bn::async_graph::{AsyncGraph, AsyncGraphEdgeParams};
+use biodivine_lib_param_bn::bdd_params::BddParams;
 use biodivine_lib_param_bn::biodivine_std::structs::IdState;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
+use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
+use std::collections::HashMap;
+use std::sync::atomic::AtomicBool;
 
 impl AsyncGraphWithControl {
     /// Create a new `AsyncGraph` from the given `BooleanNetwork`.
     pub fn new(network: BooleanNetwork) -> AsyncGraphWithControl {
-
         let g = AsyncGraph::new(network.clone());
-           AsyncGraphWithControl {
-               network: network.clone(),
-               graph: g.unwrap(),
-               controls: HashMap::new(),
-           }
+        AsyncGraphWithControl {
+            network: network.clone(),
+            graph: g.unwrap(),
+            controls: HashMap::new(),
+        }
     }
 
     pub fn set_controls(&mut self, from: IdState, to: IdState) {
@@ -34,11 +33,13 @@ impl AsyncGraphWithControl {
 
     /// Return the total number of states in this graph.
     pub fn num_states(&self) -> usize {
-        return self.graph.num_states()
+        return self.graph.num_states();
     }
 
     /// Return an empty parameter set.
-    pub fn empty_params(&self) -> &BddParams { return self.graph.empty_params(); }
+    pub fn empty_params(&self) -> &BddParams {
+        return self.graph.empty_params();
+    }
 
     /// Return a unit parameter set, i.e. all parameters that satisfy all static conditions.
     pub fn unit_params(&self) -> &BddParams {
@@ -60,26 +61,36 @@ impl AsyncGraphWithControl {
             match self.controls.get(&v) {
                 Some(c) if *c != state.get_bit(v.into()) => {
                     // State is not valid as it does not fulfill the control condition
-                    return self.empty_params().clone()
-                },
-                _ => ()
+                    return self.empty_params().clone();
+                }
+                _ => (),
             }
         }
 
-        return self.graph.edges().edge_params(state, variable)
+        return self.graph.edges().edge_params(state, variable);
     }
 
     pub fn make_witness(&self, params: &BddParams) -> BooleanNetwork {
         return self.graph.make_witness(params);
     }
 
-    pub fn find_permanent_control(&mut self, source: IdState, target: &StateSet) -> HashMap<IdState, BddParams> {
+    pub fn find_permanent_control(
+        &mut self,
+        source: IdState,
+        target: &StateSet,
+    ) -> HashMap<IdState, BddParams> {
         let mut controls: HashMap<IdState, BddParams> = HashMap::new();
         let no_guard = StateSet::new_with_initial(self.num_states(), self.unit_params());
 
         let b = Bwd { graph: self };
 
-        let backward_reach = guarded_reach(&b, target, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(&self.graph));
+        let backward_reach = guarded_reach(
+            &b,
+            target,
+            &no_guard,
+            &AtomicBool::new(false),
+            &ProgressTracker::new(&self.graph),
+        );
         let mut weak_basin = HashMap::new();
         for (n, p) in backward_reach.iter() {
             weak_basin.insert(n, p.clone());
@@ -98,23 +109,39 @@ impl AsyncGraphWithControl {
         }
 
         self.set_controls(source, source);
-        return controls
+        return controls;
     }
 
-    pub fn find_temporary_control(&mut self, source: IdState, target: &StateSet) -> HashMap<IdState, BddParams> {
+    pub fn find_temporary_control(
+        &mut self,
+        source: IdState,
+        target: &StateSet,
+    ) -> HashMap<IdState, BddParams> {
         let mut controls: HashMap<IdState, BddParams> = HashMap::new();
         let no_guard = StateSet::new_with_initial(self.num_states(), self.unit_params());
 
         let b = Bwd { graph: self };
 
-        let backward_reach = guarded_reach(&b, target, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(&self.graph));
+        let backward_reach = guarded_reach(
+            &b,
+            target,
+            &no_guard,
+            &AtomicBool::new(false),
+            &ProgressTracker::new(&self.graph),
+        );
         let mut weak_basin = HashMap::new();
         for (n, p) in backward_reach.iter() {
             weak_basin.insert(n, p.clone());
         }
 
         let strong_basin = find_strong_basin(self, target);
-        let strong_basin_seed = &StateSet::new_with_fun(self.graph.num_states(), |s| if strong_basin.contains_key(&s) { Some(strong_basin.get(&s).unwrap().clone()) } else { None });
+        let strong_basin_seed = &StateSet::new_with_fun(self.graph.num_states(), |s| {
+            if strong_basin.contains_key(&s) {
+                Some(strong_basin.get(&s).unwrap().clone())
+            } else {
+                None
+            }
+        });
 
         for (state, _) in weak_basin {
             self.set_controls(source, state);
@@ -129,7 +156,6 @@ impl AsyncGraphWithControl {
         }
 
         self.set_controls(source, source);
-        return controls
+        return controls;
     }
 }
-

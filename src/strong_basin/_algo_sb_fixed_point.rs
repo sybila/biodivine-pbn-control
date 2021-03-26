@@ -1,14 +1,16 @@
-use std::collections::HashMap;
-use biodivine_lib_param_bn::bdd_params::{BddParams};
-use biodivine_aeon_server::scc::{StateSet};
-use std::clone::Clone;
-use biodivine_aeon_server::scc::algo_reach::guarded_reach;
 use crate::controlled_async_graph::ControlledAsyncGraph;
+use biodivine_aeon_server::scc::algo_reach::guarded_reach;
+use biodivine_aeon_server::scc::StateSet;
+use biodivine_lib_param_bn::bdd_params::BddParams;
 use biodivine_lib_param_bn::biodivine_std::structs::IdState;
-use biodivine_lib_param_bn::biodivine_std::traits::{Set, Graph, EvolutionOperator};
+use biodivine_lib_param_bn::biodivine_std::traits::{EvolutionOperator, Graph, Set};
+use std::clone::Clone;
+use std::collections::HashMap;
 
-pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashMap<IdState, BddParams>
-{
+pub fn find_strong_basin(
+    graph: &ControlledAsyncGraph,
+    seed: &StateSet,
+) -> HashMap<IdState, BddParams> {
     let fwd = graph.fwd();
     let bwd = graph.bwd();
     let state_count = graph.num_states();
@@ -45,7 +47,7 @@ pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashM
                     match to_remove.get_mut(&node) {
                         None => {
                             to_remove.insert(node, difference);
-                        },
+                        }
                         Some(value) => {
                             *value = value.union(&difference);
                         }
@@ -71,9 +73,12 @@ pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashM
     return basin;
 }
 
-
 #[allow(dead_code)]
-fn find_weak_basin(graph: &ControlledAsyncGraph, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
+fn find_weak_basin(
+    graph: &ControlledAsyncGraph,
+    attractor: IdState,
+    params: &BddParams,
+) -> HashMap<IdState, BddParams> {
     let bwd = graph.bwd();
     let mut basin = HashMap::new();
     basin.insert(attractor, params.clone());
@@ -87,13 +92,16 @@ fn find_weak_basin(graph: &ControlledAsyncGraph, attractor: IdState, params: &Bd
 
         for node in current_basin {
             for (parent, parent_edge_params) in bwd.step(node) {
-                let node_in_basin = basin.get(&node).unwrap();  // unwrap ok because nodes are keys from basin
-                // Reference to parameters for which parent is currently in basin.
+                let node_in_basin = basin.get(&node).unwrap(); // unwrap ok because nodes are keys from basin
+                                                               // Reference to parameters for which parent is currently in basin.
                 let parent_in_basin = basin.get(&parent).unwrap_or(empty_params);
                 // Parameters which can be potentially still added to the basin.
-                let can_become_basin = node_in_basin.intersect(&parent_edge_params).minus(parent_in_basin);
+                let can_become_basin = node_in_basin
+                    .intersect(&parent_edge_params)
+                    .minus(parent_in_basin);
 
-                if can_become_basin.is_empty() {    // skip useless states
+                if can_become_basin.is_empty() {
+                    // skip useless states
                     continue;
                 }
 
@@ -102,7 +110,7 @@ fn find_weak_basin(graph: &ControlledAsyncGraph, attractor: IdState, params: &Bd
                 match basin.get_mut(&parent) {
                     None => {
                         basin.insert(parent, can_become_basin);
-                    },
+                    }
                     Some(value) => {
                         *value = value.union(&can_become_basin);
                     }

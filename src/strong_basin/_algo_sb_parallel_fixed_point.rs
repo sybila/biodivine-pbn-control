@@ -1,17 +1,17 @@
-use std::collections::{HashMap, HashSet};
-use biodivine_lib_param_bn::bdd_params::{BddParams};
-use biodivine_aeon_server::scc::{StateSet, ProgressTracker};
-use std::clone::Clone;
-use rayon::prelude::*;
-use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
-use std::sync::atomic::AtomicBool;
 use crate::controlled_async_graph::ControlledAsyncGraph;
+use biodivine_aeon_server::scc::algo_par_reach::guarded_reach;
+use biodivine_aeon_server::scc::{ProgressTracker, StateSet};
+use biodivine_lib_param_bn::bdd_params::BddParams;
 use biodivine_lib_param_bn::biodivine_std::structs::IdState;
-use biodivine_lib_param_bn::biodivine_std::traits::{EvolutionOperator, Set, Graph};
+use biodivine_lib_param_bn::biodivine_std::traits::{EvolutionOperator, Graph, Set};
+use rayon::prelude::*;
+use std::clone::Clone;
+use std::collections::{HashMap, HashSet};
+use std::sync::atomic::AtomicBool;
 
 fn all_possible_predecessors<F>(bwd: &F, set: &HashSet<IdState>) -> HashSet<IdState>
-    where
-        F: EvolutionOperator<State = IdState, Params = BddParams> + Send + Sync,
+where
+    F: EvolutionOperator<State = IdState, Params = BddParams> + Send + Sync,
 {
     return set
         .par_iter()
@@ -24,8 +24,8 @@ trait FoldUnion {
 }
 
 impl<I> FoldUnion for I
-    where
-        I: Iterator<Item = Option<BddParams>>,
+where
+    I: Iterator<Item = Option<BddParams>>,
 {
     fn fold_union(self) -> Option<BddParams> {
         return self.fold(None, |a, b| match (a, b) {
@@ -37,8 +37,11 @@ impl<I> FoldUnion for I
     }
 }
 
-pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet, unit_params: &BddParams) -> HashMap<IdState, BddParams>
-{
+pub fn find_strong_basin(
+    graph: &ControlledAsyncGraph,
+    seed: &StateSet,
+    unit_params: &BddParams,
+) -> HashMap<IdState, BddParams> {
     let fwd = graph.fwd();
     let bwd = graph.bwd();
     let state_count = graph.num_states();
@@ -47,7 +50,13 @@ pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet, unit_par
     let no_guard = StateSet::new_with_initial(state_count, unit_params);
 
     // AtomicBool and ProgressTracker would be used for cancellation and interactivity, but we don't do that here.
-    let backward_reach = guarded_reach(&bwd, seed, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(&graph.graph));
+    let backward_reach = guarded_reach(
+        &bwd,
+        seed,
+        &no_guard,
+        &AtomicBool::new(false),
+        &ProgressTracker::new(&graph.graph),
+    );
 
     let mut basin = HashMap::new();
     for (n, p) in backward_reach.iter() {
