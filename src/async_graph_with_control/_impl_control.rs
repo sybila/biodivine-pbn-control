@@ -80,15 +80,15 @@ impl AsyncGraphWithControl {
         let b = Bwd { graph: self };
 
         let backward_reach = guarded_reach(&b, target, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(&self.graph));
-        let mut weakBasin = HashMap::new();
+        let mut weak_basin = HashMap::new();
         for (n, p) in backward_reach.iter() {
-            weakBasin.insert(n, p.clone());
+            weak_basin.insert(n, p.clone());
         }
 
-        for (state, params) in weakBasin {
+        for (state, _) in weak_basin {
             self.set_controls(source, state);
-            let permanentStrongBasin = find_strong_basin(self, target);
-            let params_t = permanentStrongBasin.get(&state);
+            let permanent_strong_basin = find_strong_basin(self, target);
+            let params_t = permanent_strong_basin.get(&state);
             if params_t.is_some() {
                 let params = params_t.unwrap();
                 if !params.is_empty() {
@@ -108,18 +108,18 @@ impl AsyncGraphWithControl {
         let b = Bwd { graph: self };
 
         let backward_reach = guarded_reach(&b, target, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(&self.graph));
-        let mut weakBasin = HashMap::new();
+        let mut weak_basin = HashMap::new();
         for (n, p) in backward_reach.iter() {
-            weakBasin.insert(n, p.clone());
+            weak_basin.insert(n, p.clone());
         }
 
-        let strongBasin = find_strong_basin(self, target);
-        let strongBasinSeed = &StateSet::new_with_fun(self.graph.num_states(), |s| if strongBasin.contains_key(&s) { Some(strongBasin.get(&s).unwrap().clone()) } else { None });
+        let strong_basin = find_strong_basin(self, target);
+        let strong_basin_seed = &StateSet::new_with_fun(self.graph.num_states(), |s| if strong_basin.contains_key(&s) { Some(strong_basin.get(&s).unwrap().clone()) } else { None });
 
-        for (state, params) in weakBasin {
+        for (state, _) in weak_basin {
             self.set_controls(source, state);
-            let extendedStrongBasin = find_strong_basin(self, strongBasinSeed);
-            let params_t = extendedStrongBasin.get(&state);
+            let extended_strong_basin = find_strong_basin(self, strong_basin_seed);
+            let params_t = extended_strong_basin.get(&state);
             if params_t.is_some() {
                 let params = params_t.unwrap();
                 if !params.is_empty() {

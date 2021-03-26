@@ -1,17 +1,16 @@
 use std::fs;
-use biodivine_lib_param_bn::async_graph::AsyncGraph;
-use biodivine_pbn_control::strong_basin::_algo_utils::{find_attractors, get_all_params_with_attractor};
-use clap::{Arg, App, ArgMatches};
+use biodivine_pbn_control::strong_basin::_algo_utils::{get_all_params_with_attractor};
+use clap::{Arg, App};
 use biodivine_pbn_control::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
 use biodivine_pbn_control::controlled_async_graph::ControlledAsyncGraph;
 use biodivine_aeon_server::scc::StateSet;
-use std::time::{Instant, Duration, SystemTime};
-use serde_json::{json, Value};
+use std::time::{Instant, SystemTime};
+use serde_json::{Value};
 use std::path::Path;
 use biodivine_lib_param_bn::biodivine_std::structs::IdState;
 use biodivine_lib_param_bn::BooleanNetwork;
 use std::convert::TryFrom;
-use std::fs::{File, OpenOptions};
+use std::fs::{OpenOptions};
 use std::io::prelude::*;
 
 

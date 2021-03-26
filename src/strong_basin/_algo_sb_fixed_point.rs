@@ -72,6 +72,7 @@ pub fn find_strong_basin(graph: &ControlledAsyncGraph, seed: &StateSet) -> HashM
 }
 
 
+#[allow(dead_code)]
 fn find_weak_basin(graph: &ControlledAsyncGraph, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
     let bwd = graph.bwd();
     let mut basin = HashMap::new();

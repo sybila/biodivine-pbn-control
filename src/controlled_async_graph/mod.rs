@@ -6,7 +6,7 @@ use biodivine_lib_param_bn::{VariableId, BooleanNetwork, VariableIdIterator};
 use std::collections::HashMap;
 use biodivine_lib_param_bn::async_graph::{AsyncGraph, DefaultEdgeParams};
 use biodivine_lib_param_bn::bdd_params::{BddParams, BddParameterEncoder};
-use biodivine_lib_bdd::{BddVariable, Bdd};
+use biodivine_lib_bdd::BddVariable;
 use biodivine_lib_param_bn::biodivine_std::structs::{IdState, IdStateRange};
 use biodivine_lib_param_bn::biodivine_std::traits::{Graph, InvertibleGraph};
 
@@ -14,7 +14,7 @@ pub struct ControlledAsyncGraph {
     pub graph: AsyncGraph<DefaultEdgeParams>,
     encoder : BddParameterEncoder,
     network: BooleanNetwork,
-    controlVariables: HashMap<VariableId, ControlVariable>,
+    control_variables: HashMap<VariableId, ControlVariable>,
 }
 
 pub struct ControlVariable {

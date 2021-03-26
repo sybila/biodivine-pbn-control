@@ -5,7 +5,6 @@ mod tests {
     use std::fs;
     use biodivine_lib_param_bn::biodivine_std::structs::IdState;
     use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
-    use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
     use biodivine_aeon_server::scc::StateSet;
     use crate::controlled_async_graph::ControlledAsyncGraph;
 

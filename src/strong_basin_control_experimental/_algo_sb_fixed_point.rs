@@ -3,8 +3,6 @@ use std::collections::HashMap;
 use biodivine_lib_param_bn::bdd_params::{BddParams};
 use biodivine_aeon_server::scc::{StateSet};
 use std::clone::Clone;
-use std::io;
-use std::io::Write;
 use biodivine_aeon_server::scc::algo_reach::guarded_reach;
 use crate::async_graph_with_control::{AsyncGraphWithControl};
 use biodivine_lib_param_bn::biodivine_std::structs::IdState;
@@ -57,7 +55,7 @@ pub fn find_strong_basin(graph: &AsyncGraphWithControl, seed: &StateSet) -> Hash
             }
         }
 
-        let mut total = 0.0;
+        /*let mut total = 0.0;
         for (s, p) in basin.iter() {
             total += p.cardinality();
         }
@@ -65,7 +63,7 @@ pub fn find_strong_basin(graph: &AsyncGraphWithControl, seed: &StateSet) -> Hash
         for (s, p) in to_remove.iter() {
             total += p.cardinality();
         }
-        io::stdout().flush();
+        io::stdout().flush();*/
         if to_remove.is_empty() {
             break;
         }
@@ -84,6 +82,7 @@ pub fn find_strong_basin(graph: &AsyncGraphWithControl, seed: &StateSet) -> Hash
 }
 
 
+#[allow(dead_code)]
 fn find_weak_basin(graph: &AsyncGraph<DefaultEdgeParams>, attractor: IdState, params: &BddParams) -> HashMap<IdState, BddParams> {
     let bwd = graph.bwd();
     let mut basin = HashMap::new();

@@ -8,9 +8,6 @@ use std::sync::atomic::AtomicBool;
 use biodivine_aeon_server::scc::{ProgressTracker, StateSet};
 use crate::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
 use biodivine_lib_bdd::{BddVariableSetBuilder};
-use std::borrow::Borrow;
-use std::fs::read_to_string;
-use crate::strong_basin::_algo_utils::get_all_params_with_attractor;
 use biodivine_lib_param_bn::biodivine_std::structs::IdState;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 
@@ -42,7 +39,7 @@ impl ControlledAsyncGraph {
             network: bn.clone(),
             encoder: encoder.clone(),
             graph: g,
-            controlVariables: control_vars,
+            control_variables: control_vars,
         }
     }
 
@@ -70,7 +67,7 @@ impl ControlledAsyncGraph {
         // ** V_is_controlled=FALSE && V_control_value=FALSE
         // ** V_is_controlled=TRUE && V_control_value=state.V
         for v in self.network.variables() {
-            let controlled_var = self.controlVariables.get(&v).unwrap();
+            let controlled_var = self.control_variables.get(&v).unwrap();
             if v == variable {
                 let i_c = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
                 let c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
@@ -108,21 +105,21 @@ impl ControlledAsyncGraph {
         let b = Bwd { graph: self };
 
         let backward_reach = guarded_reach(&b, target, &no_guard, &AtomicBool::new(false), &ProgressTracker::new(&self.graph));
-        let mut weakBasin = HashMap::new();
+        let mut weak_basin = HashMap::new();
         for (n, p) in backward_reach.iter() {
-            weakBasin.insert(n, p.clone());
+            weak_basin.insert(n, p.clone());
         }
 
-        let strongBasins = find_strong_basin(self, target, self.unit_params());
-        for (state, params) in weakBasin {
-            let params_t = strongBasins.get(&state);
+        let strong_basins = find_strong_basin(self, target, self.unit_params());
+        for (state, _) in weak_basin {
+            let params_t = strong_basins.get(&state);
             if params_t.is_some() {
                 let mut params = params_t.unwrap().clone();
                 if !params.is_empty() {
                     // Get strong basin of the control
                     let mut control_params = self.encoder.bdd_variables.mk_true();
                     for v in self.network.variables() {
-                        let controlled_var = self.controlVariables.get(&v).unwrap();
+                        let controlled_var = self.control_variables.get(&v).unwrap();
                         if state.get_bit(v.into()) != source.get_bit(v.into()) {
                             let i_c = self.encoder.bdd_variables.mk_var(controlled_var.is_controlled_variable);
                             let c_v;
@@ -165,7 +162,7 @@ impl ControlledAsyncGraph {
 
         let mut without_control = self.encoder.bdd_variables.mk_true();
         for v in self.network.variables() {
-            let controlled_var = self.controlVariables.get(&v).unwrap();
+            let controlled_var = self.control_variables.get(&v).unwrap();
             let i_c = self.encoder.bdd_variables.mk_not_var(controlled_var.is_controlled_variable);
             let c_v = self.encoder.bdd_variables.mk_not_var(controlled_var.control_value_variable);
             let not_controlled = i_c.and(&c_v);
@@ -175,16 +172,16 @@ impl ControlledAsyncGraph {
         let strong_basin = find_strong_basin(self, target, &self.unit_params().intersect(&BddParams::from(without_control)));
 
         let strong_basin_seed = &StateSet::new_with_fun(self.graph.num_states(), |s| if strong_basin.contains_key(&s) { Some(BddParams::from(self.encoder.bdd_variables.mk_true())) } else { None });
-        let extendedStrongBasin = find_strong_basin(self, strong_basin_seed, self.unit_params());
+        let extended_strong_basin = find_strong_basin(self, strong_basin_seed, self.unit_params());
 
-        for (state, params) in weak_basin {
-            let params_t = extendedStrongBasin.get(&state);
+        for (state, _) in weak_basin {
+            let params_t = extended_strong_basin.get(&state);
             if params_t.is_some() {
                 let mut params = params_t.unwrap().clone();
                 if !params.is_empty() {
                     let mut control_params = self.encoder.bdd_variables.mk_true();
                     for v in self.network.variables() {
-                        let controlled_var = self.controlVariables.get(&v).unwrap();
+                        let controlled_var = self.control_variables.get(&v).unwrap();
                         if state.get_bit(v.into()) != source.get_bit(v.into()) {
                             let i_c = self.encoder.bdd_variables.mk_var(controlled_var.is_controlled_variable);
                             let c_v;
