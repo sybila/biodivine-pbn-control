@@ -1,6 +1,6 @@
 use biodivine_lib_param_bn::symbolic_async_graph::{SymbolicAsyncGraph, GraphColoredVertices};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use biodivine_lib_param_bn::{BooleanNetwork, VariableId, FnUpdate, VariableIdIterator};
+use biodivine_lib_param_bn::{BooleanNetwork, VariableId, FnUpdate};
 use std::collections::HashMap;
 use std::convert::TryFrom;
 
@@ -77,7 +77,9 @@ pub fn find_attractors(graph: &SymbolicAsyncGraph) -> Vec<GraphColoredVertices> 
         let scc = fwd.intersect(&bwd);
         let not_attractor_colors = fwd.minus(&scc).colors();
         let attractor = scc.minus_colors(&not_attractor_colors);
-        result.push(attractor);
+        if !attractor.is_empty() {
+            result.push(attractor);
+        }
         universe = universe.minus(&bwd);
     }
 

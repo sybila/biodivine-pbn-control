@@ -1,9 +1,9 @@
 use std::fs;
-use biodivine_lib_param_bn::async_graph::AsyncGraph;
 use biodivine_pbn_control::control::_algo_temporary_control::find_attractors;
 use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
 use biodivine_lib_param_bn::BooleanNetwork;
 use std::convert::TryFrom;
+use biodivine_lib_param_bn::biodivine_std::traits::Set;
 
 fn main() {
     for m in ["myeloid", "cell_fate", "proinflamatory_tumor", "apoptosis", "cholesterol"].iter() {
@@ -18,8 +18,10 @@ fn main() {
 
         let attractors = &find_attractors(graph);
 
+        let all = attractors.iter().fold(graph.mk_empty_vertices(), |a, b| a.union(b));
         println!("# attractors: {}", attractors.len());
-        println!("{:?}", attractors);
+        println!("# attractor vertices: {}", all.vertices().approx_cardinality());
+        //println!("{:?}", attractors);
     }
 
 }
