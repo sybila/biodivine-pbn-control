@@ -70,8 +70,8 @@ fn strong_basin(graph: &SymbolicAsyncGraph, initial: GraphColoredVertices) -> Gr
 pub fn find_attractors(graph: &SymbolicAsyncGraph) -> Vec<GraphColoredVertices> {
     let mut result = Vec::new();
     let mut universe = graph.mk_unit_colored_vertices();
-    {
-        let pivot = graph.unit_colored_vertices().pick_vertex();
+    while !universe.is_empty(){
+        let pivot = universe.pick_vertex();
         let fwd = reach_fwd_with_saturation(graph, pivot.clone());
         let bwd = reach_bwd_with_saturation(graph, pivot.clone());
         let scc = fwd.intersect(&bwd);
@@ -96,13 +96,13 @@ pub fn find_reachable_attractors(graph: &SymbolicAsyncGraph, pivot: GraphColored
 }
 
 
-fn powerset(s: &VariableIdIterator) -> Vec<Vec<VariableId>> {
-    (0..2usize.pow(s.len() as u32)).map(|i| {
-        s.enumerate().filter(|&(t, _)| (i >> t) % 2 == 1)
-            .map(|(_, element)| element.clone())
-            .collect()
-    }).collect()
-}
+// fn powerset(s: &VariableIdIterator) -> Vec<Vec<VariableId>> {
+//     (0..2usize.pow(s.len() as u32)).map(|i| {
+//         s.enumerate().filter(|&(t, _)| (i >> t) % 2 == 1)
+//             .map(|(_, element)| element.clone())
+//             .collect()
+//     }).collect()
+// }
 
 pub fn temporary_source_target_control(network: BooleanNetwork, source: &HashMap<VariableId, bool>, target: &HashMap<VariableId, bool>) {
     // First, make a controlled and uncontrolled asynchronous graphs. It is important to make sure
@@ -284,51 +284,51 @@ pub fn temporary_source_target_control(network: BooleanNetwork, source: &HashMap
     }
 
     //test
-    let witness = uncontrolled_graph.pick_witness(uncontrolled_graph.unit_colors());
-    let witness_graph = SymbolicAsyncGraph::new(witness).unwrap();
-
-    // Variables in this set will be controlled to true
-    let true_controls = powerset(&witness.clone().variables());
-    for true_control in true_controls {
-
-        // Variables in this set will be controlled to false
-        let false_controls = powerset(&witness.clone().variables());
-        for false_control in false_controls {
-            let intersection = true_control.clone().iter().any(|x| false_control.contains(x));
-            if intersection {
-                // One variable can not be set to same value
-                continue
-            }
-
-            let mut immediate_successor = HashMap::new();
-            for v in witness.clone().variables() {
-                if true_control.clone().contains(&v) {
-                    immediate_successor.insert(v, true);
-                } else if false_control.contains(&v) {
-                    immediate_successor.insert(v, false);
-                } else {
-                    immediate_successor.insert(v, *source.get(&v).unwrap());
-                }
-            }
-            let immediate_successor_set = immediate_successor.iter().fold(uncontrolled_graph.mk_unit_colored_vertices(), |a, (v, value)| {
-                a.intersect(&uncontrolled_graph.fix_network_variable(*v, *value))
-            });
-
-            let control = true_control.clone().into_iter().chain(false_control.into_iter())
-                                                 .map(|name| var_is_controlled.get(&name).unwrap())
-                                                 .fold(uncontrolled_graph.mk_unit_colors(),
-                                                       |a, b| a.intersect(b));
-
-            let final_color = control.intersect(&witness_graph.unit_colors());
-            let controlled_witness = controlled_graph.pick_witness(&final_color);
-            let controlled_witness_graph = SymbolicAsyncGraph::new(controlled_witness).unwrap();
-            let stabilized_after_control = find_reachable_attractors(&controlled_witness_graph, immediate_successor_set);
-
-            let relevant_basin = basin_of_target.intersect_colors(witness_graph.unit_colors());
-            let not_in_basin_vertices = stabilized_after_control.vertices().minus(&relevant_basin.vertices());
-            assert!(not_in_basin_vertices.is_empty());
-        }
-    }
+    // let witness = uncontrolled_graph.pick_witness(uncontrolled_graph.unit_colors());
+    // let witness_graph = SymbolicAsyncGraph::new(witness).unwrap();
+    //
+    // // Variables in this set will be controlled to true
+    // let true_controls = powerset(&witness.clone().variables());
+    // for true_control in true_controls {
+    //
+    //     // Variables in this set will be controlled to false
+    //     let false_controls = powerset(&witness.clone().variables());
+    //     for false_control in false_controls {
+    //         let intersection = true_control.clone().iter().any(|x| false_control.contains(x));
+    //         if intersection {
+    //             // One variable can not be set to same value
+    //             continue
+    //         }
+    //
+    //         let mut immediate_successor = HashMap::new();
+    //         for v in witness.clone().variables() {
+    //             if true_control.clone().contains(&v) {
+    //                 immediate_successor.insert(v, true);
+    //             } else if false_control.contains(&v) {
+    //                 immediate_successor.insert(v, false);
+    //             } else {
+    //                 immediate_successor.insert(v, *source.get(&v).unwrap());
+    //             }
+    //         }
+    //         let immediate_successor_set = immediate_successor.iter().fold(uncontrolled_graph.mk_unit_colored_vertices(), |a, (v, value)| {
+    //             a.intersect(&uncontrolled_graph.fix_network_variable(*v, *value))
+    //         });
+    //
+    //         let control = true_control.clone().into_iter().chain(false_control.into_iter())
+    //                                              .map(|name| var_is_controlled.get(&name).unwrap())
+    //                                              .fold(uncontrolled_graph.mk_unit_colors(),
+    //                                                    |a, b| a.intersect(b));
+    //
+    //         let final_color = control.intersect(&witness_graph.unit_colors());
+    //         let controlled_witness = controlled_graph.pick_witness(&final_color);
+    //         let controlled_witness_graph = SymbolicAsyncGraph::new(controlled_witness).unwrap();
+    //         let stabilized_after_control = find_reachable_attractors(&controlled_witness_graph, immediate_successor_set);
+    //
+    //         let relevant_basin = basin_of_target.intersect_colors(witness_graph.unit_colors());
+    //         let not_in_basin_vertices = stabilized_after_control.vertices().minus(&relevant_basin.vertices());
+    //         assert!(not_in_basin_vertices.is_empty());
+    //     }
+    // }
 }
 
 

@@ -11,7 +11,7 @@ serde_json = "1.0.59"
 biodivine-lib-bdd = "0.2.1" #{ git = "https://github.com/sybila/biodivine-lib-bdd.git" }
 biodivine-lib-std = { git = "https://github.com/sybila/biodivine-lib-std.git"}
 biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git", rev="4fdbf4f"}
-biodivine-aeon-server = { git = "https://github.com/sybila/biodivine-aeon-server.git" }
+biodivine-aeon-server = { git = "https://github.com/sybila/biodivine-aeon-server#c8a3546#" }
 
 
 [dev-dependencies]
