@@ -21,6 +21,12 @@ fn main() {
         let all = attractors.iter().fold(graph.mk_empty_vertices(), |a, b| a.union(b));
         println!("# attractors: {}", attractors.len());
         println!("# attractor vertices: {}", all.vertices().approx_cardinality());
+
+        for vertex in all.vertices().materialize().iter() {
+            println!("State: {:?}", vertex);
+            let singleton_set = graph.vertex(&vertex);
+            println!("Set vertices: {}", singleton_set.vertices().materialize().iter().count());
+        }
         //println!("{:?}", attractors);
     }
 
