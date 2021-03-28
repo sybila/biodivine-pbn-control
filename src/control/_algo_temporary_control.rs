@@ -290,6 +290,7 @@ pub fn temporary_source_target_control(network: BooleanNetwork, source: &ArrayBi
     // to get some basic info from the mapping:
 
     let control_map = controlled_basin;
+    println!("Size of control map: {}", control_map.approx_cardinality());
     //
     // for v in normalized_network.variables() {
     //     let variables_other_then_v_are_not_controlled = var_is_not_controlled.iter()

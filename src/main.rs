@@ -32,6 +32,9 @@ fn main() {
 
         for (i, s) in vertices.clone().iter().enumerate() {
             for (j, t) in vertices.clone().iter().enumerate() {
+                if i == j {
+                    continue
+                }
                 for source in s.vertices().materialize().iter() {
                     for target in t.vertices().materialize().iter() {
                         let begin = Instant::now();
