@@ -1,11 +1,12 @@
 use std::fs;
-use biodivine_pbn_control::control::_algo_temporary_control::{find_attractors, temporary_source_target_control};
 use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
 use biodivine_lib_param_bn::BooleanNetwork;
 use std::convert::TryFrom;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use std::collections::HashMap;
 use std::time::Instant;
+use biodivine_pbn_control::control::_algo_utils::find_attractors;
+use biodivine_pbn_control::control::_impl_temporary_control::TemporaryControl;
 
 fn main() {
     for m in ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"].iter() {
@@ -30,17 +31,17 @@ fn main() {
             vertices.push(a.pick_vertex());
         }
 
-        for (i, s) in vertices.clone().iter().enumerate() {
-            for (j, t) in vertices.clone().iter().enumerate() {
-                if i == j {
+        for (t_i, t) in vertices.clone().iter().enumerate() {
+            for (s_i, s) in vertices.clone().iter().enumerate() {
+                if t_i == s_i {
                     continue
                 }
                 for source in s.vertices().materialize().iter() {
                     for target in t.vertices().materialize().iter() {
                         let begin = Instant::now();
-                        let _ = temporary_source_target_control(BooleanNetwork::try_from(witness_str).unwrap(), &target, &source);
+                        let _ = TemporaryControl::new(BooleanNetwork::try_from(witness_str).unwrap(), &source, &target);
                         let elapsed = begin.elapsed().as_millis();
-                        println!("From attractor {} to attractor {} elapsed {} ms", i, j, elapsed);
+                        println!("From attractor {} to attractor {} elapsed {} ms", s_i, t_i, elapsed);
                     }
                 }
 
