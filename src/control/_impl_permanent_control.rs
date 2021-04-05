@@ -125,6 +125,8 @@ impl PermanentControl {
         // This boils down to removing any state where uncontrolled variables do not match the value
         // in `source` (since control application will fix all controlled variables).
 
+        // println!("Before r {}", controlled_basin.symbolic_size());
+
         for (v, source_value) in normalized_network.clone().variables().zip(source.values()) {
             let v_different_than_source = uncontrolled_graph.fix_network_variable(v, !source_value);
             let v_not_controlled = var_is_not_controlled.get(&v).unwrap();
@@ -133,7 +135,7 @@ impl PermanentControl {
             controlled_basin = controlled_basin.minus(&v_not_controlled_and_different_than_source);
         }
 
-        println!("{}", controlled_basin.symbolic_size());
+        // println!("After r {}", controlled_basin.symbolic_size());
 
         PermanentControl {
             controlled_network: controlled_network.clone(),

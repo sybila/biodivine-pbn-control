@@ -149,7 +149,7 @@ impl TemporaryControl {
         // This boils down to removing any state where uncontrolled variables do not match the value
         // in `source` (since control application will fix all controlled variables).
 
-        println!("Size before reduction {}", controlled_basin.approx_cardinality());
+        //println!("Size before reduction {}", controlled_basin.approx_cardinality());
 
 
         for (v, source_value) in normalized_network.clone().variables().zip(source.values()) {
@@ -160,7 +160,7 @@ impl TemporaryControl {
             controlled_basin = controlled_basin.minus(&v_not_controlled_and_different_than_source);
         }
 
-        println!("Final size {}", controlled_basin.approx_cardinality());
+        // println!("Final size {}", controlled_basin.approx_cardinality());
 
         TemporaryControl {
             controlled_network: controlled_network.clone(),
