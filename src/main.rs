@@ -46,7 +46,7 @@ fn main() {
                 }
                 for source in s.vertices().materialize().iter() {
                     for target in t.vertices().materialize().iter() {
-                        let _ = TemporaryControl::new(BooleanNetwork::try_from(witness_str).unwrap(), &source, &target);
+                        let _ = TemporaryControl::new(BooleanNetwork::try_from(param_str).unwrap(), &source, &target);
                     }
                 }
             }
@@ -93,7 +93,7 @@ fn main() {
                 }
                 for source in s.vertices().materialize().iter() {
                     for target in t.vertices().materialize().iter() {
-                        let _ = TemporaryControl::new(BooleanNetwork::try_from(witness_str).unwrap(), &source, &target);
+                        let _ = TemporaryControl::new(BooleanNetwork::try_from(param_str).unwrap(), &source, &target);
                     }
                 }
             }
