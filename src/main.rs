@@ -2,8 +2,6 @@ use std::fs;
 use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
 use biodivine_lib_param_bn::BooleanNetwork;
 use std::convert::TryFrom;
-use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use std::collections::HashMap;
 use std::time::Instant;
 use biodivine_pbn_control::control::_algo_utils::find_attractors;
 use biodivine_pbn_control::control::_impl_temporary_control::TemporaryControl;

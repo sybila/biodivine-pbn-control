@@ -1,5 +1,4 @@
 use biodivine_lib_param_bn::symbolic_async_graph::{SymbolicAsyncGraph, GraphColoredVertices};
-use biodivine_lib_param_bn::VariableId;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 
 /// Returns a subset of the state space that is guaranteed to contain all attractors of the graph.

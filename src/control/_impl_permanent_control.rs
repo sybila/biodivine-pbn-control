@@ -2,7 +2,6 @@ use biodivine_lib_param_bn::symbolic_async_graph::{SymbolicAsyncGraph, GraphColo
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::{BooleanNetwork, VariableId, FnUpdate};
 use std::collections::HashMap;
-use std::convert::TryFrom;
 use biodivine_lib_param_bn::biodivine_std::bitvector::{ArrayBitVector, BitVector};
 use crate::control::_algo_utils::{reach_fwd_with_saturation, reach_bwd_with_saturation, strong_basin, add_auto_regulations};
 
