@@ -1,7 +1,8 @@
 use biodivine_lib_param_bn::symbolic_async_graph::{SymbolicAsyncGraph, GraphColoredVertices};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use biodivine_lib_param_bn::BooleanNetwork;
+use biodivine_lib_param_bn::{BooleanNetwork, FnUpdate};
 use crate::control::_algo_tgr_reduction::tgr_reduction;
+use std::convert::TryFrom;
 
 pub fn reach_bwd_with_saturation(graph: &SymbolicAsyncGraph, initial: GraphColoredVertices) -> GraphColoredVertices {
     let mut result = initial;
@@ -64,8 +65,9 @@ pub fn strong_basin(graph: &SymbolicAsyncGraph, initial: GraphColoredVertices) -
     }
 }
 
-pub fn add_auto_regulations(model: BooleanNetwork) -> BooleanNetwork {
+pub fn add_auto_regulations(model: &BooleanNetwork) -> BooleanNetwork {
     let mut result = model.as_graph().clone();
+    // Copy variables and regulations.
     for v in result.variables() {
         if result.find_regulation(v, v).is_none() {
             let name = result.get_variable_name(v).clone();
@@ -74,10 +76,25 @@ pub fn add_auto_regulations(model: BooleanNetwork) -> BooleanNetwork {
     }
 
     let mut result = BooleanNetwork::new(result);
+
+    // Copy parameters.
+    for p in model.parameters() {
+        let parameter = &model[p];
+        result.add_parameter(parameter.get_name(), parameter.get_arity());
+    }
+
+    // Copy update functions.
     for v in result.variables() {
         // Technically, the models should have equivalent variable ids!
         if let Some(function) = model.get_update_function(v) {
             result.add_update_function(v, function.clone());
+        } else {    // Create an explicit parameter to replace the implicit function.
+            let regulators = result.regulators(v);
+            let parameter = result.add_parameter(
+                format!("update_{}", result.get_variable_name(v)).as_str(),
+                    u32::try_from(regulators.len()).unwrap(),
+            ).unwrap();
+            result.add_update_function(v, FnUpdate::Param(parameter, regulators));
         }
     }
 

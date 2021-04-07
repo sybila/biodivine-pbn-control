@@ -20,7 +20,7 @@ pub struct TemporaryControl {
 
 impl TemporaryControl {
     pub fn new(network: BooleanNetwork, source: &ArrayBitVector, target: &ArrayBitVector) -> TemporaryControl {
-        let normalized_network = add_auto_regulations(network);
+        let normalized_network = add_auto_regulations(&network);
 
         let mut controlled_network = BooleanNetwork::new(normalized_network.as_graph().clone());
         let mut uncontrolled_network = BooleanNetwork::new(normalized_network.as_graph().clone());
@@ -61,8 +61,9 @@ impl TemporaryControl {
             } else {
                 panic!(r"
                 We assume there are no implicit unknown functions in the network.
-                If there are, replace them with explicit parameters.
-            ");
+                If there are, replace them with explicit parameters. Implicit function found
+                for variable `{}`.
+            ", normalized_network.get_variable_name(v));
             }
         }
 

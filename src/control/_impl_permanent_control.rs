@@ -20,7 +20,7 @@ pub struct PermanentControl {
 
 impl PermanentControl {
     pub fn new(network: BooleanNetwork, source: &ArrayBitVector, target: &ArrayBitVector) -> PermanentControl {
-        let normalized_network = add_auto_regulations(network);
+        let normalized_network = add_auto_regulations(&network);
 
         let mut controlled_network = BooleanNetwork::new(normalized_network.as_graph().clone());
         let mut uncontrolled_network = BooleanNetwork::new(normalized_network.as_graph().clone());
