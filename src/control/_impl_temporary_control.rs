@@ -15,27 +15,15 @@ impl PerturbationGraph {
         /*
            Temporary control is the most challenging, because the control jump needs to be into
            the perturbed basin of a normal basin of target.
-
-           However, we can slightly simply the procedure by noticing that one-step control is a
-           subset of temporary. Thus if a perturbation works as one-step, it will also work as
-           temporary. We can therefore exclude these perturbations from consideration.
         */
         let target_set = self.vertex(target);
         let original_weak_basin = backward(self.as_original(), &target_set);
         let original_strong_basin = forward_closed(self.as_original(), &original_weak_basin);
-        // This is one-step control, which we don't have to consider any more.
-        let can_jump_directly = self.post_perturbation(source, &original_strong_basin);
-        // Computing the closed set should remove the perturbations from the set completely, not
-        // just the singular states into which we are jumping.
-        let basin_without_one_step = forward_closed(
-            self.as_perturbed(),
-            &original_strong_basin.minus(&can_jump_directly),
-        );
-        let perturbed_weak_basin = backward(self.as_perturbed(), &basin_without_one_step);
+        let perturbed_weak_basin = backward(self.as_perturbed(), &original_strong_basin);
         let perturbed_strong_basin = forward_closed(self.as_perturbed(), &perturbed_weak_basin);
         let can_jump_and_hold = self.post_perturbation(source, &perturbed_strong_basin);
         ControlMap {
-            perturbation_set: can_jump_and_hold.union(&can_jump_directly),
+            perturbation_set: can_jump_and_hold,
             context: &self,
         }
     }
