@@ -1,12 +1,5 @@
-use std::fs;
-use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
-use biodivine_lib_param_bn::BooleanNetwork;
-use std::convert::TryFrom;
-use std::time::Instant;
-use biodivine_pbn_control::control::_algo_utils::find_attractors;
-use biodivine_pbn_control::control::_impl_temporary_control::TemporaryControl;
-use biodivine_pbn_control::control::_impl_permanent_control::PermanentControl;
-
+fn main() {}
+/*
 fn main() {
     for m in ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"].iter() {
         let witness_str: &str = &fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
@@ -123,3 +116,4 @@ fn main() {
         }
     }
 }
+*/
