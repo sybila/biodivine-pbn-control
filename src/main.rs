@@ -8,7 +8,7 @@ use std::convert::TryFrom;
 use std::time::Instant;
 
 fn main() {
-    main_temporary_witness();
+    main_one_step("4unknown");
 }
 
 /// Compute possible source-target attractor pairs for a network.
@@ -33,11 +33,11 @@ fn compute_attractor_pairs(network: &BooleanNetwork) -> Vec<(ArrayBitVector, Arr
     result
 }
 
-fn main_one_step_witness() {
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ONE STEP CONTROL (WITNESS)");
+fn main_one_step(suffix: &str) {
+    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ONE STEP CONTROL ({})", suffix);
     for m in ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"].iter() {
         let model_string: &str =
-            &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
+            &std::fs::read_to_string(format!("models/{}_{}.aeon", m, suffix)).unwrap();
         let model = BooleanNetwork::try_from(model_string).unwrap();
         println!("========= {}({}) =========", m, model.num_vars());
         let perturbations = PerturbationGraph::new(&model);
@@ -62,11 +62,11 @@ fn main_one_step_witness() {
     }
 }
 
-fn main_permanent_witness() {
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PERMANENT CONTROL (WITNESS)");
+fn main_permanent(suffix: &str) {
+    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PERMANENT CONTROL ({})", suffix);
     for m in ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"].iter() {
         let model_string: &str =
-            &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
+            &std::fs::read_to_string(format!("models/{}_{}.aeon", m, suffix)).unwrap();
         let model = BooleanNetwork::try_from(model_string).unwrap();
         println!("========= {}({}) =========", m, model.num_vars());
         let perturbations = PerturbationGraph::new(&model);
@@ -91,11 +91,11 @@ fn main_permanent_witness() {
     }
 }
 
-fn main_temporary_witness() {
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEMPORARY CONTROL (WITNESS)");
+fn main_temporary(suffix: &str) {
+    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEMPORARY CONTROL ({})", suffix);
     for m in ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"].iter() {
         let model_string: &str =
-            &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
+            &std::fs::read_to_string(format!("models/{}_{}.aeon", m, suffix)).unwrap();
         let model = BooleanNetwork::try_from(model_string).unwrap();
         println!("========= {}({}) =========", m, model.num_vars());
         let perturbations = PerturbationGraph::new(&model);
