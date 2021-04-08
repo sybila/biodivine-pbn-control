@@ -34,11 +34,6 @@ impl PerturbationGraph {
         let perturbed_weak_basin = backward(self.as_perturbed(), &basin_without_one_step);
         let perturbed_strong_basin = forward_closed(self.as_perturbed(), &perturbed_weak_basin);
         let can_jump_and_hold = self.post_perturbation(source, &perturbed_strong_basin);
-        println!(
-            "Jump directly: {}, Jump and hold: {}",
-            can_jump_directly.vertices().approx_cardinality(),
-            can_jump_and_hold.vertices().approx_cardinality()
-        );
         ControlMap {
             perturbation_set: can_jump_and_hold.union(&can_jump_directly),
             context: &self,

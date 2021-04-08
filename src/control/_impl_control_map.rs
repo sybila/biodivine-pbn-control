@@ -3,7 +3,6 @@ use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::GraphColoredVertices;
 use biodivine_lib_param_bn::VariableId;
-use std::ops::Shl;
 
 impl ControlMap<'_> {
     /// Remove from this control map any results that *do not* perturb `variable`.
@@ -32,15 +31,32 @@ impl ControlMap<'_> {
     /// using this control map.
     pub fn controllable_colors_cardinality(&self) -> f64 {
         let bdd_context = self.context.as_symbolic_context();
-        let bdd = self.perturbation_set.colors().into_bdd();
+        let mut bdd = self.perturbation_set.colors().into_bdd();
         for v in self.context.variables() {
             let parameter = self.context.get_perturbation_parameter(v);
             for (_, bdd_var) in bdd_context.get_explicit_function_table(parameter) {
                 // There should be only one because arity is zero
-                bdd.var_project(bdd_var);
+                bdd = bdd.var_project(bdd_var);
             }
         }
 
-        bdd.cardinality() / (1.shl(self.context.variables().count()) as f64)
+        // Now just fix the control parameters and variables to true so that the final cardinality is correct.
+        for s_var in bdd_context.state_variables() {
+            bdd = bdd.var_select(*s_var, true);
+        }
+        for v in self.context.variables() {
+            let parameter = self.context.get_perturbation_parameter(v);
+            for (_, bdd_var) in bdd_context.get_explicit_function_table(parameter) {
+                // There should be only one because arity is zero
+                bdd = bdd.var_select(bdd_var, true);
+            }
+        }
+
+        bdd.cardinality()
+    }
+
+    /// Compute the number of vertices the source can jump to due to different perturbations.
+    pub fn jump_vertices(&self) -> f64 {
+        self.perturbation_set.vertices().approx_cardinality()
     }
 }

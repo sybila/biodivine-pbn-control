@@ -20,6 +20,9 @@ pub fn backward(
                 break;
             }
         }
+        if cfg!(feature = "print_progress") && result.as_bdd().size() > 100_000 {
+            println!("Backward progress: {}", result.as_bdd().size())
+        }
         if stop {
             return result;
         }
@@ -41,6 +44,9 @@ pub fn forward(graph: &SymbolicAsyncGraph, initial: &GraphColoredVertices) -> Gr
                 stop = false;
                 break;
             }
+        }
+        if cfg!(feature = "print_progress") && result.as_bdd().size() > 100_000 {
+            println!("Forward progress: {}", result.as_bdd().size())
         }
         if stop {
             return result;
@@ -68,6 +74,9 @@ pub fn forward_closed(
                 stop = false;
                 break;
             }
+        }
+        if cfg!(feature = "print_progress") && basin.as_bdd().size() > 100_000 {
+            println!("Forward closed progress: {}", basin.as_bdd().size())
         }
         if stop {
             return basin;

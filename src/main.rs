@@ -1,4 +1,125 @@
-fn main() {}
+#![allow(dead_code)]    // In this file, we want to allow unused functions.
+
+use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
+use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
+use biodivine_lib_param_bn::BooleanNetwork;
+use biodivine_pbn_control::perturbation::PerturbationGraph;
+use std::convert::TryFrom;
+use std::time::Instant;
+
+fn main() {
+    main_temporary_witness();
+}
+
+/// Compute possible source-target attractor pairs for a network.
+///
+/// At the moment, we don't consider every pair of attractor states, we just pick one state
+/// from the first attractor as target, and then different source states from the remaining attractors.
+fn compute_attractor_pairs(network: &BooleanNetwork) -> Vec<(ArrayBitVector, ArrayBitVector)> {
+    let graph = SymbolicAsyncGraph::new(network.clone()).unwrap();
+    let attractors = biodivine_pbn_control::aeon::attractors::compute(&graph);
+    let target: ArrayBitVector = attractors[0]
+        .vertices()
+        .materialize()
+        .iter()
+        .next()
+        .unwrap();
+    let mut result = Vec::new();
+    for source in attractors.iter().skip(1) {
+        let source = source.vertices().materialize().iter().next().unwrap();
+        result.push((source, target.clone()));
+    }
+
+    result
+}
+
+fn main_one_step_witness() {
+    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ONE STEP CONTROL (WITNESS)");
+    for m in ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"].iter() {
+        let model_string: &str =
+            &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
+        let model = BooleanNetwork::try_from(model_string).unwrap();
+        println!("========= {}({}) =========", m, model.num_vars());
+        let perturbations = PerturbationGraph::new(&model);
+        let start = Instant::now();
+        let attractors = compute_attractor_pairs(&model);
+        println!(
+            "Attractors ready in {}ms, starting control...",
+            start.elapsed().as_millis()
+        );
+        for (source, target) in attractors {
+            let start = Instant::now();
+            let control = perturbations.one_step_control(&source, &target);
+            println!(
+                "Control from {:?} to {:?} works for {} color(s), jumping through {} vertices.",
+                source,
+                target,
+                control.controllable_colors_cardinality(),
+                control.jump_vertices()
+            );
+            println!("Elapsed: {}ms", start.elapsed().as_millis());
+        }
+    }
+}
+
+fn main_permanent_witness() {
+    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PERMANENT CONTROL (WITNESS)");
+    for m in ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"].iter() {
+        let model_string: &str =
+            &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
+        let model = BooleanNetwork::try_from(model_string).unwrap();
+        println!("========= {}({}) =========", m, model.num_vars());
+        let perturbations = PerturbationGraph::new(&model);
+        let start = Instant::now();
+        let attractors = compute_attractor_pairs(&model);
+        println!(
+            "Attractors ready in {}ms, starting control...",
+            start.elapsed().as_millis()
+        );
+        for (source, target) in attractors {
+            let start = Instant::now();
+            let control = perturbations.permanent_control(&source, &target);
+            println!(
+                "Control from {:?} to {:?} works for {} color(s), jumping through {} vertices.",
+                source,
+                target,
+                control.controllable_colors_cardinality(),
+                control.jump_vertices()
+            );
+            println!("Elapsed: {}ms", start.elapsed().as_millis());
+        }
+    }
+}
+
+fn main_temporary_witness() {
+    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEMPORARY CONTROL (WITNESS)");
+    for m in ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"].iter() {
+        let model_string: &str =
+            &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
+        let model = BooleanNetwork::try_from(model_string).unwrap();
+        println!("========= {}({}) =========", m, model.num_vars());
+        let perturbations = PerturbationGraph::new(&model);
+        let start = Instant::now();
+        let attractors = compute_attractor_pairs(&model);
+        println!(
+            "Attractors ready in {}ms, starting control...",
+            start.elapsed().as_millis()
+        );
+        for (source, target) in attractors {
+            let start = Instant::now();
+            let control = perturbations.temporary_control(&source, &target);
+            println!(
+                "Control from {:?} to {:?} works for {} color(s), jumping through {} vertices.",
+                source,
+                target,
+                control.controllable_colors_cardinality(),
+                control.jump_vertices()
+            );
+            println!("Elapsed: {}ms", start.elapsed().as_millis());
+        }
+    }
+}
+
 /*
 fn main() {
     for m in ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"].iter() {
