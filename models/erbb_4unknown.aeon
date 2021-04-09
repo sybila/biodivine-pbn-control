@@ -62,4 +62,3 @@ $MEK1: ((((((((!IGF1R & !ERBB1) & !ERBB2_3) & !ERBB1_2) & ERBB1_3) | (((!IGF1R &
 $MYC: ((((!MEK1 & !ERalpha) & AKT1) | (!MEK1 & ERalpha)) | MEK1)
 $p21: ((!CDK4 & !AKT1) & !MYC)
 $p27: (((!CDK4 & !CDK2) & !AKT1) & !MYC)
-$pRB1: (CDK4 & CDK6)
