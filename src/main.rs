@@ -8,12 +8,14 @@ use std::convert::TryFrom;
 use std::time::Instant;
 
 //const models: [&str; 6] = ["myeloid", "cardiac", "erbb", "tumour", "mapk", "hgf"];
-const models: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
+//const models: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
+const models: [&str; 7] = ["tumour_witness", "tumour_1unknown", "tumour_2unknown", "tumour_3unknown", "tumour_4unknown", "tumour_5unknown", "tumour_6unknown"];
+
 
 fn main() {
-    main_one_step("4unknown");
-    main_permanent("4unknown");
-    main_temporary("4unknown");
+    main_one_step("");
+    main_permanent("");
+    main_temporary("");
 }
 
 /// Compute possible source-target attractor pairs for a network.
@@ -42,12 +44,12 @@ fn main_one_step(suffix: &str) {
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ONE STEP CONTROL ({})", suffix);
     for m in models.clone().iter() {
         let model_string: &str =
-            &std::fs::read_to_string(format!("models/{}_{}.aeon", m, suffix)).unwrap();
+            &std::fs::read_to_string(format!("models/{}.aeon", m)).unwrap();
         let model = BooleanNetwork::try_from(model_string).unwrap();
         let perturbations = PerturbationGraph::new(&model);
         println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
         let start = Instant::now();
-        let attractors = find_withness_attractors(&m);
+        let attractors = find_witness_attractors("tumour");
         println!(
             "Attractors ready in {}ms, starting control...",
             start.elapsed().as_millis()
@@ -76,12 +78,12 @@ fn main_permanent(suffix: &str) {
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PERMANENT CONTROL ({})", suffix);
     for m in models.clone().iter() {
         let model_string: &str =
-            &std::fs::read_to_string(format!("models/{}_{}.aeon", m, suffix)).unwrap();
+            &std::fs::read_to_string(format!("models/{}.aeon", m)).unwrap();
         let model = BooleanNetwork::try_from(model_string).unwrap();
         let perturbations = PerturbationGraph::new(&model);
         println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
         let start = Instant::now();
-        let attractors = find_withness_attractors(&m);
+        let attractors = find_witness_attractors("tumour");
         println!(
             "Attractors ready in {}ms, starting control...",
             start.elapsed().as_millis()
@@ -110,12 +112,12 @@ fn main_temporary(suffix: &str) {
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEMPORARY CONTROL ({})", suffix);
     for m in models.clone().iter() {
         let model_string: &str =
-            &std::fs::read_to_string(format!("models/{}_{}.aeon", m, suffix)).unwrap();
+            &std::fs::read_to_string(format!("models/{}.aeon", m)).unwrap();
         let model = BooleanNetwork::try_from(model_string).unwrap();
         let perturbations = PerturbationGraph::new(&model);
         println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
         let start = Instant::now();
-        let attractors = find_withness_attractors(&m);
+        let attractors = find_witness_attractors("tumour");
         println!(
             "Attractors ready in {}ms, starting control...",
             start.elapsed().as_millis()
@@ -140,7 +142,7 @@ fn main_temporary(suffix: &str) {
     }
 }
 
-fn find_withness_attractors(m: &str) -> Vec<ArrayBitVector> {
+fn find_witness_attractors(m: &str) -> Vec<ArrayBitVector> {
     let model_string: &str =
         &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
     let model = BooleanNetwork::try_from(model_string).unwrap();
