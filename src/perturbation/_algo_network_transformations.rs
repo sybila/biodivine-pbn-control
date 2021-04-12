@@ -71,9 +71,12 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
 /// "Original" network contains the same parameters as perturbed network, but the parameters
 /// actually do not matter. They are present only to ensure the two networks have the same
 /// symbolic encoding.
+///
+/// The `perturb` parameter specifies which variables should be actually subject to perturbations.
 pub fn make_original_network(
     network: &BooleanNetwork,
     perturbation_parameters: &mut HashMap<VariableId, ParameterId>,
+    perturb: &[VariableId],
 ) -> BooleanNetwork {
     let mut result = BooleanNetwork::new(network.as_graph().clone());
 
@@ -91,22 +94,27 @@ pub fn make_original_network(
 
     // Then add control parameters and modify update functions:
     for v in network.variables().rev() {
-        let v_perturbed = format!("{}_perturbed", network.get_variable_name(v));
-        let parameter_id = result.add_parameter(v_perturbed.as_str(), 0).unwrap();
-        perturbation_parameters.insert(v, parameter_id);
-
         // We assume the function exists -- substituted implicit functions in normalization.
         let function = network.get_update_function(v).as_ref().unwrap();
-        // A little trick to avoid always cloning the value of fn_parameter...
-        let fn_parameter = || FnUpdate::mk_param(parameter_id, &[]);
 
-        // Set uncontrolled function to (v_perturbed || !v_perturbed) && f(...)
-        // (The function has to *contain* the parameter to ensure the encoding is the same)
-        let control_tautology = fn_parameter().or(FnUpdate::mk_not(fn_parameter()));
-        let uncontrolled_function = control_tautology.and(function.clone());
-        result
-            .add_update_function(v, uncontrolled_function)
-            .unwrap();
+        if perturb.contains(&v) {
+            let v_perturbed = format!("{}_perturbed", network.get_variable_name(v));
+            let parameter_id = result.add_parameter(v_perturbed.as_str(), 0).unwrap();
+            perturbation_parameters.insert(v, parameter_id);
+
+            // A little trick to avoid always cloning the value of fn_parameter...
+            let fn_parameter = || FnUpdate::mk_param(parameter_id, &[]);
+
+            // Set uncontrolled function to (v_perturbed || !v_perturbed) && f(...)
+            // (The function has to *contain* the parameter to ensure the encoding is the same)
+            let control_tautology = fn_parameter().or(FnUpdate::mk_not(fn_parameter()));
+            let uncontrolled_function = control_tautology.and(function.clone());
+            result
+                .add_update_function(v, uncontrolled_function)
+                .unwrap();
+        } else { // If not perturbed, just copy what we have.
+            result.add_update_function(v, function.clone()).unwrap();
+        }
     }
 
     result
@@ -115,10 +123,11 @@ pub fn make_original_network(
 /// "Perturbed" network contains extra parameters which make it possible to disable perturbed
 /// update functions (i.e. if the parameter is true, the network does not change that variable).
 ///
-/// The new parameters are saved into the provided hash map.
+/// The `perturb` parameter specifies which variables should be actually subject to perturbations.
 pub fn make_perturbed_network(
     network: &BooleanNetwork,
     perturbation_parameters: &mut HashMap<VariableId, ParameterId>,
+    perturb: &[VariableId],
 ) -> BooleanNetwork {
     let mut result = BooleanNetwork::new(network.as_graph().clone());
 
@@ -136,20 +145,24 @@ pub fn make_perturbed_network(
 
     // Then add control parameters and modify update functions:
     for v in network.variables().rev() {
-        let v_perturbed = format!("{}_perturbed", network.get_variable_name(v));
-        let parameter_id = result.add_parameter(v_perturbed.as_str(), 0).unwrap();
-        perturbation_parameters.insert(v, parameter_id);
-
         // We assume the function exists -- substituted implicit functions in normalization.
         let function = network.get_update_function(v).as_ref().unwrap();
-        // A little trick to avoid always cloning the value of fn_parameter...
-        let fn_parameter = || FnUpdate::mk_param(parameter_id, &[]);
 
-        // Set controlled function to (v_perturbed => v) && (!v_perturbed => f(...))
-        let controlled_implies_v = fn_parameter().implies(FnUpdate::mk_var(v));
-        let not_controlled_implies_f = FnUpdate::mk_not(fn_parameter()).implies(function.clone());
-        let controlled_function = controlled_implies_v.and(not_controlled_implies_f);
-        result.add_update_function(v, controlled_function).unwrap();
+        if perturb.contains(&v) {
+            let v_perturbed = format!("{}_perturbed", network.get_variable_name(v));
+            let parameter_id = result.add_parameter(v_perturbed.as_str(), 0).unwrap();
+            perturbation_parameters.insert(v, parameter_id);
+            // A little trick to avoid always cloning the value of fn_parameter...
+            let fn_parameter = || FnUpdate::mk_param(parameter_id, &[]);
+
+            // Set controlled function to (v_perturbed => v) && (!v_perturbed => f(...))
+            let controlled_implies_v = fn_parameter().implies(FnUpdate::mk_var(v));
+            let not_controlled_implies_f = FnUpdate::mk_not(fn_parameter()).implies(function.clone());
+            let controlled_function = controlled_implies_v.and(not_controlled_implies_f);
+            result.add_update_function(v, controlled_function).unwrap();
+        } else { // If not perturbed, just copy what we have.
+            result.add_update_function(v, function.clone()).unwrap();
+        }
     }
 
     result

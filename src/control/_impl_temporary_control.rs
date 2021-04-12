@@ -2,7 +2,6 @@ use crate::aeon::reachability::{backward, forward_closed};
 use crate::control::ControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
-use biodivine_lib_param_bn::biodivine_std::traits::Set;
 
 impl PerturbationGraph {
     /// Compute temporary control map. That is, controls which work when a perturbation is applied,

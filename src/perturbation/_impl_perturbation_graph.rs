@@ -11,15 +11,20 @@ use biodivine_lib_param_bn::{BooleanNetwork, ParameterId, VariableId, VariableId
 use std::collections::HashMap;
 
 impl PerturbationGraph {
-    /// Create a new perturbation graph for a given Boolean network.
+
     pub fn new(network: &BooleanNetwork) -> PerturbationGraph {
+        PerturbationGraph::with_restricted_variables(network, &network.variables().collect::<Vec<_>>())
+    }
+
+    /// Create a new perturbation graph for a given Boolean network.
+    pub fn with_restricted_variables(network: &BooleanNetwork, perturb: &[VariableId]) -> PerturbationGraph {
         let normalized = normalize_network(network);
 
         let mut original_parameters = HashMap::new();
         let mut perturbed_parameters = HashMap::new();
 
-        let original = make_original_network(&normalized, &mut original_parameters);
-        let perturbed = make_perturbed_network(&normalized, &mut perturbed_parameters);
+        let original = make_original_network(&normalized, &mut original_parameters, perturb);
+        let perturbed = make_perturbed_network(&normalized, &mut perturbed_parameters, perturb);
 
         assert_eq!(original_parameters, perturbed_parameters);
 
@@ -46,8 +51,8 @@ impl PerturbationGraph {
         self.original_graph.as_network().variables()
     }
 
-    pub fn get_perturbation_parameter(&self, variable: VariableId) -> ParameterId {
-        *self.perturbation_parameters.get(&variable).unwrap()
+    pub fn get_perturbation_parameter(&self, variable: VariableId) -> Option<ParameterId> {
+        self.perturbation_parameters.get(&variable).cloned()
     }
 
     /*
@@ -101,31 +106,39 @@ impl PerturbationGraph {
     /// Return a subset of vertices and colors where the variable is perturbed to the given value.
     ///
     /// If no value is given, return vertices and colors where the variable is perturbed.
+    ///
+    /// If the value cannot be perturbed, return empty set.
     pub fn fix_perturbation(
         &self,
         variable: VariableId,
         value: Option<bool>,
     ) -> GraphColoredVertices {
-        let states = if let Some(value) = value {
-            self.fix_variable(variable, value)
+        if let Some(is_perturbed) = self.perturbation_parameters.get(&variable) {
+            let states = if let Some(value) = value {
+                self.fix_variable(variable, value)
+            } else {
+                self.mk_unit_colored_vertices()
+            };
+            let bdd_is_perturbed = self
+                .as_symbolic_context()
+                .mk_uninterpreted_function_is_true(*is_perturbed, &[]);
+            let colors_is_perturbed = self.unit_colors().copy(bdd_is_perturbed);
+            states.intersect_colors(&colors_is_perturbed)
         } else {
-            self.mk_unit_colored_vertices()
-        };
-        let is_perturbed = self.perturbation_parameters.get(&variable).unwrap();
-        let bdd_is_perturbed = self
-            .as_symbolic_context()
-            .mk_uninterpreted_function_is_true(*is_perturbed, &[]);
-        let colors_is_perturbed = self.unit_colors().copy(bdd_is_perturbed);
-        states.intersect_colors(&colors_is_perturbed)
+            self.mk_empty_colored_vertices()
+        }
     }
 
     /// Return a subset of colors for which the given `variable` is not perturbed.
     pub fn not_perturbed(&self, variable: VariableId) -> GraphColors {
-        let is_perturbed = self.perturbation_parameters.get(&variable).unwrap();
-        let bdd_is_perturbed = self
-            .as_symbolic_context()
-            .mk_uninterpreted_function_is_true(*is_perturbed, &[]);
-        self.unit_colors().copy(bdd_is_perturbed.not())
+        if let Some(is_perturbed) = self.perturbation_parameters.get(&variable) {
+            let bdd_is_perturbed = self
+                .as_symbolic_context()
+                .mk_uninterpreted_function_is_true(*is_perturbed, &[]);
+            self.unit_colors().copy(bdd_is_perturbed.not())
+        } else {
+            self.mk_unit_colors()
+        }
     }
 
     /// Compute the subset of `target` to which a jump from `source` is possible using a perturbation.

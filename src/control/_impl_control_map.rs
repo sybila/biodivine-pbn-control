@@ -34,9 +34,11 @@ impl ControlMap<'_> {
         let mut bdd = self.perturbation_set.colors().into_bdd();
         for v in self.context.variables() {
             let parameter = self.context.get_perturbation_parameter(v);
-            for (_, bdd_var) in bdd_context.get_explicit_function_table(parameter) {
-                // There should be only one because arity is zero
-                bdd = bdd.var_project(bdd_var);
+            if let Some(parameter) = parameter {
+                for (_, bdd_var) in bdd_context.get_explicit_function_table(parameter) {
+                    // There should be only one because arity is zero
+                    bdd = bdd.var_project(bdd_var);
+                }
             }
         }
 
@@ -46,9 +48,11 @@ impl ControlMap<'_> {
         }
         for v in self.context.variables() {
             let parameter = self.context.get_perturbation_parameter(v);
-            for (_, bdd_var) in bdd_context.get_explicit_function_table(parameter) {
-                // There should be only one because arity is zero
-                bdd = bdd.var_select(bdd_var, true);
+            if let Some(parameter) = parameter {
+                for (_, bdd_var) in bdd_context.get_explicit_function_table(parameter) {
+                    // There should be only one because arity is zero
+                    bdd = bdd.var_select(bdd_var, true);
+                }
             }
         }
 
