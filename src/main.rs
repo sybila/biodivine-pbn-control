@@ -26,7 +26,7 @@ fn main() {
 fn main_one_step_old_benchmark() {
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ONE STEP CONTROL - OLD BENCHMARK");
 
-    for m in ["myeloid, cell_fate"] {
+    for m in ["myeloid, cell_fate"].iter() {
         let suffixes: [&str; 4];
         let suffixes = if m == "cell_fate" {["7_stable_attractors", "7_stable_attractors_2params", "7_stable_attractors_4params"].to_vec()} else {["witness", "4_params", "8_params", "11params"].to_vec()};
         
