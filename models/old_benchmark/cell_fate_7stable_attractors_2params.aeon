@@ -1,0 +1,68 @@
+NFkB -> XIAP
+SMAC -| XIAP
+
+XIAP -| CASP3
+apoptosome -> CASP3
+
+$apoptosome:((ATP & (Cyt_c | !XIAP)) | (!ATP & !XIAP))
+ATP -> apoptosome
+Cyt_c -> apoptosome
+XIAP -| apoptosome
+
+$CASP8:(CASP3 | !cFLIP)
+CASP3 -> CASP8
+cFLIP -| CASP8
+
+$cFLIP:NFkB
+NFkB -> cFLIP
+
+$NFkB:(!CASP3 | IKK)
+IKK -> NFkB
+CASP3 -| NFkB
+
+$RIP1:!CASP8
+CASP8 -| RIP1
+
+$SMAC:MOMP
+MOMP -> SMAC
+
+$ATP:!MPT
+MPT -| ATP
+
+$Cyt_c:MOMP
+MOMP -> Cyt_c
+
+$IKK:RIP1ub
+RIP1ub -> IKK
+
+$MOMP:(BAX | MPT)
+BAX -> MOMP
+MPT -> MOMP
+
+$MPT:(!BCL2 | ROS)
+BCL2 -| MPT
+ROS -> MPT
+
+$RIP1ub:(RIP1 | cIAP)
+RIP1 -> RIP1ub
+cIAP -> RIP1ub
+
+$cIAP:((NFkB & cIAP) | (!NFkB & (!SMAC & cIAP)))
+NFkB -> cIAP
+SMAC -| cIAP
+cIAP -> cIAP
+
+$BAX:(!BCL2 | CASP8)
+CASP8 -> BAX
+BCL2 -| BAX
+
+$BCL2:NFkB
+NFkB -> BCL2
+
+$ROS:((MPT & (!NFkB | RIP1K)) | (!MPT & !NFkB))
+RIP1K -> ROS
+NFkB -| ROS
+MPT -> ROS
+
+$RIP1K:RIP1
+RIP1 -> RIP1K

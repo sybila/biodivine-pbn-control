@@ -1,0 +1,121 @@
+$NGF:true
+
+$TRKA:(NGF)
+NGF -> TRKA
+
+$RAS:(TRKA | FAK)
+TRKA -> RAS
+FAK -> RAS
+
+$Pl3K:(TRKA)
+TRKA -> Pl3K
+
+$PKC:(TRKA | Npy)
+TRKA -> PKC
+Npy -> PKC
+
+$Npy:(AP1)
+AP1 -> Npy
+
+$RAF:((RAS | PKC) | JNK)
+RAS -> RAF
+PKC -> RAF
+JNK -> RAF
+
+$MEK:(RAF)
+RAF -> MEK
+
+$ERK:(MEK)
+MEK -> ERK
+
+$AKT:(Pl3K)
+Pl3K -> AKT
+
+$FAK:(Itga1)
+Itga1 -> FAK
+
+$Itga1:(Mmp10)
+Mmp10 -> Itga1
+
+$Mmp10:(uPA)
+uPA -> Mmp10
+
+$JNK:(RAS)
+RAS -> JNK
+
+$uPA:(AP1)
+AP1 -> uPA
+
+$P53:(ERK | JNK)
+ERK -> P53
+JNK -> P53
+
+$AP1:((JNK & ERK) | !Zfp36)
+JNK -> AP1
+ERK -> AP1
+Zfp36 -| AP1
+
+$Klf10:(AKT & JNK)
+AKT -> Klf10
+JNK -> Klf10
+
+$Klf2:(AKT & JNK)
+AKT -> Klf2
+JNK -> Klf2
+
+$Maff:(JNK)
+JNK -> Maff
+
+$Dusp6:(JNK)
+JNK -> Dusp6
+
+$Fosl1:(JNK)
+JNK -> Fosl1
+
+$Klf6:(JNK)
+JNK -> Klf6
+
+$Cited2:(ERK & JNK)
+ERK -> Cited2
+JNK -> Cited2
+
+$Junb:(JNK)
+JNK -> Junb
+
+$Myc:(ERK & JNK)
+ERK -> Myc
+JNK -> Myc
+
+$Btg2:((JNK & AKT) | !CAC)
+JNK -> Btg2
+AKT -> Btg2
+CAC -| Btg2
+
+$Klf4:(JNK | !CAC)
+JNK -> Klf4
+CAC -| Klf4
+
+$Zfp36:((JNK & ERK) | !Zfp36)
+JNK -> Zfp36
+ERK -> Zfp36
+Zfp36 -| Zfp36
+
+$Klf5:(P53 & ERK)
+P53 -> Klf5
+ERK -> Klf5
+
+$CD:(((((((((Klf10 & Klf2) & Maff) & Dusp6) & Fosl1) & Cited2) & Junb) & Myc) & Klf5) & uPA)
+Klf10 -> CD
+Klf2 -> CD
+Maff -> CD
+Dusp6 -> CD
+Fosl1 -> CD
+Cited2 -> CD
+Junb -> CD
+Myc -> CD
+Klf5 -> CD
+uPA -> CD
+
+$CAC:(Btg2 | Klf4)
+Btg2 -> CAC
+Klf4 -> CAC
