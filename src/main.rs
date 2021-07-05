@@ -12,7 +12,8 @@ const suffixes2: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4u
 
 
 fn main() {
-    main_one_step_old_benchmark();
+    main_one_step_old_benchmark("myeloid", ["witness", "4params", "8params", "11params"].to_vec());
+    main_one_step_old_benchmark("cell_fate", ["7_stable_attractors", "7_stable_attractors_2params", "7_stable_attractors_4params"].to_vec());
 
     main_one_step(models1.to_vec(), vec!["4unknown"]);
     main_permanent(models1.to_vec(), vec!["4unknown"]);
@@ -23,40 +24,37 @@ fn main() {
     main_temporary(vec!["tumour"],suffixes2.to_vec());
 }
 
-fn main_one_step_old_benchmark() {
+fn main_one_step_old_benchmark(m: &str, suffixes: Vec<&str>) {
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ONE STEP CONTROL - OLD BENCHMARK");
-
-    for m in ["myeloid, cell_fate"].iter() {
-        for suffixes in [["witness", "4_params", "8_params", "11params"].to_vec(), ["7_stable_attractors", "7_stable_attractors_2params", "7_stable_attractors_4params"].to_vec()].iter() {
-            for s in suffixes.clone().iter() {
-                let model_string: &str =
-                    &std::fs::read_to_string(format!("models/old_benchmark/{}_{}.aeon", m, s)).unwrap();
-                let model = BooleanNetwork::try_from(model_string).unwrap();
-                let perturbations = PerturbationGraph::new(&model);
-                println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
-                let start = Instant::now();
-                let attractors = find_witness_attractors(m);
-                println!(
-                    "Attractors ready in {}ms, starting control...",
-                    start.elapsed().as_millis()
-                );
-                for (t_i, target) in attractors.clone().iter().enumerate() {
-                    for (s_i, source) in attractors.clone().iter().enumerate() {
-                        if s_i == t_i {
-                            continue
-                        }
-                        let start = Instant::now();
-                        let control = perturbations.one_step_control(&source, &target);
-                        println!(
-                            "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
-                            s_i,
-                            t_i,
-                            control.controllable_colors_cardinality(),
-                            control.jump_vertices()
-                        );
-                        println!("Elapsed: {}ms", start.elapsed().as_millis());
-                    }
+    
+    for s in suffixes.clone().iter() {
+        println!("models/old_benchmark/{}_{}.aeon", m, s);
+        let model_string: &str =
+            &std::fs::read_to_string(format!("models/old_benchmark/{}_{}.aeon", m, s)).unwrap();
+        let model = BooleanNetwork::try_from(model_string).unwrap();
+        let perturbations = PerturbationGraph::new(&model);
+        println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
+        let start = Instant::now();
+        let attractors = find_witness_attractors(m);
+        println!(
+            "Attractors ready in {}ms, starting control...",
+            start.elapsed().as_millis()
+        );
+        for (t_i, target) in attractors.clone().iter().enumerate() {
+            for (s_i, source) in attractors.clone().iter().enumerate() {
+                if s_i == t_i {
+                    continue
                 }
+                let start = Instant::now();
+                let control = perturbations.one_step_control(&source, &target);
+                println!(
+                    "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
+                    s_i,
+                    t_i,
+                    control.controllable_colors_cardinality(),
+                    control.jump_vertices()
+                );
+                println!("Elapsed: {}ms", start.elapsed().as_millis());
             }
         }
     }
