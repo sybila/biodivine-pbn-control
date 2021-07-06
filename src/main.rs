@@ -13,7 +13,7 @@ const suffixes2: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4u
 
 fn main() {
     main_one_step_old_benchmark("myeloid", ["witness", "4params", "8params", "11params"].to_vec());
-    main_one_step_old_benchmark("cell_fate", ["7_stable_attractors", "7_stable_attractors_2params", "7_stable_attractors_4params"].to_vec());
+    main_one_step_old_benchmark("cell_fate", ["7stable_attractors", "7stable_attractors_2params", "7stable_attractors_4params"].to_vec());
 
     main_one_step(models1.to_vec(), vec!["4unknown"]);
     main_permanent(models1.to_vec(), vec!["4unknown"]);
@@ -46,14 +46,8 @@ fn main_one_step_old_benchmark(m: &str, suffixes: Vec<&str>) {
                     continue
                 }
                 let start = Instant::now();
-                let control = perturbations.one_step_control(&source, &target);
-                println!(
-                    "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
-                    s_i,
-                    t_i,
-                    control.controllable_colors_cardinality(),
-                    control.jump_vertices()
-                );
+                let basin = perturbations.strong_basin(&target);
+               
                 println!("Elapsed: {}ms", start.elapsed().as_millis());
             }
         }

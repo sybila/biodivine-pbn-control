@@ -103,6 +103,14 @@ impl PerturbationGraph {
         self.original_graph.fix_network_variable(variable, value)
     }
 
+    pub fn strong_basin(&self, target: &ArrayBitVector) -> GraphColoredVertices {
+        let target_set = self.vertex(&target);
+        let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set);
+        let strong_basin =
+            crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin);
+        return strong_basin;
+    }
+
     /// Return a subset of vertices and colors where the variable is perturbed to the given value.
     ///
     /// If no value is given, return vertices and colors where the variable is perturbed.
