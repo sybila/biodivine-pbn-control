@@ -12,7 +12,7 @@ const suffixes2: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4u
 
 
 fn main() {
-    main_one_step_old_benchmark("myeloid", ["witness", "4params", "8params", "11params"].to_vec());
+    main_one_step_old_benchmark("myeloid", ["witness", "4params", "8params"].to_vec());
     main_one_step_old_benchmark("cell_fate", ["7stable_attractors", "7stable_attractors_2params", "7stable_attractors_4params"].to_vec());
 
     main_one_step(models1.to_vec(), vec!["4unknown"]);
