@@ -27,9 +27,7 @@ impl ControlMap<'_> {
         &self.perturbation_set
     }
 
-    /// Compute the set of original colors (without perturbations) that can be controlled
-    /// using this control map.
-    pub fn controllable_colors_cardinality(&self) -> f64 {
+    pub fn controllable_colors(&self) -> Bdd {
         let bdd_context = self.context.as_symbolic_context();
         let mut bdd = self.perturbation_set.colors().into_bdd();
         for v in self.context.variables() {
@@ -56,10 +54,16 @@ impl ControlMap<'_> {
             }
         }
 
-        bdd.cardinality()
+        bdd
     }
 
-    /// Compute the number of vertices the source can jump to due to different perturbations.
+    /// Compute the set of original colors (without perturbations) that can be controlled
+    /// using this control map.
+    pub fn controllable_colors_cardinality(&self) -> f64 {
+        self.controllable_colors().cardinality()
+    }
+
+        /// Compute the number of vertices the source can jump to due to different perturbations.
     pub fn jump_vertices(&self) -> f64 {
         self.perturbation_set.vertices().approx_cardinality()
     }
