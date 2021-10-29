@@ -11,9 +11,9 @@ use itertools::Itertools;
 use biodivine_pbn_control::control::ControlMap;
 
 // const models1: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
-const models1: [&str; 3] = ["myeloid", "cardiac", "erbb"];
-const suffixes2: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4unknown", "5unknown", "6unknown"];
-const MAX_CONTROL_SIZE: usize = 8;
+// const models1: [&str; 3] = ["myeloid", "cardiac", "erbb"];
+// const suffixes2: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4unknown", "5unknown", "6unknown"];
+const MAX_CONTROL_SIZE: usize = 7;
 
 
 fn main() {
@@ -28,16 +28,39 @@ fn main() {
     // main_permanent(vec!["tumour"],suffixes2.to_vec());
     // main_temporary(vec!["tumour"],suffixes2.to_vec());
 
-    main_robustness("erbb", 0, 1, PerturbationGraph::one_step_control);
-    main_robustness("erbb", 0, 1, PerturbationGraph::temporary_control);
-    main_robustness("erbb", 0, 1, PerturbationGraph::permanent_control);
+    main_all_robustness("erbb", 1, 0);
+    main_all_robustness("tumour", 1, 2);
 
+    for s in 0..3 {
+        for t in 0..3 {
+            if s == t {
+                continue
+            }
+            main_all_robustness("cardiac", s, t);
+        }
+    }
+    main_all_robustness("erbb", 0, 1);
+    main_all_robustness("erbb", 1, 0);
+    for s in 0..3 {
+        for t in 0..3 {
+            if s == t {
+                continue
+            }
+            main_all_robustness("tumour", s, t);
+        }
+    }
 }
 
+fn main_all_robustness(m: &str, source_ix: usize, target_ix: usize) {
+    main_robustness(m, source_ix, target_ix, PerturbationGraph::one_step_control, "one-step");
+    main_robustness(m, source_ix, target_ix, PerturbationGraph::temporary_control, "temporary");
+    main_robustness(m, source_ix, target_ix, PerturbationGraph::permanent_control, "permanent");
+}
 
-fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_function: F)
+fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_function: F, control_type: &str)
     where F: for <'a> Fn(&'a PerturbationGraph, &'a ArrayBitVector, &'a ArrayBitVector) -> ControlMap<'a>
 {
+    println!("Robustness of {} control in model {}, source: {}, target: {}", control_type, m, source_ix, target_ix);
     assert_ne!(source_ix, target_ix);
 
     let model_string: &str = &std::fs::read_to_string(format!("models/{}_4unknown.aeon", m)).unwrap();
@@ -163,8 +186,9 @@ fn main_one_step(models: Vec<&str>, suffixes: Vec<&str>) {
             let start = Instant::now();
             let attractors = find_witness_attractors(m);
             println!(
-                "Attractors ready in {}ms, starting control...",
-                start.elapsed().as_millis()
+                "Attractors ready in {}ms, attractors count: {}, starting control...",
+                start.elapsed().as_millis(),
+                attractors.len()
             );
             for (t_i, target) in attractors.clone().iter().enumerate() {
                 for (s_i, source) in attractors.clone().iter().enumerate() {
