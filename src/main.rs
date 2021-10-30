@@ -9,11 +9,12 @@ use std::convert::TryFrom;
 use std::time::Instant;
 use itertools::Itertools;
 use biodivine_pbn_control::control::ControlMap;
+use chrono::{DateTime, Utc};
 
 // const models1: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
 // const models1: [&str; 3] = ["myeloid", "cardiac", "erbb"];
 // const suffixes2: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4unknown", "5unknown", "6unknown"];
-const MAX_CONTROL_SIZE: usize = 7;
+const MAX_CONTROL_SIZE: usize = 5;
 
 
 fn main() {
@@ -27,9 +28,6 @@ fn main() {
     // main_one_step(vec!["tumour"],suffixes2.to_vec());
     // main_permanent(vec!["tumour"],suffixes2.to_vec());
     // main_temporary(vec!["tumour"],suffixes2.to_vec());
-
-    main_all_robustness("erbb", 1, 0);
-    main_all_robustness("tumour", 1, 2);
 
     for s in 0..3 {
         for t in 0..3 {
@@ -84,17 +82,23 @@ fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_funct
 
     let robustness_all = control.controllable_colors_cardinality();
 
-    let mut highest_iter = 0;
-    let mut max_robustness = vec!(0.0; MAX_CONTROL_SIZE+1);
-    let mut union_robustness = vec!(perturbations.empty_colors().as_bdd().or(perturbations.empty_colors().as_bdd()); MAX_CONTROL_SIZE+1);
+    let mut current_iter = 0;
+    let mut max_robustness = 0.0;
+    let mut union_robustness = perturbations.empty_colors().as_bdd().or(perturbations.empty_colors().as_bdd());
     for combination in model.variables().into_iter().powerset() {
         let control_size = combination.len();
         if control_size > MAX_CONTROL_SIZE {
             break
         }
-        if control_size > highest_iter {
-            println!("Computing controls of size {}", control_size);
-            highest_iter = control_size
+        if control_size > current_iter {
+            println!("[{}] Control of size {:?} max robustnesss: {:?}, union robustness: {:?}",
+                     Utc::now().format("%H:%M:%S %d.%m.%Y"),
+                     current_iter,
+                     max_robustness/robustness_all,
+                     union_robustness.cardinality()/robustness_all);
+            current_iter = control_size;
+            max_robustness = 0.0;
+            union_robustness = perturbations.empty_colors().as_bdd().or(perturbations.empty_colors().as_bdd());
         }
         let mut local_control = control.clone();
         for varId in model.variables() {
@@ -105,19 +109,11 @@ fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_funct
             }
         }
         let card = local_control.controllable_colors_cardinality();
-        if max_robustness[control_size] < card {
-            max_robustness[control_size] = card;
+        if max_robustness < card {
+            max_robustness = card;
         }
 
-        union_robustness[control_size] = union_robustness[control_size].or(&local_control.controllable_colors())
-    }
-
-    for i in 0..MAX_CONTROL_SIZE+1 {
-        println!("Control of size {:?} max robustnesss: {:?}, union robustness: {:?}",
-            i,
-            max_robustness[i]/robustness_all,
-            union_robustness[i].cardinality()/robustness_all
-        )
+        union_robustness = union_robustness.or(&local_control.controllable_colors())
     }
 }
 
