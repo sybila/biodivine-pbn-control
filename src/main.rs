@@ -87,9 +87,6 @@ fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_funct
     let mut union_robustness = perturbations.empty_colors().as_bdd().or(perturbations.empty_colors().as_bdd());
     for combination in model.variables().into_iter().powerset() {
         let control_size = combination.len();
-        if control_size > MAX_CONTROL_SIZE {
-            break
-        }
         if control_size > current_iter {
             println!("[{}] Control of size {:?} max robustnesss: {:?}, union robustness: {:?}",
                      Utc::now().format("%H:%M:%S %d.%m.%Y"),
@@ -99,6 +96,9 @@ fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_funct
             current_iter = control_size;
             max_robustness = 0.0;
             union_robustness = perturbations.empty_colors().as_bdd().or(perturbations.empty_colors().as_bdd());
+        }
+        if control_size > MAX_CONTROL_SIZE {
+            break
         }
         let mut local_control = control.clone();
         for varId in model.variables() {
