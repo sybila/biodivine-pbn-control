@@ -1,0 +1,24 @@
+CtrA -> CtrA
+GcrA -> CtrA
+CcrM -| CtrA
+SciP -| CtrA
+$CtrA: !CcrM | CtrA | (GcrA & !SciP)
+
+CtrA -| GcrA
+DnaA -> GcrA
+$GcrA: !CtrA & DnaA
+
+CtrA -> SciP
+DnaA -| SciP
+$SciP: CtrA & !DnaA
+
+CtrA -> CcrM
+CcrM -| CcrM
+SciP -| CcrM
+$CcrM: !CcrM | CtrA | !SciP
+
+CcrM -> DnaA
+CtrA -> DnaA
+GcrA -| DnaA
+DnaA -| DnaA
+$DnaA: (CcrM & CtrA) | (!CcrM & CtrA & (!DnaA | !GcrA))
