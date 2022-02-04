@@ -2,6 +2,7 @@ use crate::aeon::reachability::{backward, forward_closed};
 use crate::control::ControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
+use biodivine_lib_param_bn::symbolic_async_graph::GraphColors;
 
 impl PerturbationGraph {
     /// Compute temporary control map. That is, controls which work when a perturbation is applied,
@@ -10,12 +11,13 @@ impl PerturbationGraph {
         &self,
         source: &ArrayBitVector,
         target: &ArrayBitVector,
+        compute_params: &GraphColors
     ) -> ControlMap {
         /*
            Temporary control is the most challenging, because the control jump needs to be into
            the perturbed basin of a normal basin of target.
         */
-        let target_set = self.vertex(target);
+        let target_set = self.vertex(target).intersect_colors(compute_params);
         let original_weak_basin = backward(self.as_original(), &target_set);
         let original_strong_basin = forward_closed(self.as_original(), &original_weak_basin);
         let perturbed_weak_basin = backward(self.as_perturbed(), &original_strong_basin);
@@ -64,7 +66,7 @@ mod tests {
         for target in attractors.iter().skip(1) {
             let target_state = target.vertices().materialize().iter().next().unwrap();
 
-            let control = perturbations.temporary_control(&source_state, &target_state);
+            let control = perturbations.temporary_control(&source_state, &target_state, perturbations.unit_colors());
             println!(
                 "Control from {:?} to {:?} cardinality: {}",
                 source_state,
@@ -113,7 +115,7 @@ mod tests {
             // Finally, we know temporary control should usually work in more instances than
             // one-step control. Sadly, our test models contain one instance where temporary and
             // one step are equal :/ However, we can still test that one is a subset of the other.
-            let one_step_control = perturbations.one_step_control(&source_state, &target_state);
+            let one_step_control = perturbations.one_step_control(&source_state, &target_state, perturbations.unit_colors());
             let extra_controls = control
                 .as_colored_vertices()
                 .minus(one_step_control.as_colored_vertices());
