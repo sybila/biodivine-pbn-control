@@ -26,25 +26,6 @@ impl PerturbationGraph {
             context: &self,
         }
     }
-
-    pub fn temporary_control_basin(
-        &self,
-        target: &ArrayBitVector,
-    ) -> ControlMap {
-        /*
-           Temporary control is the most challenging, because the control jump needs to be into
-           the perturbed basin of a normal basin of target.
-        */
-        let target_set = self.vertex(target);
-        let original_weak_basin = backward(self.as_original(), &target_set);
-        let original_strong_basin = forward_closed(self.as_original(), &original_weak_basin);
-        let perturbed_weak_basin = backward(self.as_perturbed(), &original_strong_basin);
-        let perturbed_strong_basin = forward_closed(self.as_perturbed(), &perturbed_weak_basin);
-        ControlMap {
-            perturbation_set: perturbed_strong_basin,
-            context: &self,
-        }
-    }
 }
 
 #[cfg(test)]

@@ -24,17 +24,6 @@ impl PerturbationGraph {
             context: &self,
         }
     }
-
-    pub fn one_step_control_basin(&self, target: &ArrayBitVector) -> ControlMap {
-        let target_set = self.vertex(&target);
-        let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set);
-        let strong_basin =
-            crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin);
-        ControlMap {
-            perturbation_set: strong_basin,
-            context: &self,
-        }
-    }
 }
 
 #[cfg(test)]

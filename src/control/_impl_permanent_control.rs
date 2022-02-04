@@ -23,24 +23,6 @@ impl PerturbationGraph {
             context: &self,
         }
     }
-
-
-    pub fn permanent_control_basin(
-        &self,
-        target: &ArrayBitVector,
-    ) -> ControlMap {
-        /*
-           Permanent control works exactly as one-step, but in the perturbed graph instead of original.
-        */
-        let target_set = self.vertex(target);
-        let weak_basin = crate::aeon::reachability::backward(self.as_perturbed(), &target_set);
-        let strong_basin =
-            crate::aeon::reachability::forward_closed(self.as_perturbed(), &weak_basin);
-        ControlMap {
-            perturbation_set: strong_basin,
-            context: &self,
-        }
-    }
 }
 
 #[cfg(test)]

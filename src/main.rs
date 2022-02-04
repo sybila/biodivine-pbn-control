@@ -13,7 +13,6 @@ use chrono::{DateTime, Utc};
 
 // const models1: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
 // const models1: [&str; 3] = ["myeloid", "cardiac", "erbb"];
-const models: [&str; 5] = ["SmallTest", "PhaseSwitch", "TLGL_Small", "ThNetwork", "TLGL_Large_Fixed_Inputs"];
 // const suffixes2: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4unknown", "5unknown", "6unknown"];
 const MAX_CONTROL_SIZE: usize = 5;
 
@@ -30,26 +29,23 @@ fn main() {
     // main_permanent(vec!["tumour"],suffixes2.to_vec());
     // main_temporary(vec!["tumour"],suffixes2.to_vec());
 
-    // for s in 0..3 {
-    //     for t in 0..3 {
-    //         if s == t {
-    //             continue
-    //         }
-    //         main_all_robustness("cardiac", s, t);
-    //     }
-    // }
-    // main_all_robustness("erbb", 0, 1);
-    // main_all_robustness("erbb", 1, 0);
-    // for s in 0..3 {
-    //     for t in 0..3 {
-    //         if s == t {
-    //             continue
-    //         }
-    //         main_all_robustness("tumour", s, t);
-    //     }
-    // }
-    for m in models.iter() {
-        main_all(m);
+    for s in 0..3 {
+        for t in 0..3 {
+            if s == t {
+                continue
+            }
+            main_all_robustness("cardiac", s, t);
+        }
+    }
+    main_all_robustness("erbb", 0, 1);
+    main_all_robustness("erbb", 1, 0);
+    for s in 0..3 {
+        for t in 0..3 {
+            if s == t {
+                continue
+            }
+            main_all_robustness("tumour", s, t);
+        }
     }
 }
 
@@ -174,165 +170,119 @@ fn compute_attractor_pairs(network: &BooleanNetwork) -> Vec<(ArrayBitVector, Arr
     result
 }
 
-fn main_one_step(m: &str) {
+fn main_one_step(models: Vec<&str>, suffixes: Vec<&str>) {
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ONE STEP CONTROL");
-    let model_string: &str =
-        &std::fs::read_to_string(format!("models/{}.sbml", m)).unwrap();
-    let model = BooleanNetwork::try_from_sbml(model_string).unwrap().0;
-    let perturbations = PerturbationGraph::new(&model);
-    println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
-    let start = Instant::now();
-    let attractors = find_witness_attractors(m);
-    println!(
-        "Attractors ready in {}ms, attractors count: {}, starting control...",
-        start.elapsed().as_millis(),
-        attractors.len()
-    );
-    for (t_i, target) in attractors.clone().iter().enumerate() {
-        let start = Instant::now();
-        let control = perturbations.one_step_control_basin(&target);
-        println!(
-            "Control to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
-            t_i,
-            control.controllable_colors_cardinality(),
-            control.jump_vertices()
-        );
-        println!("Elapsed: {}ms", start.elapsed().as_millis());
+    for m in models.clone().iter() {
+        for s in suffixes.clone().iter() {
+            let model_string: &str =
+                &std::fs::read_to_string(format!("models/{}_{}.aeon", m, s)).unwrap();
+            let model = BooleanNetwork::try_from(model_string).unwrap();
+            let perturbations = PerturbationGraph::new(&model);
+            println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
+            let start = Instant::now();
+            let attractors = find_witness_attractors(m);
+            println!(
+                "Attractors ready in {}ms, attractors count: {}, starting control...",
+                start.elapsed().as_millis(),
+                attractors.len()
+            );
+            for (t_i, target) in attractors.clone().iter().enumerate() {
+                for (s_i, source) in attractors.clone().iter().enumerate() {
+                    if s_i == t_i {
+                        continue
+                    }
+                    let start = Instant::now();
+                    let control = perturbations.one_step_control(&source, &target);
+                    println!(
+                        "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
+                        s_i,
+                        t_i,
+                        control.controllable_colors_cardinality(),
+                        control.jump_vertices()
+                    );
+                    println!("Elapsed: {}ms", start.elapsed().as_millis());
+                }
+            }
+        }
     }
 }
 
-
-fn main_permanent(m: &str) {
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PERMANENT CONTROL");
-    let model_string: &str =
-        &std::fs::read_to_string(format!("models/{}.sbml", m)).unwrap();
-    let model = BooleanNetwork::try_from_sbml(model_string).unwrap().0;
-    let perturbations = PerturbationGraph::new(&model);
-    println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
-    let start = Instant::now();
-    let attractors = find_witness_attractors(m);
-    println!(
-        "Attractors ready in {}ms, attractors count: {}, starting control...",
-        start.elapsed().as_millis(),
-        attractors.len()
-    );
-    for (t_i, target) in attractors.clone().iter().enumerate() {
-        let start = Instant::now();
-        let control = perturbations.permanent_control_basin(&target);
-        println!(
-            "Control to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
-            t_i,
-            control.controllable_colors_cardinality(),
-            control.jump_vertices()
-        );
-        println!("Elapsed: {}ms", start.elapsed().as_millis());
+fn main_permanent(models: Vec<&str>, suffixes: Vec<&str>) {
+    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  PERMANENT CONTROL");
+    for m in models.clone().iter() {
+        for s in suffixes.clone().iter() {
+            let model_string: &str =
+                &std::fs::read_to_string(format!("models/{}_{}.aeon", m, s)).unwrap();
+            let model = BooleanNetwork::try_from(model_string).unwrap();
+            let perturbations = PerturbationGraph::new(&model);
+            println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
+            let start = Instant::now();
+            let attractors = find_witness_attractors(m);
+            println!(
+                "Attractors ready in {}ms, starting control...",
+                start.elapsed().as_millis()
+            );
+            for (t_i, target) in attractors.clone().iter().enumerate() {
+                for (s_i, source) in attractors.clone().iter().enumerate() {
+                    if s_i == t_i {
+                        continue
+                    }
+                    let start = Instant::now();
+                    let control = perturbations.permanent_control(&source, &target);
+                    println!(
+                        "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
+                        s_i,
+                        t_i,
+                        control.controllable_colors_cardinality(),
+                        control.jump_vertices()
+                    );
+                    println!("Elapsed: {}ms", start.elapsed().as_millis());
+                }
+            }
+        }
     }
 }
 
-fn main_temporary(m: &str) {
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEMPORARY CONTROL");
-    let model_string: &str =
-        &std::fs::read_to_string(format!("models/{}.sbml", m)).unwrap();
-    let model = BooleanNetwork::try_from_sbml(model_string).unwrap().0;
-    let perturbations = PerturbationGraph::new(&model);
-    println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
-    let start = Instant::now();
-    let attractors = find_witness_attractors(m);
-    println!(
-        "Attractors ready in {}ms, attractors count: {}, starting control...",
-        start.elapsed().as_millis(),
-        attractors.len()
-    );
-    for (t_i, target) in attractors.clone().iter().enumerate() {
-        let start = Instant::now();
-        let control = perturbations.temporary_control_basin(&target);
-        println!(
-            "Control to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
-            t_i,
-            control.controllable_colors_cardinality(),
-            control.jump_vertices()
-        );
-        println!("Elapsed: {}ms", start.elapsed().as_millis());
+fn main_temporary(models: Vec<&str>, suffixes: Vec<&str>) {
+    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  TEMPORARY CONTROL");
+    for m in models.clone().iter() {
+        for s in suffixes.clone().iter() {
+            let model_string: &str =
+                &std::fs::read_to_string(format!("models/{}_{}.aeon", m, s)).unwrap();
+            let model = BooleanNetwork::try_from(model_string).unwrap();
+            let perturbations = PerturbationGraph::new(&model);
+            println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
+            let start = Instant::now();
+            let attractors = find_witness_attractors(m);
+            println!(
+                "Attractors ready in {}ms, starting control...",
+                start.elapsed().as_millis()
+            );
+            for (t_i, target) in attractors.clone().iter().enumerate() {
+                for (s_i, source) in attractors.clone().iter().enumerate() {
+                    if s_i == t_i {
+                        continue
+                    }
+                    let start = Instant::now();
+                    let control = perturbations.temporary_control(&source, &target);
+                    println!(
+                        "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
+                        s_i,
+                        t_i,
+                        control.controllable_colors_cardinality(),
+                        control.jump_vertices()
+                    );
+                    println!("Elapsed: {}ms", start.elapsed().as_millis());
+                }
+            }
+        }
     }
-}
-
-fn main_all(m: &str) {
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> MODEL {}", m);
-    let model_string: &str =
-        &std::fs::read_to_string(format!("models/{}.sbml", m)).unwrap();
-    let model = BooleanNetwork::try_from_sbml(model_string).unwrap().0;
-    let perturbations = PerturbationGraph::new(&model);
-    println!("========= {}(v{})(p{}) =========", m, model.num_vars(), perturbations.as_original().unit_colors().approx_cardinality());
-    let start = Instant::now();
-    let attractors = find_witness_attractors(m);
-    println!(
-        "Attractors ready in {}ms, attractors count: {}, starting control...",
-        start.elapsed().as_millis(),
-        attractors.len()
-    );
-
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ONE STEP");
-    let mut all_elapsed: Vec<f64> = Vec::new();
-
-    for (t_i, target) in attractors.clone().iter().enumerate() {
-        let start = Instant::now();
-        let control = perturbations.one_step_control_basin(&target);
-        println!(
-            "Control to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
-            t_i,
-            control.controllable_colors_cardinality(),
-            control.jump_vertices()
-        );let elapsed = start.elapsed().as_millis();
-        println!("Elapsed: {}ms", elapsed);
-        all_elapsed.push(elapsed as f64)
-    }
-
-    println!("AVERAGE ONE STEP CONTROL TIME: {:?}", all_elapsed.iter().sum::<f64>() / all_elapsed.len() as f64);
-
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PERMANENT");
-    all_elapsed = Vec::new();
-
-    for (t_i, target) in attractors.clone().iter().enumerate() {
-        let start = Instant::now();
-        let control = perturbations.permanent_control_basin(&target);
-        println!(
-            "Control to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
-            t_i,
-            control.controllable_colors_cardinality(),
-            control.jump_vertices()
-        );
-        let elapsed = start.elapsed().as_millis();
-        println!("Elapsed: {}ms", elapsed);
-        all_elapsed.push(elapsed as f64)
-    }
-
-    println!("AVERAGE PERMANENT CONTROL TIME: {:?}", all_elapsed.iter().sum::<f64>() / all_elapsed.len() as f64);
-
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEMPORARY");
-    all_elapsed = Vec::new();
-
-    for (t_i, target) in attractors.clone().iter().enumerate() {
-        let start = Instant::now();
-        let control = perturbations.temporary_control_basin(&target);
-        println!(
-            "Control to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
-            t_i,
-            control.controllable_colors_cardinality(),
-            control.jump_vertices()
-        );
-        let elapsed = start.elapsed().as_millis();
-        println!("Elapsed: {}ms", elapsed);
-        all_elapsed.push(elapsed as f64)
-    }
-
-    println!("AVERAGE TEMPORARY CONTROL TIME: {:?}", all_elapsed.iter().sum::<f64>() / all_elapsed.len() as f64);
-
 }
 
 fn find_witness_attractors(m: &str) -> Vec<ArrayBitVector> {
     let model_string: &str =
-        &std::fs::read_to_string(format!("models/{}.sbml", m)).unwrap();
-    let model = BooleanNetwork::try_from_sbml(model_string).unwrap().0;
+        &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
+    let model = BooleanNetwork::try_from(model_string).unwrap();
     let graph = SymbolicAsyncGraph::new(model.clone()).unwrap();
     let attractors = biodivine_pbn_control::aeon::attractors::compute(&graph);
     let mut vertices = Vec::new();
