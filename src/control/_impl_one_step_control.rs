@@ -1,11 +1,13 @@
+use biodivine_lib_param_bn::bdd_params::BddParams;
 use crate::control::ControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
+use biodivine_lib_param_bn::symbolic_async_graph::GraphColors;
 
 impl PerturbationGraph {
     /// Compute one-step control map. That is, controls which work by applying the perturbation
     /// immediately for a single time step.
-    pub fn one_step_control(&self, source: &ArrayBitVector, target: &ArrayBitVector) -> ControlMap {
+    pub fn one_step_control(&self, source: &ArrayBitVector, target: &ArrayBitVector, compute_params: &GraphColors) -> ControlMap {
         /*
            To eventually stabilize in target, we have to reach its strong basin using a
            perturbation. We thus first compute the basin and then compute which perturbations
@@ -14,7 +16,7 @@ impl PerturbationGraph {
            Note that colors where target is not in an attractor will be eliminated using the
            strong basin procedure.
         */
-        let target_set = self.vertex(&target);
+        let target_set = self.vertex(&target).intersect_colors(compute_params);
         let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set);
         let strong_basin =
             crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin);
@@ -53,7 +55,7 @@ mod tests {
         for target in attractors.iter().skip(1) {
             let target_state = target.vertices().materialize().iter().next().unwrap();
 
-            let control = perturbations.one_step_control(&source_state, &target_state);
+            let control = perturbations.one_step_control(&source_state, &target_state, perturbations.unit_colors());
             println!(
                 "Control from {:?} to {:?} cardinality: {}",
                 source_state,

@@ -1,6 +1,7 @@
 use crate::control::ControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
+use biodivine_lib_param_bn::symbolic_async_graph::GraphColors;
 
 impl PerturbationGraph {
     /// Compute permanent control map. That is, controls which work when a perturbation is
@@ -9,11 +10,12 @@ impl PerturbationGraph {
         &self,
         source: &ArrayBitVector,
         target: &ArrayBitVector,
+        compute_params: &GraphColors
     ) -> ControlMap {
         /*
            Permanent control works exactly as one-step, but in the perturbed graph instead of original.
         */
-        let target_set = self.vertex(target);
+        let target_set = self.vertex(target).intersect_colors(compute_params);;
         let weak_basin = crate::aeon::reachability::backward(self.as_perturbed(), &target_set);
         let strong_basin =
             crate::aeon::reachability::forward_closed(self.as_perturbed(), &weak_basin);
@@ -59,7 +61,7 @@ mod tests {
         for target in attractors.iter().skip(1) {
             let target_state = target.vertices().materialize().iter().next().unwrap();
 
-            let control = perturbations.permanent_control(&source_state, &target_state);
+            let control = perturbations.permanent_control(&source_state, &target_state, perturbations.unit_colors());
             println!(
                 "Control from {:?} to {:?} cardinality: {}",
                 source_state,

@@ -2,14 +2,16 @@
 
 use std::borrow::{Borrow, BorrowMut};
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
-use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
+use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, SymbolicAsyncGraph};
 use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
 use biodivine_pbn_control::perturbation::PerturbationGraph;
 use std::convert::TryFrom;
 use std::time::Instant;
+use biodivine_lib_param_bn::biodivine_std::traits::{Graph, Set};
 use itertools::Itertools;
 use biodivine_pbn_control::control::ControlMap;
 use chrono::{DateTime, Utc};
+use biodivine_pbn_control::aeon::reachability::{backward, forward};
 
 // const models1: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
 // const models1: [&str; 3] = ["myeloid", "cardiac", "erbb"];
@@ -56,7 +58,7 @@ fn main_all_robustness(m: &str, source_ix: usize, target_ix: usize) {
 }
 
 fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_function: F, control_type: &str)
-    where F: for <'a> Fn(&'a PerturbationGraph, &'a ArrayBitVector, &'a ArrayBitVector) -> ControlMap<'a>
+    where F: for <'a> Fn(&'a PerturbationGraph, &'a ArrayBitVector, &'a ArrayBitVector, &'a GraphColors) -> ControlMap<'a>
 {
     println!("Robustness of {} control in model {}, source: {}, target: {}", control_type, m, source_ix, target_ix);
     assert_ne!(source_ix, target_ix);
@@ -69,8 +71,10 @@ fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_funct
     println!("Attractors count: {}", attractors.len());
     let source = attractors.get(source_ix).unwrap();
     let target = attractors.get(target_ix). unwrap();
+    let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
+    println!("Attractor params cardinality: {:?}", att_colors.approx_cardinality());
     let start = Instant::now();
-    let control = control_function(&perturbations, source, target);
+    let control = control_function(&perturbations, source, target, &att_colors);
     println!(
         "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
         source_ix,
@@ -191,8 +195,9 @@ fn main_one_step(models: Vec<&str>, suffixes: Vec<&str>) {
                     if s_i == t_i {
                         continue
                     }
+                    let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
                     let start = Instant::now();
-                    let control = perturbations.one_step_control(&source, &target);
+                    let control = perturbations.one_step_control(&source, &target, &att_colors);
                     println!(
                         "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
                         s_i,
@@ -227,8 +232,9 @@ fn main_permanent(models: Vec<&str>, suffixes: Vec<&str>) {
                     if s_i == t_i {
                         continue
                     }
+                    let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
                     let start = Instant::now();
-                    let control = perturbations.permanent_control(&source, &target);
+                    let control = perturbations.temporary_control(&source, &target, &att_colors);
                     println!(
                         "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
                         s_i,
@@ -263,8 +269,9 @@ fn main_temporary(models: Vec<&str>, suffixes: Vec<&str>) {
                     if s_i == t_i {
                         continue
                     }
+                    let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
                     let start = Instant::now();
-                    let control = perturbations.temporary_control(&source, &target);
+                    let control = perturbations.permanent_control(&source, &target, &att_colors);
                     println!(
                         "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
                         s_i,
@@ -291,4 +298,14 @@ fn find_witness_attractors(m: &str) -> Vec<ArrayBitVector> {
     }
 
     vertices.into_iter().map(|x| x.vertices().materialize().iter().next().unwrap()).collect()
+}
+
+pub fn get_all_params_with_attractor(graph: &PerturbationGraph, state: &ArrayBitVector) -> GraphColors {
+    let seed = graph.vertex(state);
+    let fwd = forward(graph.as_original(), seed.borrow());
+    let bwd = backward(graph.as_original(), seed.borrow());
+    let scc = fwd.intersect(&bwd);
+    let not_attractor_colors = fwd.minus(&scc).colors();
+    let attractor = scc.minus_colors(&not_attractor_colors);
+    return attractor.colors();
 }
