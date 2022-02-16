@@ -25,7 +25,7 @@ impl PerturbationGraph {
         let can_jump_and_hold = self.post_perturbation(source, &perturbed_strong_basin);
         ControlMap {
             perturbation_set: can_jump_and_hold,
-            context: &self,
+            context: self.clone()
         }
     }
 }

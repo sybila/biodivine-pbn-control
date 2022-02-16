@@ -23,7 +23,7 @@ impl PerturbationGraph {
         let can_jump_to = self.post_perturbation(source, &strong_basin);
         ControlMap {
             perturbation_set: can_jump_to,
-            context: &self,
+            context: self.clone(),
         }
     }
 }

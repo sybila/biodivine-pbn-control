@@ -4,7 +4,7 @@ use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::GraphColoredVertices;
 use biodivine_lib_param_bn::VariableId;
 
-impl ControlMap<'_> {
+impl ControlMap {
     /// Remove from this control map any results that *do not* perturb `variable`.
     /// If `value` is given, only keep perturbations which result in this value.
     pub fn require_perturbation(&mut self, variable: VariableId, value: Option<bool>) {

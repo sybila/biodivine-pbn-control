@@ -15,14 +15,14 @@ impl PerturbationGraph {
         /*
            Permanent control works exactly as one-step, but in the perturbed graph instead of original.
         */
-        let target_set = self.vertex(target).intersect_colors(compute_params);;
+        let target_set = self.vertex(target).intersect_colors(compute_params);
         let weak_basin = crate::aeon::reachability::backward(self.as_perturbed(), &target_set);
         let strong_basin =
             crate::aeon::reachability::forward_closed(self.as_perturbed(), &weak_basin);
         let can_jump_to = self.post_perturbation(source, &strong_basin);
         ControlMap {
             perturbation_set: can_jump_to,
-            context: &self,
+            context: self.clone()
         }
     }
 }

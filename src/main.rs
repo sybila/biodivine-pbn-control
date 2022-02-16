@@ -58,7 +58,7 @@ fn main_all_robustness(m: &str, source_ix: usize, target_ix: usize) {
 }
 
 fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_function: F, control_type: &str)
-    where F: for <'a> Fn(&'a PerturbationGraph, &'a ArrayBitVector, &'a ArrayBitVector, &'a GraphColors) -> ControlMap<'a>
+    where F: for <'a> Fn(&'a PerturbationGraph, &'a ArrayBitVector, &'a ArrayBitVector, &'a GraphColors) -> ControlMap
 {
     println!("Robustness of {} control in model {}, source: {}, target: {}", control_type, m, source_ix, target_ix);
     assert_ne!(source_ix, target_ix);

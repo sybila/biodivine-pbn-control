@@ -13,7 +13,7 @@ mod _impl_control_map;
 /// The map holds a reference to the `PerturbationGraph` from which it was created and thus
 /// cannot outlive the graph.
 #[derive(Clone)]
-pub struct ControlMap<'a> {
-    context: &'a PerturbationGraph,
+pub struct ControlMap {
+    context: PerturbationGraph,
     perturbation_set: GraphColoredVertices,
 }

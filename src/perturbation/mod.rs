@@ -20,6 +20,7 @@ mod _impl_perturbation_graph;
 /// Use those when possible. The only legitimate reason for accessing the inner graphs should
 /// be to pass them into reachability and strong basin algorithms so that they can be used
 /// for computing pre/post.
+#[derive(Clone)]
 pub struct PerturbationGraph {
     /// "Normal" unperturbed graph, but with the same encoding as the perturbed graph.
     original_graph: SymbolicAsyncGraph,
