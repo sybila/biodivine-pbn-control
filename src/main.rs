@@ -197,7 +197,7 @@ fn main_one_step(models: Vec<&str>, suffixes: Vec<&str>) {
                     }
                     let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
                     let start = Instant::now();
-                    let control = perturbations.one_step_control(&source, &target, &att_colors);
+                    let control = perturbations.one_step_control(&source, &perturbations.vertex(&target), &att_colors);
                     println!(
                         "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
                         s_i,
@@ -234,7 +234,7 @@ fn main_permanent(models: Vec<&str>, suffixes: Vec<&str>) {
                     }
                     let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
                     let start = Instant::now();
-                    let control = perturbations.temporary_control(&source, &target, &att_colors);
+                    let control = perturbations.temporary_control(&source, &perturbations.vertex(&target), &att_colors);
                     println!(
                         "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
                         s_i,
@@ -271,7 +271,7 @@ fn main_temporary(models: Vec<&str>, suffixes: Vec<&str>) {
                     }
                     let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
                     let start = Instant::now();
-                    let control = perturbations.permanent_control(&source, &target, &att_colors);
+                    let control = perturbations.permanent_control(&source, &perturbations.vertex(&target), &att_colors);
                     println!(
                         "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
                         s_i,
