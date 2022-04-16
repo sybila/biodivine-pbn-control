@@ -18,7 +18,7 @@ impl PerturbationGraph {
            the perturbed basin of a normal basin of target.
         */
         let target_set = crate::aeon::reachability::forward_closed(
-            self.intersect_colors(compute_params).as_original(), &target);
+            self.as_original(), &target.intersect_colors(compute_params));
         let original_weak_basin = backward(self.as_original(), &target_set);
         let original_strong_basin = forward_closed(self.as_original(), &original_weak_basin);
         let perturbed_weak_basin = backward(self.as_perturbed(), &original_strong_basin);

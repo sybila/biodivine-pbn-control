@@ -25,7 +25,7 @@ impl PerturbationGraph {
 
         // Ensure we cannot escape from target the target component
         let target_set = crate::aeon::reachability::forward_closed(
-            self.intersect_colors(compute_params).as_original(), &target);
+            self.as_original(), &target.intersect_colors(compute_params));
 
         let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set);
         let strong_basin =

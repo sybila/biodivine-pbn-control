@@ -2,7 +2,7 @@
 
 use std::borrow::{Borrow, BorrowMut};
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
-use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, SymbolicAsyncGraph};
+use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors, SymbolicAsyncGraph};
 use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
 use biodivine_pbn_control::perturbation::PerturbationGraph;
 use std::convert::TryFrom;
@@ -58,7 +58,7 @@ fn main_all_robustness(m: &str, source_ix: usize, target_ix: usize) {
 }
 
 fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_function: F, control_type: &str)
-    where F: for <'a> Fn(&'a PerturbationGraph, &'a ArrayBitVector, &'a ArrayBitVector, &'a GraphColors) -> ControlMap
+    where F: for <'a> Fn(&'a PerturbationGraph, &'a ArrayBitVector, &'a GraphColoredVertices, &'a GraphColors) -> ControlMap
 {
     println!("Robustness of {} control in model {}, source: {}, target: {}", control_type, m, source_ix, target_ix);
     assert_ne!(source_ix, target_ix);
@@ -74,7 +74,7 @@ fn main_robustness<F>(m: &str, source_ix: usize, target_ix: usize, control_funct
     let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
     println!("Attractor params cardinality: {:?}", att_colors.approx_cardinality());
     let start = Instant::now();
-    let control = control_function(&perturbations, source, target, &att_colors);
+    let control = control_function(&perturbations, source, &perturbations.vertex(target), &att_colors);
     println!(
         "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
         source_ix,
