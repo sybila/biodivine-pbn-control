@@ -1,0 +1,504 @@
+Robustness of one-step control in model cardiac, source: 0, target: 1
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5090530099200.0
+Control from Attractor 0 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 16384 vertices.
+Elapsed: 618ms
+[09:32:24 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:32:24 07.02.2022] Control of size 1 max robustnesss: 0.01775338564724383, union robustness: 0.01775338564724383
+[09:32:25 07.02.2022] Control of size 2 max robustnesss: 0.01813381533968477, union robustness: 0.01813381533968477
+[09:32:27 07.02.2022] Control of size 3 max robustnesss: 0.01813381533968477, union robustness: 0.018359112111857916
+[09:32:35 07.02.2022] Control of size 4 max robustnesss: 0.018363939899833055, union robustness: 0.018363939899833055
+[09:32:53 07.02.2022] Control of size 5 max robustnesss: 0.1455777623073994, union robustness: 0.14618831655998865
+Robustness of temporary control in model cardiac, source: 0, target: 1
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5090530099200.0
+Control from Attractor 0 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 16384 vertices.
+Elapsed: 14416ms
+[09:33:07 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:33:08 07.02.2022] Control of size 1 max robustnesss: 0.01775338564724383, union robustness: 0.01775338564724383
+[09:33:09 07.02.2022] Control of size 2 max robustnesss: 0.5503549550645588, union robustness: 0.5509606815291729
+[09:33:16 07.02.2022] Control of size 3 max robustnesss: 0.7105158555821942, union robustness: 0.912792125427219
+[09:33:38 07.02.2022] Control of size 4 max robustnesss: 0.8489922636306961, union robustness: 0.9936376191538304
+[09:34:27 07.02.2022] Control of size 5 max robustnesss: 0.9874686716791979, union robustness: 0.9999324109683481
+Robustness of permanent control in model cardiac, source: 0, target: 1
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5090530099200.0
+Control from Attractor 0 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 448 vertices.
+Elapsed: 2324ms
+[09:34:30 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:34:30 07.02.2022] Control of size 1 max robustnesss: 0.01775338564724383, union robustness: 0.01775338564724383
+[09:34:30 07.02.2022] Control of size 2 max robustnesss: 0.5503549550645588, union robustness: 0.5509606815291729
+[09:34:31 07.02.2022] Control of size 3 max robustnesss: 0.7105158555821942, union robustness: 0.912792125427219
+[09:34:35 07.02.2022] Control of size 4 max robustnesss: 0.8489922636306961, union robustness: 0.9936376191538304
+[09:34:44 07.02.2022] Control of size 5 max robustnesss: 0.9874686716791979, union robustness: 0.9999324109683481
+Robustness of one-step control in model cardiac, source: 0, target: 2
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5651423232000.0
+Control from Attractor 0 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 16384 vertices.
+Elapsed: 417ms
+[09:34:45 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:34:45 07.02.2022] Control of size 1 max robustnesss: 0.09594837295668321, union robustness: 0.09594837295668321
+[09:34:45 07.02.2022] Control of size 2 max robustnesss: 0.3933883291224011, union robustness: 0.39544436568575864
+[09:34:49 07.02.2022] Control of size 3 max robustnesss: 0.40490213387720314, union robustness: 0.4145495027331197
+[09:35:01 07.02.2022] Control of size 4 max robustnesss: 0.5991902834008097, union robustness: 0.6498359954252316
+[09:35:30 07.02.2022] Control of size 5 max robustnesss: 0.6963562753036437, union robustness: 0.7439842057428128
+Robustness of temporary control in model cardiac, source: 0, target: 2
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5651423232000.0
+Control from Attractor 0 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 16384 vertices.
+Elapsed: 80266ms
+[09:36:51 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:36:52 07.02.2022] Control of size 1 max robustnesss: 0.09594837295668321, union robustness: 0.09594837295668321
+[09:37:06 07.02.2022] Control of size 2 max robustnesss: 0.685128089164496, union robustness: 0.7924124945098432
+[09:38:00 07.02.2022] Control of size 3 max robustnesss: 0.8419469726948952, union robustness: 0.9868494254722985
+[09:40:36 07.02.2022] Control of size 4 max robustnesss: 0.9874686716791979, union robustness: 0.9997564762107698
+[09:46:01 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model cardiac, source: 0, target: 2
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5651423232000.0
+Control from Attractor 0 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 256 vertices.
+Elapsed: 907ms
+[09:46:02 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:46:02 07.02.2022] Control of size 1 max robustnesss: 0.09594837295668321, union robustness: 0.09594837295668321
+[09:46:03 07.02.2022] Control of size 2 max robustnesss: 0.6716386106967824, union robustness: 0.6749122662062907
+[09:46:04 07.02.2022] Control of size 3 max robustnesss: 0.8419469726948952, union robustness: 0.9624361656019749
+[09:46:07 07.02.2022] Control of size 4 max robustnesss: 0.9874686716791979, union robustness: 0.9995738333688472
+[09:46:14 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model cardiac, source: 1, target: 0
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 4476410265600.0
+Control from Attractor 1 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 16384 vertices.
+Elapsed: 158ms
+[09:46:14 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:46:14 07.02.2022] Control of size 1 max robustnesss: 0.5467625899280576, union robustness: 0.5467625899280576
+[09:46:15 07.02.2022] Control of size 2 max robustnesss: 0.6378896882494005, union robustness: 0.6647482014388489
+[09:46:16 07.02.2022] Control of size 3 max robustnesss: 0.6591526778577138, union robustness: 0.7082653876898481
+[09:46:21 07.02.2022] Control of size 4 max robustnesss: 0.8201438848920863, union robustness: 0.9400959232613909
+[09:46:33 07.02.2022] Control of size 5 max robustnesss: 0.9568345323741008, union robustness: 0.9885851318944844
+Robustness of temporary control in model cardiac, source: 1, target: 0
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 4476410265600.0
+Control from Attractor 1 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 16384 vertices.
+Elapsed: 1858ms
+[09:46:35 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:46:36 07.02.2022] Control of size 1 max robustnesss: 0.5467625899280576, union robustness: 0.5467625899280576
+[09:46:36 07.02.2022] Control of size 2 max robustnesss: 0.8201438848920863, union robustness: 0.9354916067146283
+[09:46:38 07.02.2022] Control of size 3 max robustnesss: 0.9568345323741008, union robustness: 0.9977218225419664
+[09:46:46 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:47:03 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model cardiac, source: 1, target: 0
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 4476410265600.0
+Control from Attractor 1 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 512 vertices.
+Elapsed: 306ms
+[09:47:03 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:47:03 07.02.2022] Control of size 1 max robustnesss: 0.5467625899280576, union robustness: 0.5467625899280576
+[09:47:04 07.02.2022] Control of size 2 max robustnesss: 0.8201438848920863, union robustness: 0.9354916067146283
+[09:47:04 07.02.2022] Control of size 3 max robustnesss: 0.9568345323741008, union robustness: 0.9977218225419664
+[09:47:08 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:47:16 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model cardiac, source: 1, target: 2
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5651423232000.0
+Control from Attractor 1 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 16384 vertices.
+Elapsed: 412ms
+[09:47:16 07.02.2022] Control of size 0 max robustnesss: 0.11578947368421053, union robustness: 0.11578947368421053
+[09:47:17 07.02.2022] Control of size 1 max robustnesss: 1.0, union robustness: 1.0
+[09:47:18 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[09:47:27 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[09:47:52 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:48:48 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of temporary control in model cardiac, source: 1, target: 2
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5651423232000.0
+Control from Attractor 1 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 16384 vertices.
+Elapsed: 81174ms
+[09:50:10 07.02.2022] Control of size 0 max robustnesss: 0.11578947368421053, union robustness: 0.11578947368421053
+[09:50:10 07.02.2022] Control of size 1 max robustnesss: 1.0, union robustness: 1.0
+[09:50:13 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[09:50:28 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[09:51:12 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:52:50 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model cardiac, source: 1, target: 2
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5651423232000.0
+Control from Attractor 1 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 8 vertices.
+Elapsed: 916ms
+[09:52:51 07.02.2022] Control of size 0 max robustnesss: 0.11578947368421053, union robustness: 0.11578947368421053
+[09:52:51 07.02.2022] Control of size 1 max robustnesss: 1.0, union robustness: 1.0
+[09:52:52 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[09:52:54 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[09:53:00 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:53:15 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model cardiac, source: 2, target: 0
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 4476410265600.0
+Control from Attractor 2 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 16384 vertices.
+Elapsed: 158ms
+[09:53:15 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:53:15 07.02.2022] Control of size 1 max robustnesss: 0.5467625899280576, union robustness: 0.5467625899280576
+[09:53:16 07.02.2022] Control of size 2 max robustnesss: 0.6378896882494005, union robustness: 0.6647482014388489
+[09:53:17 07.02.2022] Control of size 3 max robustnesss: 0.6591526778577138, union robustness: 0.7082653876898481
+[09:53:22 07.02.2022] Control of size 4 max robustnesss: 0.8201438848920863, union robustness: 0.9400959232613909
+[09:53:34 07.02.2022] Control of size 5 max robustnesss: 0.9568345323741008, union robustness: 0.9885851318944844
+Robustness of temporary control in model cardiac, source: 2, target: 0
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 4476410265600.0
+Control from Attractor 2 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 16384 vertices.
+Elapsed: 1895ms
+[09:53:36 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:53:37 07.02.2022] Control of size 1 max robustnesss: 0.5467625899280576, union robustness: 0.5467625899280576
+[09:53:37 07.02.2022] Control of size 2 max robustnesss: 0.8201438848920863, union robustness: 0.9354916067146283
+[09:53:39 07.02.2022] Control of size 3 max robustnesss: 0.9568345323741008, union robustness: 0.9977218225419664
+[09:53:47 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:54:04 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model cardiac, source: 2, target: 0
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 4476410265600.0
+Control from Attractor 2 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 256 vertices.
+Elapsed: 311ms
+[09:54:04 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[09:54:04 07.02.2022] Control of size 1 max robustnesss: 0.5467625899280576, union robustness: 0.5467625899280576
+[09:54:05 07.02.2022] Control of size 2 max robustnesss: 0.8201438848920863, union robustness: 0.9354916067146283
+[09:54:06 07.02.2022] Control of size 3 max robustnesss: 0.9568345323741008, union robustness: 0.9977218225419664
+[09:54:09 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:54:17 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model cardiac, source: 2, target: 1
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5090530099200.0
+Control from Attractor 2 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 16384 vertices.
+Elapsed: 617ms
+[09:54:18 07.02.2022] Control of size 0 max robustnesss: 0.018363939899833055, union robustness: 0.018363939899833055
+[09:54:18 07.02.2022] Control of size 1 max robustnesss: 0.018363939899833055, union robustness: 0.018363939899833055
+[09:54:19 07.02.2022] Control of size 2 max robustnesss: 0.018363939899833055, union robustness: 0.018363939899833055
+[09:54:23 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[09:54:36 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:55:05 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of temporary control in model cardiac, source: 2, target: 1
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5090530099200.0
+Control from Attractor 2 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 16384 vertices.
+Elapsed: 12901ms
+[09:55:18 07.02.2022] Control of size 0 max robustnesss: 0.018363939899833055, union robustness: 0.018363939899833055
+[09:55:18 07.02.2022] Control of size 1 max robustnesss: 0.26762147438713646, union robustness: 0.32476935242948773
+[09:55:20 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[09:55:27 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[09:55:48 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:56:38 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model cardiac, source: 2, target: 1
+========= cardiac(v15)(p6794772480000) =========
+Attractors count: 3
+Attractor params cardinality: 5090530099200.0
+Control from Attractor 2 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 8 vertices.
+Elapsed: 2295ms
+[09:56:40 07.02.2022] Control of size 0 max robustnesss: 0.018363939899833055, union robustness: 0.018363939899833055
+[09:56:40 07.02.2022] Control of size 1 max robustnesss: 0.15859766277128548, union robustness: 0.15859766277128548
+[09:56:41 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[09:56:43 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[09:56:48 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[09:57:00 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model erbb, source: 0, target: 1
+========= erbb(v20)(p217432719360000) =========
+Attractors count: 2
+Attractor params cardinality: 201043067535360.0
+Control from Attractor 0 (source) to Attractor 1 (target) works for 191729610 color(s), jumping through 1048576 vertices.
+Elapsed: 6880ms
+[09:57:08 07.02.2022] Control of size 0 max robustnesss: 0.11297159578011973, union robustness: 0.11297159578011973
+[09:57:08 07.02.2022] Control of size 1 max robustnesss: 0.11673731563945705, union robustness: 0.1173319029856682
+[09:57:11 07.02.2022] Control of size 2 max robustnesss: 0.7908011704608381, union robustness: 0.7994432889108782
+[09:57:27 07.02.2022] Control of size 3 max robustnesss: 0.8171612094761993, union robustness: 0.8307086996108739
+[09:58:42 07.02.2022] Control of size 4 max robustnesss: 0.8220863746606484, union robustness: 0.8653589030927461
+[10:02:54 07.02.2022] Control of size 5 max robustnesss: 0.8467122005828938, union robustness: 0.905444651976291
+Robustness of temporary control in model erbb, source: 0, target: 1
+========= erbb(v20)(p217432719360000) =========
+Attractors count: 2
+Attractor params cardinality: 201043067535360.0
+Control from Attractor 0 (source) to Attractor 1 (target) works for 191729610 color(s), jumping through 1048576 vertices.
+Elapsed: 8229056ms
+[12:20:03 07.02.2022] Control of size 0 max robustnesss: 0.11297159578011973, union robustness: 0.11297159578011973
+[12:20:05 07.02.2022] Control of size 1 max robustnesss: 0.7908011704608381, union robustness: 0.8074496161547504
+[12:20:16 07.02.2022] Control of size 2 max robustnesss: 0.9105510619877649, union robustness: 0.9868234749968979
+[12:21:28 07.02.2022] Control of size 3 max robustnesss: 0.9546694430766328, union robustness: 0.9997175710105497
+[12:27:01 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[12:46:10 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model erbb, source: 0, target: 1
+========= erbb(v20)(p217432719360000) =========
+Attractors count: 2
+Attractor params cardinality: 201043067535360.0
+Control from Attractor 0 (source) to Attractor 1 (target) works for 191729610 color(s), jumping through 8192 vertices.
+Elapsed: 45543ms
+[12:46:55 07.02.2022] Control of size 0 max robustnesss: 0.11297159578011973, union robustness: 0.11297159578011973
+[12:46:56 07.02.2022] Control of size 1 max robustnesss: 0.7908011704608381, union robustness: 0.8074496161547504
+[12:46:57 07.02.2022] Control of size 2 max robustnesss: 0.9105510619877649, union robustness: 0.9868234749968979
+[12:47:03 07.02.2022] Control of size 3 max robustnesss: 0.9546694430766328, union robustness: 0.9997175710105497
+[12:47:31 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[12:49:06 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model erbb, source: 1, target: 0
+========= erbb(v20)(p217432719360000) =========
+Attractors count: 2
+Attractor params cardinality: 171993999605760.0
+Control from Attractor 1 (source) to Attractor 0 (target) works for 164026260 color(s), jumping through 1048576 vertices.
+Elapsed: 1242ms
+[12:49:10 07.02.2022] Control of size 0 max robustnesss: 0.03072678728393856, union robustness: 0.03072678728393856
+[12:49:10 07.02.2022] Control of size 1 max robustnesss: 0.03431157913373139, union robustness: 0.035994236532613744
+[12:49:11 07.02.2022] Control of size 2 max robustnesss: 0.03579670718578842, union robustness: 0.03655390301528548
+[12:49:17 07.02.2022] Control of size 3 max robustnesss: 0.03656377948262675, union robustness: 0.03656377948262675
+[12:49:41 07.02.2022] Control of size 4 max robustnesss: 0.21508751098756992, union robustness: 0.22092450318625811
+[12:51:02 07.02.2022] Control of size 5 max robustnesss: 0.24018105393611974, union robustness: 0.2525291986783092
+Robustness of temporary control in model erbb, source: 1, target: 0
+========= erbb(v20)(p217432719360000) =========
+Attractors count: 2
+Attractor params cardinality: 171993999605760.0
+Control from Attractor 1 (source) to Attractor 0 (target) works for 164026260 color(s), jumping through 1048576 vertices.
+Elapsed: 486077ms
+[12:59:10 07.02.2022] Control of size 0 max robustnesss: 0.03072678728393856, union robustness: 0.03072678728393856
+[12:59:11 07.02.2022] Control of size 1 max robustnesss: 0.21508751098756992, union robustness: 0.22049396236919624
+[12:59:16 07.02.2022] Control of size 2 max robustnesss: 0.6219613859390564, union robustness: 0.805892666210886
+[12:59:46 07.02.2022] Control of size 3 max robustnesss: 0.86157545749077, union robustness: 0.9854742771066047
+[13:01:55 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[13:08:51 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model erbb, source: 1, target: 0
+========= erbb(v20)(p217432719360000) =========
+Attractors count: 2
+Attractor params cardinality: 171993999605760.0
+Control from Attractor 1 (source) to Attractor 0 (target) works for 164026260 color(s), jumping through 8192 vertices.
+Elapsed: 31598ms
+[13:09:25 07.02.2022] Control of size 0 max robustnesss: 0.03072678728393856, union robustness: 0.03072678728393856
+[13:09:25 07.02.2022] Control of size 1 max robustnesss: 0.21508751098756992, union robustness: 0.22049396236919624
+[13:09:26 07.02.2022] Control of size 2 max robustnesss: 0.6219613859390564, union robustness: 0.805892666210886
+[13:09:33 07.02.2022] Control of size 3 max robustnesss: 0.86157545749077, union robustness: 0.9854742771066047
+[13:10:03 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[13:11:39 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model tumour, source: 0, target: 1
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 0 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 67108864 vertices.
+Elapsed: 836ms
+[13:11:50 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[13:11:51 07.02.2022] Control of size 1 max robustnesss: 0.0, union robustness: 0.0
+[13:11:51 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[13:11:56 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[13:12:35 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[13:16:13 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of temporary control in model tumour, source: 0, target: 1
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 0 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 262299648 vertices.
+Elapsed: 862080ms
+[13:30:46 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[13:30:47 07.02.2022] Control of size 1 max robustnesss: 1.0, union robustness: 1.0
+[13:30:54 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[13:32:06 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[13:40:37 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[14:27:27 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model tumour, source: 0, target: 1
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 0 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 12 vertices.
+Elapsed: 39188ms
+[14:28:17 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[14:28:17 07.02.2022] Control of size 1 max robustnesss: 1.0, union robustness: 1.0
+[14:28:18 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[14:28:25 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[14:29:18 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[14:34:28 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model tumour, source: 0, target: 2
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 96018288869376.0
+Control from Attractor 0 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 4294967296 vertices.
+Elapsed: 927ms
+[14:34:33 07.02.2022] Control of size 0 max robustnesss: 0.14492753623188406, union robustness: 0.14492753623188406
+[14:34:34 07.02.2022] Control of size 1 max robustnesss: 0.16908212560386474, union robustness: 0.19806763285024154
+[14:34:35 07.02.2022] Control of size 2 max robustnesss: 0.1972624798711755, union robustness: 0.20853462157809985
+[14:34:48 07.02.2022] Control of size 3 max robustnesss: 0.20947396672034352, union robustness: 0.20947396672034352
+[14:36:24 07.02.2022] Control of size 4 max robustnesss: 0.4830917874396135, union robustness: 0.5234836285560923
+[14:45:27 07.02.2022] Control of size 5 max robustnesss: 0.5636070853462157, union robustness: 0.6104401502952228
+Robustness of temporary control in model tumour, source: 0, target: 2
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 96018288869376.0
+Control from Attractor 0 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 4294967296 vertices.
+Elapsed: 1198292ms
+[15:05:31 07.02.2022] Control of size 0 max robustnesss: 0.14492753623188406, union robustness: 0.14492753623188406
+[15:05:31 07.02.2022] Control of size 1 max robustnesss: 0.43478260869565216, union robustness: 0.5764895330112721
+[15:05:44 07.02.2022] Control of size 2 max robustnesss: 0.6521739130434783, union robustness: 0.9025764895330113
+[15:07:50 07.02.2022] Control of size 3 max robustnesss: 0.8695652173913043, union robustness: 0.9919484702093397
+[15:23:05 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[16:48:05 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model tumour, source: 0, target: 2
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 96018288869376.0
+Control from Attractor 0 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 8388608 vertices.
+Elapsed: 7248ms
+[16:48:17 07.02.2022] Control of size 0 max robustnesss: 0.14492753623188406, union robustness: 0.14492753623188406
+[16:48:17 07.02.2022] Control of size 1 max robustnesss: 0.43478260869565216, union robustness: 0.5764895330112721
+[16:48:18 07.02.2022] Control of size 2 max robustnesss: 0.6521739130434783, union robustness: 0.9025764895330113
+[16:48:30 07.02.2022] Control of size 3 max robustnesss: 0.8695652173913043, union robustness: 0.9919484702093397
+[16:49:51 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[16:57:16 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model tumour, source: 1, target: 0
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 1 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 1114112 vertices.
+Elapsed: 885ms
+[16:57:28 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[16:57:29 07.02.2022] Control of size 1 max robustnesss: 0.0, union robustness: 0.0
+[16:57:29 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[16:57:33 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[16:58:00 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[17:00:38 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of temporary control in model tumour, source: 1, target: 0
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 1 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 6291456 vertices.
+Elapsed: 470048ms
+[17:08:39 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[17:08:39 07.02.2022] Control of size 1 max robustnesss: 1.0, union robustness: 1.0
+[17:08:41 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[17:09:06 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[17:12:02 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[17:28:36 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model tumour, source: 1, target: 0
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 1 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 12 vertices.
+Elapsed: 22316ms
+[17:29:10 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[17:29:10 07.02.2022] Control of size 1 max robustnesss: 1.0, union robustness: 1.0
+[17:29:10 07.02.2022] Control of size 2 max robustnesss: 1.0, union robustness: 1.0
+[17:29:15 07.02.2022] Control of size 3 max robustnesss: 1.0, union robustness: 1.0
+[17:29:55 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[17:33:51 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model tumour, source: 1, target: 2
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 96018288869376.0
+Control from Attractor 1 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 4294967296 vertices.
+Elapsed: 934ms
+[17:33:56 07.02.2022] Control of size 0 max robustnesss: 0.14492753623188406, union robustness: 0.14492753623188406
+[17:33:56 07.02.2022] Control of size 1 max robustnesss: 0.16908212560386474, union robustness: 0.19806763285024154
+[17:33:58 07.02.2022] Control of size 2 max robustnesss: 0.1972624798711755, union robustness: 0.20853462157809985
+[17:34:11 07.02.2022] Control of size 3 max robustnesss: 0.20947396672034352, union robustness: 0.20947396672034352
+[17:35:47 07.02.2022] Control of size 4 max robustnesss: 0.20947396672034352, union robustness: 0.20947396672034352
+[17:44:53 07.02.2022] Control of size 5 max robustnesss: 0.20947396672034352, union robustness: 0.20947396672034352
+Robustness of temporary control in model tumour, source: 1, target: 2
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 96018288869376.0
+Control from Attractor 1 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 4294967296 vertices.
+Elapsed: 1196103ms
+[18:04:54 07.02.2022] Control of size 0 max robustnesss: 0.14492753623188406, union robustness: 0.14492753623188406
+[18:04:55 07.02.2022] Control of size 1 max robustnesss: 0.43478260869565216, union robustness: 0.5764895330112721
+[18:05:05 07.02.2022] Control of size 2 max robustnesss: 0.6521739130434783, union robustness: 0.9025764895330113
+[18:06:43 07.02.2022] Control of size 3 max robustnesss: 0.8695652173913043, union robustness: 0.9919484702093397
+[18:18:39 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[19:25:10 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model tumour, source: 1, target: 2
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 96018288869376.0
+Control from Attractor 1 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 7864320 vertices.
+Elapsed: 7239ms
+[19:25:22 07.02.2022] Control of size 0 max robustnesss: 0.14492753623188406, union robustness: 0.14492753623188406
+[19:25:22 07.02.2022] Control of size 1 max robustnesss: 0.43478260869565216, union robustness: 0.5764895330112721
+[19:25:24 07.02.2022] Control of size 2 max robustnesss: 0.6521739130434783, union robustness: 0.9025764895330113
+[19:25:35 07.02.2022] Control of size 3 max robustnesss: 0.8695652173913043, union robustness: 0.9919484702093397
+[19:26:57 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[19:34:24 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model tumour, source: 2, target: 0
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 2 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 1114112 vertices.
+Elapsed: 883ms
+[19:34:36 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[19:34:36 07.02.2022] Control of size 1 max robustnesss: 0.0, union robustness: 0.0
+[19:34:36 07.02.2022] Control of size 2 max robustnesss: 0.0, union robustness: 0.0
+[19:34:37 07.02.2022] Control of size 3 max robustnesss: 0.0, union robustness: 0.0
+[19:34:46 07.02.2022] Control of size 4 max robustnesss: 0.0, union robustness: 0.0
+[19:35:36 07.02.2022] Control of size 5 max robustnesss: 0.0, union robustness: 0.0
+Robustness of temporary control in model tumour, source: 2, target: 0
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 2 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 251584512 vertices.
+Elapsed: 469355ms
+[19:43:36 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[19:43:36 07.02.2022] Control of size 1 max robustnesss: 0.2795031055900621, union robustness: 0.2795031055900621
+[19:43:40 07.02.2022] Control of size 2 max robustnesss: 0.7453416149068323, union robustness: 0.8322981366459627
+[19:44:11 07.02.2022] Control of size 3 max robustnesss: 0.8695652173913043, union robustness: 0.9880952380952381
+[19:47:55 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[20:08:35 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model tumour, source: 2, target: 0
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 2 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 6168576 vertices.
+Elapsed: 22263ms
+[20:09:08 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[20:09:08 07.02.2022] Control of size 1 max robustnesss: 0.2795031055900621, union robustness: 0.2795031055900621
+[20:09:09 07.02.2022] Control of size 2 max robustnesss: 0.7453416149068323, union robustness: 0.8322981366459627
+[20:09:15 07.02.2022] Control of size 3 max robustnesss: 0.8695652173913043, union robustness: 0.9880952380952381
+[20:10:01 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[20:14:14 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of one-step control in model tumour, source: 2, target: 1
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 2 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 67108864 vertices.
+Elapsed: 832ms
+[20:14:25 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[20:14:25 07.02.2022] Control of size 1 max robustnesss: 0.0, union robustness: 0.0
+[20:14:26 07.02.2022] Control of size 2 max robustnesss: 0.0, union robustness: 0.0
+[20:14:27 07.02.2022] Control of size 3 max robustnesss: 0.5590062111801242, union robustness: 0.5590062111801242
+[20:14:37 07.02.2022] Control of size 4 max robustnesss: 0.6521739130434783, union robustness: 0.7267080745341615
+[20:15:38 07.02.2022] Control of size 5 max robustnesss: 0.717391304347826, union robustness: 0.7596273291925466
+Robustness of temporary control in model tumour, source: 2, target: 1
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 2 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 514863104 vertices.
+Elapsed: 863707ms
+[20:30:13 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[20:30:13 07.02.2022] Control of size 1 max robustnesss: 0.5590062111801242, union robustness: 0.5590062111801242
+[20:30:20 07.02.2022] Control of size 2 max robustnesss: 0.7453416149068323, union robustness: 0.9192546583850931
+[20:31:29 07.02.2022] Control of size 3 max robustnesss: 0.8695652173913043, union robustness: 0.994824016563147
+[20:39:38 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[21:25:12 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0
+Robustness of permanent control in model tumour, source: 2, target: 1
+========= tumour(v32)(p200385994162176) =========
+Attractors count: 3
+Attractor params cardinality: 82978768158720.0
+Control from Attractor 2 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 7888896 vertices.
+Elapsed: 40016ms
+[21:26:03 07.02.2022] Control of size 0 max robustnesss: 0.0, union robustness: 0.0
+[21:26:03 07.02.2022] Control of size 1 max robustnesss: 0.5590062111801242, union robustness: 0.5590062111801242
+[21:26:04 07.02.2022] Control of size 2 max robustnesss: 0.7453416149068323, union robustness: 0.9192546583850931
+[21:26:13 07.02.2022] Control of size 3 max robustnesss: 0.8695652173913043, union robustness: 0.994824016563147
+[21:27:15 07.02.2022] Control of size 4 max robustnesss: 1.0, union robustness: 1.0
+[21:33:18 07.02.2022] Control of size 5 max robustnesss: 1.0, union robustness: 1.0

@@ -1,0 +1,305 @@
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ONE STEP CONTROL (4unknown)
+========= myeloid(v11)(p247726080) =========
+Attractors ready in 14ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 64 vertices.
+Elapsed: 8ms
+Control from Attractor 2 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 64 vertices.
+Elapsed: 8ms
+Control from Attractor 3 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 64 vertices.
+Elapsed: 8ms
+Control from Attractor 4 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 64 vertices.
+Elapsed: 8ms
+Control from Attractor 5 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 64 vertices.
+Elapsed: 8ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 384 vertices.
+Elapsed: 38ms
+Control from Attractor 2 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 384 vertices.
+Elapsed: 37ms
+Control from Attractor 3 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 384 vertices.
+Elapsed: 37ms
+Control from Attractor 4 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 384 vertices.
+Elapsed: 38ms
+Control from Attractor 5 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 384 vertices.
+Elapsed: 37ms
+Control from Attractor 0 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 768 vertices.
+Elapsed: 34ms
+Control from Attractor 1 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 768 vertices.
+Elapsed: 34ms
+Control from Attractor 3 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 768 vertices.
+Elapsed: 34ms
+Control from Attractor 4 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 768 vertices.
+Elapsed: 34ms
+Control from Attractor 5 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 768 vertices.
+Elapsed: 34ms
+Control from Attractor 0 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 384 vertices.
+Elapsed: 28ms
+Control from Attractor 1 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 384 vertices.
+Elapsed: 28ms
+Control from Attractor 2 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 384 vertices.
+Elapsed: 28ms
+Control from Attractor 4 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 384 vertices.
+Elapsed: 28ms
+Control from Attractor 5 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 384 vertices.
+Elapsed: 28ms
+Control from Attractor 0 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 52ms
+Control from Attractor 1 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 52ms
+Control from Attractor 2 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 52ms
+Control from Attractor 3 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 52ms
+Control from Attractor 5 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 51ms
+Control from Attractor 0 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 61ms
+Control from Attractor 1 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 62ms
+Control from Attractor 2 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 60ms
+Control from Attractor 3 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 62ms
+Control from Attractor 4 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 61ms
+========= cardiac(v15)(p6794772480000) =========
+Attractors ready in 30ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 16384 vertices.
+Elapsed: 174ms
+Control from Attractor 2 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 16384 vertices.
+Elapsed: 173ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 16384 vertices.
+Elapsed: 520ms
+Control from Attractor 2 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 16384 vertices.
+Elapsed: 517ms
+Control from Attractor 0 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 16384 vertices.
+Elapsed: 453ms
+Control from Attractor 1 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 16384 vertices.
+Elapsed: 440ms
+========= erbb(v20)(p217432719360000) =========
+Attractors ready in 165ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 164026260 color(s), jumping through 1048576 vertices.
+Elapsed: 905ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 191729610 color(s), jumping through 1048576 vertices.
+Elapsed: 7141ms
+========= tumour(v32)(p200385994162176) =========
+Attractors ready in 4707ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 1114112 vertices.
+Elapsed: 1048ms
+Control from Attractor 2 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 1114112 vertices.
+Elapsed: 1049ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 67108864 vertices.
+Elapsed: 886ms
+Control from Attractor 2 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 67108864 vertices.
+Elapsed: 887ms
+Control from Attractor 0 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 4294967296 vertices.
+Elapsed: 945ms
+Control from Attractor 1 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 4294967296 vertices.
+Elapsed: 945ms
+========= mapk(v53)(p420239888429195700000) =========
+Attractors ready in 16285ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 24600 color(s), jumping through 9007199254740992 vertices.
+Elapsed: 6411ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 19392 color(s), jumping through 9007199254740992 vertices.
+Elapsed: 5542ms
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PERMANENT CONTROL (4unknown)
+========= myeloid(v11)(p247726080) =========
+Attractors ready in 14ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 120960 color(s), jumping through 8 vertices.
+Elapsed: 15ms
+Control from Attractor 2 (source) to Attractor 0 (target) works for 120960 color(s), jumping through 4 vertices.
+Elapsed: 15ms
+Control from Attractor 3 (source) to Attractor 0 (target) works for 120960 color(s), jumping through 8 vertices.
+Elapsed: 15ms
+Control from Attractor 4 (source) to Attractor 0 (target) works for 120960 color(s), jumping through 4 vertices.
+Elapsed: 15ms
+Control from Attractor 5 (source) to Attractor 0 (target) works for 120960 color(s), jumping through 8 vertices.
+Elapsed: 15ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 120960 color(s), jumping through 12 vertices.
+Elapsed: 111ms
+Control from Attractor 2 (source) to Attractor 1 (target) works for 120960 color(s), jumping through 48 vertices.
+Elapsed: 109ms
+Control from Attractor 3 (source) to Attractor 1 (target) works for 120960 color(s), jumping through 4 vertices.
+Elapsed: 104ms
+Control from Attractor 4 (source) to Attractor 1 (target) works for 120960 color(s), jumping through 48 vertices.
+Elapsed: 103ms
+Control from Attractor 5 (source) to Attractor 1 (target) works for 120960 color(s), jumping through 96 vertices.
+Elapsed: 103ms
+Control from Attractor 0 (source) to Attractor 2 (target) works for 120960 color(s), jumping through 4 vertices.
+Elapsed: 75ms
+Control from Attractor 1 (source) to Attractor 2 (target) works for 120960 color(s), jumping through 64 vertices.
+Elapsed: 76ms
+Control from Attractor 3 (source) to Attractor 2 (target) works for 120960 color(s), jumping through 64 vertices.
+Elapsed: 76ms
+Control from Attractor 4 (source) to Attractor 2 (target) works for 120960 color(s), jumping through 16 vertices.
+Elapsed: 76ms
+Control from Attractor 5 (source) to Attractor 2 (target) works for 120960 color(s), jumping through 2 vertices.
+Elapsed: 75ms
+Control from Attractor 0 (source) to Attractor 3 (target) works for 120960 color(s), jumping through 8 vertices.
+Elapsed: 98ms
+Control from Attractor 1 (source) to Attractor 3 (target) works for 120960 color(s), jumping through 4 vertices.
+Elapsed: 97ms
+Control from Attractor 2 (source) to Attractor 3 (target) works for 120960 color(s), jumping through 32 vertices.
+Elapsed: 98ms
+Control from Attractor 4 (source) to Attractor 3 (target) works for 120960 color(s), jumping through 32 vertices.
+Elapsed: 96ms
+Control from Attractor 5 (source) to Attractor 3 (target) works for 120960 color(s), jumping through 64 vertices.
+Elapsed: 96ms
+Control from Attractor 0 (source) to Attractor 4 (target) works for 120960 color(s), jumping through 8 vertices.
+Elapsed: 125ms
+Control from Attractor 1 (source) to Attractor 4 (target) works for 120960 color(s), jumping through 128 vertices.
+Elapsed: 125ms
+Control from Attractor 2 (source) to Attractor 4 (target) works for 120960 color(s), jumping through 16 vertices.
+Elapsed: 125ms
+Control from Attractor 3 (source) to Attractor 4 (target) works for 120960 color(s), jumping through 128 vertices.
+Elapsed: 126ms
+Control from Attractor 5 (source) to Attractor 4 (target) works for 120960 color(s), jumping through 8 vertices.
+Elapsed: 125ms
+Control from Attractor 0 (source) to Attractor 5 (target) works for 120960 color(s), jumping through 16 vertices.
+Elapsed: 123ms
+Control from Attractor 1 (source) to Attractor 5 (target) works for 120960 color(s), jumping through 256 vertices.
+Elapsed: 124ms
+Control from Attractor 2 (source) to Attractor 5 (target) works for 120960 color(s), jumping through 2 vertices.
+Elapsed: 123ms
+Control from Attractor 3 (source) to Attractor 5 (target) works for 120960 color(s), jumping through 256 vertices.
+Elapsed: 124ms
+Control from Attractor 4 (source) to Attractor 5 (target) works for 120960 color(s), jumping through 8 vertices.
+Elapsed: 123ms
+========= cardiac(v15)(p6794772480000) =========
+Attractors ready in 30ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 207360000 color(s), jumping through 512 vertices.
+Elapsed: 350ms
+Control from Attractor 2 (source) to Attractor 0 (target) works for 207360000 color(s), jumping through 256 vertices.
+Elapsed: 350ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 207360000 color(s), jumping through 448 vertices.
+Elapsed: 2059ms
+Control from Attractor 2 (source) to Attractor 1 (target) works for 207360000 color(s), jumping through 8 vertices.
+Elapsed: 2058ms
+Control from Attractor 0 (source) to Attractor 2 (target) works for 207360000 color(s), jumping through 256 vertices.
+Elapsed: 1048ms
+Control from Attractor 1 (source) to Attractor 2 (target) works for 207360000 color(s), jumping through 8 vertices.
+Elapsed: 1053ms
+========= erbb(v20)(p217432719360000) =========
+Attractors ready in 164ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 207360000 color(s), jumping through 8192 vertices.
+Elapsed: 35319ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 207360000 color(s), jumping through 8192 vertices.
+Elapsed: 40152ms
+========= tumour(v32)(p200385994162176) =========
+Attractors ready in 4716ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 46656 color(s), jumping through 16 vertices.
+Elapsed: 35420ms
+Control from Attractor 2 (source) to Attractor 0 (target) works for 46656 color(s), jumping through 6737920 vertices.
+Elapsed: 35412ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 46656 color(s), jumping through 16 vertices.
+Elapsed: 56683ms
+Control from Attractor 2 (source) to Attractor 1 (target) works for 46656 color(s), jumping through 7983104 vertices.
+Elapsed: 56483ms
+Control from Attractor 0 (source) to Attractor 2 (target) works for 46656 color(s), jumping through 8388608 vertices.
+Elapsed: 7515ms
+Control from Attractor 1 (source) to Attractor 2 (target) works for 46656 color(s), jumping through 7864320 vertices.
+Elapsed: 7515ms
+========= mapk(v53)(p420239888429195700000) =========
+Attractors ready in 16291ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 46656 color(s), jumping through 8 vertices.
+Elapsed: 10890076ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 46656 color(s), jumping through 8 vertices.
+Elapsed: 4497277ms
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEMPORARY CONTROL (4unknown)
+========= myeloid(v11)(p247726080) =========
+Attractors ready in 14ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 128 vertices.
+Elapsed: 10ms
+Control from Attractor 2 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 64 vertices.
+Elapsed: 10ms
+Control from Attractor 3 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 64 vertices.
+Elapsed: 10ms
+Control from Attractor 4 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 128 vertices.
+Elapsed: 11ms
+Control from Attractor 5 (source) to Attractor 0 (target) works for 2520 color(s), jumping through 128 vertices.
+Elapsed: 11ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 448 vertices.
+Elapsed: 135ms
+Control from Attractor 2 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 576 vertices.
+Elapsed: 130ms
+Control from Attractor 3 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 384 vertices.
+Elapsed: 123ms
+Control from Attractor 4 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 1152 vertices.
+Elapsed: 121ms
+Control from Attractor 5 (source) to Attractor 1 (target) works for 21042 color(s), jumping through 1152 vertices.
+Elapsed: 121ms
+Control from Attractor 0 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 1152 vertices.
+Elapsed: 58ms
+Control from Attractor 1 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 1408 vertices.
+Elapsed: 58ms
+Control from Attractor 3 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 1408 vertices.
+Elapsed: 58ms
+Control from Attractor 4 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 768 vertices.
+Elapsed: 60ms
+Control from Attractor 5 (source) to Attractor 2 (target) works for 5700 color(s), jumping through 768 vertices.
+Elapsed: 60ms
+Control from Attractor 0 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 448 vertices.
+Elapsed: 153ms
+Control from Attractor 1 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 384 vertices.
+Elapsed: 140ms
+Control from Attractor 2 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 576 vertices.
+Elapsed: 148ms
+Control from Attractor 4 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 1152 vertices.
+Elapsed: 139ms
+Control from Attractor 5 (source) to Attractor 3 (target) works for 35070 color(s), jumping through 1152 vertices.
+Elapsed: 139ms
+Control from Attractor 0 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 558ms
+Control from Attractor 1 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 558ms
+Control from Attractor 2 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 556ms
+Control from Attractor 3 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 557ms
+Control from Attractor 5 (source) to Attractor 4 (target) works for 21042 color(s), jumping through 2048 vertices.
+Elapsed: 556ms
+Control from Attractor 0 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 611ms
+Control from Attractor 1 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 609ms
+Control from Attractor 2 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 605ms
+Control from Attractor 3 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 608ms
+Control from Attractor 4 (source) to Attractor 5 (target) works for 47595 color(s), jumping through 2048 vertices.
+Elapsed: 606ms
+========= cardiac(v15)(p6794772480000) =========
+Attractors ready in 30ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 16384 vertices.
+Elapsed: 1954ms
+Control from Attractor 2 (source) to Attractor 0 (target) works for 136609200 color(s), jumping through 16384 vertices.
+Elapsed: 1947ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 16384 vertices.
+Elapsed: 13011ms
+Control from Attractor 2 (source) to Attractor 1 (target) works for 155350650 color(s), jumping through 16384 vertices.
+Elapsed: 12879ms
+Control from Attractor 0 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 16384 vertices.
+Elapsed: 77821ms
+Control from Attractor 1 (source) to Attractor 2 (target) works for 172467750 color(s), jumping through 16384 vertices.
+Elapsed: 77485ms
+========= erbb(v20)(p217432719360000) =========
+Attractors ready in 167ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 164026260 color(s), jumping through 1048576 vertices.
+Elapsed: 496981ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 191729610 color(s), jumping through 1048576 vertices.
+Elapsed: 8459403ms
+========= tumour(v32)(p200385994162176) =========
+Attractors ready in 4715ms, starting control...
+Control from Attractor 1 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 6291456 vertices.
+Elapsed: 486173ms
+Control from Attractor 2 (source) to Attractor 0 (target) works for 19320 color(s), jumping through 251584512 vertices.
+Elapsed: 485989ms
+Control from Attractor 0 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 262299648 vertices.
+Elapsed: 888778ms
+Control from Attractor 2 (source) to Attractor 1 (target) works for 19320 color(s), jumping through 514863104 vertices.
+Elapsed: 888038ms
+Control from Attractor 0 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 4294967296 vertices.
+Elapsed: 1230297ms
+Control from Attractor 1 (source) to Attractor 2 (target) works for 22356 color(s), jumping through 4294967296 vertices.
+Elapsed: 1223355ms
+========= mapk(v53)(p420239888429195700000) =========
+Attractors ready in 16345ms, starting control...
