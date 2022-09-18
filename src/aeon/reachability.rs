@@ -66,9 +66,7 @@ pub fn forward_closed(
     loop {
         let mut stop = true;
         for var in graph.as_network().variables().rev() {
-            let outside_successors = graph.var_post(var, &basin).minus(&basin);
-            let can_go_out = graph.var_pre(var, &outside_successors).intersect(&basin);
-
+            let can_go_out = graph.var_can_post_out(var, &basin);
             if !can_go_out.is_empty() {
                 basin = basin.minus(&can_go_out);
                 stop = false;
