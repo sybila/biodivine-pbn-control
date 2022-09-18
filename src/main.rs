@@ -82,7 +82,7 @@ fn main_control_template<F>(models: Vec<&str>, suffixes: Vec<&str>, control_func
                      m,
                      model.num_vars(),
                      all_colours_car / f64::from(i32::pow(i32::try_from(model.num_vars()).unwrap(), 2)),
-                     i32::pow(i32::try_from(model.num_vars()).unwrap(), 2),
+                     i32::pow(2, i32::try_from(model.num_vars()).unwrap()),
                      all_colours_car);
             let start = Instant::now();
             let attractors = find_witness_attractors(m);
