@@ -13,8 +13,8 @@ use biodivine_pbn_control::control::ControlMap;
 use chrono::{DateTime, Utc};
 use biodivine_pbn_control::aeon::reachability::{backward, forward};
 
-// const models1: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
-const models1: [&str; 2] = ["myeloid", "cardiac"];
+const models1: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
+// const models1: [&str; 2] = ["myeloid", "cardiac"];
 const suffixes2: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4unknown", "5unknown", "6unknown"];
 const MAX_CONTROL_SIZE: usize = 5;
 
