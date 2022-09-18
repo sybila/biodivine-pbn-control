@@ -102,22 +102,23 @@ PKC -> RAF
 ERK -| RAF
 AKT -| RAF
 RAS -> RAF
-$AKT: (PDK1 & !PTEN)
 $AP1: (JUN & (FOS | ATF2))
-$ATF2: (p38 | JNK)
 $ATM: DNA_damage
 $Apoptosis: ((FOXO3 & p53) & !(BCL2 | ERK))
 $BCL2: (CREB & AKT)
 $CREB: MSK
+$DNA_damage: true
 $DUSP1: CREB
 $EGFR: ((SPRY & !(PKC | GRB2)) | (EGFR_stimulus & !(PKC | GRB2)))
 $EGFR_stimulus: false
 $ELK1: ((p38 | JNK) | ERK)
+$ERK: MEK1_2
 $FGFR3: (FGFR3_stimulus & !(GRB2 | PKC))
 $FGFR3_stimulus: false
 $FOS: ((ERK & RSK) & (ELK1 | CREB))
+$FOXO3: (JNK & !AKT)
 $FRS2: (FGFR3 & !(SPRY | GRB2))
-$GADD45: (SMAD | p53)
+$GAB1: (PI3K | GRB2)
 $GRB2: ((EGFR | TGFBR) | FRS2)
 $Growth_Arrest: p21
 $JNK: ((((((((((TAOK & MTK1) | (TAK1 & TAOK)) | (MTK1 & !DUSP1)) | (TAK1 & MTK1)) | (TAK1 & MAP3K1_3)) | (MAP3K1_3 & MTK1)) | (TAK1 & !DUSP1)) | (TAOK & !DUSP1)) | (TAOK & MAP3K1_3)) | (MAP3K1_3 & !DUSP1))
@@ -139,7 +140,6 @@ $Proliferation: ((p70 & MYC) & !p21)
 $RAF: ((PKC & !(ERK | AKT)) | (RAS & !(ERK | AKT)))
 $RAS: (SOS | PLCG)
 $RSK: ERK
-$SMAD: TGFBR
 $SOS: (GRB2 & !RSK)
 $SPRY: ERK
 $TAK1: TGFBR

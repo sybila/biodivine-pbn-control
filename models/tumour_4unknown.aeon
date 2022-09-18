@@ -158,14 +158,14 @@ $AKT1: ((CTNNB1 & (((GF | NICD) | TGFbeta) | CDH2)) & !((CDH1 | p53) | miR34))
 $AKT2: ((TWIST1 & ((TGFbeta | GF) | CDH2)) & ((!miR203 & !miR34) & !p53))
 $Apoptosis: (((((miR34 & !((ZEB2 | ERK) | AKT1)) | (p63 & !((ZEB2 | ERK) | AKT1))) | (p53 & !((ZEB2 | ERK) | AKT1))) | (p73 & !((ZEB2 | ERK) | AKT1))) | (miR200 & !((ZEB2 | ERK) | AKT1)))
 $CDH1: !(((((TWIST1 | SNAI2) | ZEB2) | ZEB1) | AKT2) | SNAI1)
+$CDH2: TWIST1
 $CTNNB1: !(((((((p63 | AKT1) | CDH1) | DKK1) | p53) | miR200) | CDH2) | miR34)
 $CellCycleArrest: (((((miR34 & !AKT1) | (miR203 & !AKT1)) | (p21 & !AKT1)) | (miR200 & !AKT1)) | (ZEB2 & !AKT1))
-$DKK1: (NICD | CTNNB1)
+$DNAdamage: true
 $ECM: true
 $ERK: ((((CDH2 & !AKT1) | (NICD & !AKT1)) | (SMAD & !AKT1)) | (GF & !AKT1))
 $GF: ((GF & !CDH1) | (CDH2 & !CDH1))
 $Invasion: (CTNNB1 | (SMAD & CDH2))
-$Metastasis: Migration
 $Migration: ((VIM & (((ERK & AKT2) & EMT) & Invasion)) & !((AKT1 | p63) | miR200))
 $NICD: (ECM & !((((p53 | miR200) | p63) | miR34) | p73))
 $SMAD: (TGFbeta & !(miR200 | miR203))
