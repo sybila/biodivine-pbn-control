@@ -1,4 +1,3 @@
-use biodivine_lib_param_bn::bdd_params::BddParams;
 use crate::control::ControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;

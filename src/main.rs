@@ -1,21 +1,20 @@
 #![allow(dead_code)]    // In this file, we want to allow unused functions.
 
-use std::borrow::{Borrow, BorrowMut};
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, SymbolicAsyncGraph};
-use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
+use biodivine_lib_param_bn::BooleanNetwork;
 use biodivine_pbn_control::perturbation::PerturbationGraph;
 use std::convert::TryFrom;
-use std::time::Instant;
-use biodivine_lib_param_bn::biodivine_std::traits::{Graph, Set};
+use std::time::{Duration, Instant};
+use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use itertools::Itertools;
 use biodivine_pbn_control::control::ControlMap;
-use chrono::{DateTime, Utc};
-use biodivine_pbn_control::aeon::reachability::{backward, forward};
+use chrono::Utc;
+use biodivine_pbn_control::aeon::reachability::backward;
 
-const models1: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
+const MODELS: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
 // const models1: [&str; 2] = ["myeloid", "cardiac"];
-const suffixes2: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4unknown", "5unknown", "6unknown"];
+const SUFFIXES: [&str; 7] = ["witness", "1unknown", "2unknown", "3unknown", "4unknown", "5unknown", "6unknown"];
 const MAX_CONTROL_SIZE: usize = 5;
 
 
@@ -28,15 +27,15 @@ fn main() {
 }
 
 fn main_models_experiment() {
-    main_control_template(models1.to_vec(), vec!["4unknown"], PerturbationGraph::one_step_control, "one-step");
-    main_control_template(models1.to_vec(), vec!["4unknown"], PerturbationGraph::temporary_control, "temporary");
-    main_control_template(models1.to_vec(), vec!["4unknown"], PerturbationGraph::permanent_control, "permanent");
+    //main_control_template(&MODELS, &["4unknown"], PerturbationGraph::one_step_control, "one-step");
+    //main_control_template(&MODELS, &["4unknown"], PerturbationGraph::temporary_control, "permanent");
+    main_control_template( &["tumour"], &["4unknown"], PerturbationGraph::permanent_control, "temporary");
 }
 
 fn main_scalability_experiment() {
-    main_control_template(vec!["tumour"], suffixes2.to_vec(), PerturbationGraph::one_step_control, "one-step");
-    main_control_template(vec!["tumour"], suffixes2.to_vec(), PerturbationGraph::temporary_control, "temporary");
-    main_control_template(vec!["tumour"], suffixes2.to_vec(), PerturbationGraph::permanent_control, "permanent");
+    main_control_template(&["tumour"], &SUFFIXES, PerturbationGraph::one_step_control, "one-step");
+    main_control_template(&["tumour"], &SUFFIXES, PerturbationGraph::temporary_control, "temporary");
+    main_control_template(&["tumour"], &SUFFIXES, PerturbationGraph::permanent_control, "permanent");
 }
 
 fn main_robustness_experiment() {
@@ -66,55 +65,83 @@ fn main_all_control_types_robustness(m: &str, source_ix: usize, target_ix: usize
     main_control_robustness_template(m, source_ix, target_ix, PerturbationGraph::permanent_control, "permanent");
 }
 
-fn main_control_template<F>(models: Vec<&str>, suffixes: Vec<&str>, control_function: F, control_type: &str)
+fn main_control_template<F>(models: &[&str], suffixes: &[&str], control_function: F, control_type: &str)
     where F: for <'a> Fn(&'a PerturbationGraph, &'a ArrayBitVector, &'a ArrayBitVector, &'a GraphColors) -> ControlMap
 {
     println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {} CONTROL", control_type);
-    for m in models.clone().iter() {
-        let mut results = Vec::new();
-        for s in suffixes.clone().iter() {
-            let model_string: &str =
-                &std::fs::read_to_string(format!("models/{}_{}.aeon", m, s)).unwrap();
-            let model = BooleanNetwork::try_from(model_string).unwrap();
-            let perturbations = PerturbationGraph::new(&model);
-            let all_colours_car = perturbations.as_original().unit_colors().approx_cardinality();
-            println!("========= {} (variables {})(uncertainty colours {})(perturbation colours {})(all colours {}) =========",
-                     m,
-                     model.num_vars(),
-                     all_colours_car / f64::from(i32::pow(i32::try_from(model.num_vars()).unwrap(), 2)),
-                     i32::pow(2, u32::try_from(model.num_vars()).unwrap()),
-                     all_colours_car);
-            let start = Instant::now();
-            let attractors = find_witness_attractors(m);
+    for model_name in models {
+        for model_suffix in suffixes {
+            let model_path = format!("models/{}_{}.aeon", model_name, model_suffix);
+            let model_string = std::fs::read_to_string(model_path).unwrap();
+            let model = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+            let perturbation_graph = PerturbationGraph::new(&model);
+
+            {   // Print model statistics:
+                let model_variables = model.num_vars();
+                assert!(i32::try_from(model_variables).is_ok());
+
+                // All colors considered by the perturbation graph
+                let all_colors = perturbation_graph.unit_colors().approx_cardinality();
+                // The (combinatorial) portion of colours that appear due to perturbation parameters.
+                let perturbation_colors = 2.0f64.powi(model_variables as i32);
+                // The (combinatorial) portion of colours that are carried over from the original model.
+                let model_colors = all_colors / perturbation_colors;
+
+                println!("========= {} (variables {})(uncertainty colours {})(perturbation colours {})(all colours {}) =========",
+                         model_name,
+                         model_variables,
+                         model_colors,
+                         perturbation_colors,
+                         all_colors);
+            }
+
+            // Compute attractor states in the witness model.
+            let start_attractors = Instant::now();
+            let attractors = find_witness_attractors(model_name);
+            let all_attractors_colors = attractors.iter()
+                .map(|it| {
+                    get_all_params_with_attractor(&perturbation_graph, it)
+                })
+                .collect::<Vec<_>>();
             println!(
                 "Attractors ready in {}ms, attractors count: {}, starting control...",
-                start.elapsed().as_millis(),
+                start_attractors.elapsed().as_millis(),
                 attractors.len()
             );
 
-            for (t_i, target) in attractors.clone().iter().enumerate() {
-                for (s_i, source) in attractors.clone().iter().enumerate() {
+            let mut control_times: Vec<Duration> = Vec::new();
+            for (t_i, target) in attractors.iter().enumerate() {
+                for (s_i, source) in attractors.iter().enumerate() {
                     if s_i == t_i {
-                        continue
+                        continue;
                     }
-                    let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
+
+                    let attractor_colors = all_attractors_colors[t_i].clone();
                     let start = Instant::now();
-                    let control = control_function(&perturbations, source, target, &att_colors);
+                    let control = control_function(&perturbation_graph, source, target, &attractor_colors);
                     println!(
-                        "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
+                        "Control from attr. #{:?} (source) to attr. #{:?} (target) exists for {} color(s), jumping through {} vertices.",
                         s_i,
                         t_i,
                         control.controllable_colors_cardinality(),
                         control.jump_vertices()
                     );
-                    let el_time = start.elapsed().as_millis();
-                    println!("Elapsed: {} ms", el_time);
-                    results.push(el_time);
+                    let elapsed = start.elapsed();
+                    println!("Elapsed: {} ms", elapsed.as_millis());
+                    control_times.push(elapsed);
                 }
             }
+
+            let total_time_ms = control_times.iter().sum::<Duration>().as_millis();
+            let average_time_ms = (total_time_ms as f32) / (control_times.len() as f32);
+            println!(
+                "<<<<<<<<<<<< Average {} control time for {} model with suffix `{}` is {:.2} ms",
+                control_type,
+                model_name,
+                model_suffix,
+                average_time_ms,
+            );
         }
-        let avg_time = results.iter().sum::<u128>() as f32 / results.len() as f32;
-        println!("<<<<<<<<<<<< Average {} control time for {} model is {} ms", control_type, m, avg_time);
     }
 }
 
@@ -132,7 +159,7 @@ fn main_control_robustness_template<F>(m: &str, source_ix: usize, target_ix: usi
     println!("Attractors count: {}", attractors.len());
     let source = attractors.get(source_ix).unwrap();
     let target = attractors.get(target_ix). unwrap();
-    let att_colors = get_all_params_with_attractor(perturbations.borrow(), target);
+    let att_colors = get_all_params_with_attractor(&perturbations, target);
     println!("Attractor params cardinality: {:?}", att_colors.approx_cardinality());
     let start = Instant::now();
     let control = control_function(&perturbations, source, target, &att_colors);
@@ -166,11 +193,11 @@ fn main_control_robustness_template<F>(m: &str, source_ix: usize, target_ix: usi
             break
         }
         let mut local_control = control.clone();
-        for varId in model.variables() {
-            if combination.contains(&varId) {
-                local_control.require_perturbation(varId, None);
+        for var_id in model.variables() {
+            if combination.contains(&var_id) {
+                local_control.require_perturbation(var_id, None);
             } else {
-                local_control.exclude_perturbation(varId, None);
+                local_control.exclude_perturbation(var_id, None);
             }
         }
         let card = local_control.controllable_colors_cardinality();
@@ -223,10 +250,26 @@ fn find_witness_attractors(m: &str) -> Vec<ArrayBitVector> {
 
 pub fn get_all_params_with_attractor(graph: &PerturbationGraph, state: &ArrayBitVector) -> GraphColors {
     let seed = graph.vertex(state);
-    let fwd = forward(graph.as_original(), seed.borrow());
-    let bwd = backward(graph.as_original(), seed.borrow());
-    let scc = fwd.intersect(&bwd);
-    let not_attractor_colors = fwd.minus(&scc).colors();
-    let attractor = scc.minus_colors(&not_attractor_colors);
-    return attractor.colors();
+    let bwd = backward(graph.as_original(), &seed);
+    let mut attractor = seed.clone();
+    'forward: loop {
+        if attractor.as_bdd().size() > 10_000 {
+            println!("FWD: {}", attractor.as_bdd().size());
+        }
+        for var in graph.as_original().as_network().variables().rev() {
+            let step = graph
+                .as_original()
+                .var_post(var, &attractor)
+                .minus(&attractor);
+
+            if !step.is_empty() {
+                // Any color that is found for a state not in BWD is not attractor color.
+                let not_attractor = step.minus(&bwd).colors();
+                attractor = attractor.union(&step).minus_colors(&not_attractor);
+                continue 'forward;
+            }
+        }
+        // No new steps found. Attractor is now truly the set of attractor states:
+        return attractor.colors();
+    }
 }
