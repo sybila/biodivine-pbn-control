@@ -125,8 +125,9 @@ def other_random_seed(seeds, seed):
 
 
 BASE_MODEL_PATH = sys.argv[1]
-MAX_ERASED_ARITY = 4
+MAX_ERASED_ARITY = 5
 MAX_ERASED_COUNT = 10
+SAMPLES_PER_ERASE_COUNT = 20
 EXPERIMENTS_PER_GROUP = 20
 random.seed(1234567890)
 
@@ -157,7 +158,7 @@ def append_group(groups, magnitude, item):
 
 for fn_count in range(1,min(MAX_ERASED_COUNT, len(erasure_candidates))+1):
 	print(f">>>>>>>>>>>>>>>>>>>>> ERASE {fn_count} <<<<<<<<<<<<<<<<<<<<<<<<<")
-	for i in range(0,10):
+	for i in range(0, SAMPLES_PER_ERASE_COUNT):
 		random.shuffle(erasure_candidates)
 
 		erased = erasure_candidates[0:fn_count]
