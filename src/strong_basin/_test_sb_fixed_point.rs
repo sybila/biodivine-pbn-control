@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod tests {
-    use super::*;
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::convert::TryFrom;
     use std::fs;

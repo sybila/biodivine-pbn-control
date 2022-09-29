@@ -8,8 +8,8 @@ pub fn get_all_params_with_attractor(graph: &AsyncGraph<DefaultEdgeParams>, stat
     let successors = fwd.step(state);
 
     let mut bad_params = graph.empty_params().clone();
-    for (succ, par) in successors {
-        //if !succ.eq(&state) {
+    for (_succ, par) in successors {
+        //if !_succ.eq(&state) {
         bad_params = bad_params.union(&par);
         //}
     }

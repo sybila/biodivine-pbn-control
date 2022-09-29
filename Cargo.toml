@@ -6,10 +6,13 @@ edition = "2018"
 
 [dependencies]
 rayon = "1.3.0"
-biodivine-lib-bdd = { git = "https://github.com/sybila/biodivine-lib-bdd.git" }
+biodivine-lib-bdd = { git = "https://github.com/sybila/biodivine-lib-bdd.git", rev = "b09815999e9ac2ef3dd4f8b59e98ec65070c4b2b" }
 biodivine-lib-std = { git = "https://github.com/sybila/biodivine-lib-std.git" }
-biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git" }
-biodivine-aeon-server = { git = "https://github.com/sybila/biodivine-aeon-server.git", branch = "free-dependencies" }
+biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git", rev = "09316b44d3ffda08b199563e0ab986d8e9d2bf3a" }
+crossbeam = "0.8.2"
+lazy_static = "1.4.0"
+json = "0.12.4"
+regex = "1.4.2"
 
 [dev-dependencies]
 
