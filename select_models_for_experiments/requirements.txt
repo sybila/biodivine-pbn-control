@@ -1,2 +1,0 @@
-biodivine-aeon == 0.0.1
-tqdm==4.64.1
