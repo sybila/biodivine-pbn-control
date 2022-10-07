@@ -28,11 +28,20 @@ for result in os.listdir(RESULTS_DIR):
 	name = result.replace("_out.txt", "")
 	if RE_ELAPSED_MS.search(result_text):		
 		elapsed = RE_ELAPSED_MS.search(result_text).group(1)
-		perturbation_colors = RE_PERTURBATION_COLORS.search(result_text).group(1)
-		attractor_colors = RE_ATTRACTOR_COLORS.search(result_text).group(1)
-		min_arity = RE_MIN_ARITY.search(result_text).group(1)
-		max_arity = RE_MAX_ARITY.search(result_text).group(1)
-		num_functions = RE_NUM_FUNCTIONS.search(result_text).group(1)
+		if RE_PERTURBATION_COLORS.search(result_text):
+			perturbation_colors = RE_PERTURBATION_COLORS.search(result_text).group(1)
+			attractor_colors = RE_ATTRACTOR_COLORS.search(result_text).group(1)
+			min_arity = RE_MIN_ARITY.search(result_text).group(1)
+			max_arity = RE_MAX_ARITY.search(result_text).group(1)
+			num_functions = RE_NUM_FUNCTIONS.search(result_text).group(1)
+		else:
+			# The old one-step method does not provide this data, but we can just
+			# cross-reference it with the other types of control, so this is ok.
+			perturbation_colors = "1"
+			attractor_colors = "1"
+			min_arity = "1"
+			max_arity = "1"
+			num_functions = "1"
 
 
 		colors = int(int(attractor_colors) / int(perturbation_colors))
