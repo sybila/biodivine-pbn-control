@@ -8,7 +8,7 @@ use biodivine_lib_std::param_graph::{Graph, Params};
 use biodivine_pbn_control::control::_algo_control_to_basin::{find_smallest_control_to_basin};
 use biodivine_pbn_control::old_aeon_server::algo_reach::reach;
 use biodivine_pbn_control::old_aeon_server::StateSet;
-use biodivine_pbn_control::strong_basin::_algo_sb_fixed_point::find_strong_basin;
+use biodivine_pbn_control::strong_basin::_algo_sb_parallel_fixed_point::find_strong_basin;
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
@@ -67,7 +67,7 @@ pub fn string_to_state(string_vector: &str) -> IdState {
     for (i, segment) in string_vector.split(",").enumerate() {
         //print!("{}", segment);
         if segment.trim() == "True" {
-           state = state.flip_bit(i);
+            state = state.flip_bit(i);
         } else if segment.trim() == "False" {
             // Do nothing. Already false.
         } else {

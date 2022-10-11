@@ -44,12 +44,12 @@ pub fn find_strong_basin(graph: &AsyncGraph<DefaultEdgeParams>, attractor: IdSta
     // Just a quick sanity check to verify that the given `attractor` state is really a sink for
     // all parameters requested in `params`. If a successor has non-empty intersection with
     // `params`, then we have a problem.
-    let successor_count = fwd.step(attractor).filter(|(_, p)| {
+    /*let successor_count = fwd.step(attractor).filter(|(_, p)| {
         !params.intersect(p).is_empty()
     }).count();
     if successor_count != 0 {
         panic!("Given state ({:?}) is not an attractor. It has {} successor(s).", attractor, successor_count);
-    }
+    }*/
 
     let empty_params = graph.empty_params();
 
