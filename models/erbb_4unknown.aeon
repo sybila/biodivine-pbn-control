@@ -47,6 +47,8 @@ CyclinD1 -> CDK6
 EGF -> ERBB2
 EGF -> ERBB3
 $AKT1: ((((((((!IGF1R & !ERBB1) & !ERBB2_3) & !ERBB1_2) & ERBB1_3) | (((!IGF1R & !ERBB1) & !ERBB2_3) & ERBB1_2)) | ((!IGF1R & !ERBB1) & ERBB2_3)) | (!IGF1R & ERBB1)) | IGF1R)
+$CDK2: ((!p21 & !p27) & CyclinE1)
+$CDK4: ((!p21 & CyclinD1) & !p27)
 $CDK6: CyclinD1
 $CyclinD1: ((((!MEK1 & ERalpha) & AKT1) & MYC) | ((MEK1 & ERalpha) & MYC))
 $CyclinE1: MYC
@@ -55,8 +57,6 @@ $ERBB1: EGF
 $ERBB1_2: (ERBB1 & ERBB2)
 $ERBB1_3: (ERBB1 & ERBB3)
 $ERBB2: EGF
-$ERBB3: EGF
-$ERalpha: ((!MEK1 & AKT1) | MEK1)
 $IGF1R: (((!ERalpha & AKT1) & !ERBB2_3) | (ERalpha & !ERBB2_3))
 $MEK1: ((((((((!IGF1R & !ERBB1) & !ERBB2_3) & !ERBB1_2) & ERBB1_3) | (((!IGF1R & !ERBB1) & !ERBB2_3) & ERBB1_2)) | ((!IGF1R & !ERBB1) & ERBB2_3)) | (!IGF1R & ERBB1)) | IGF1R)
 $MYC: ((((!MEK1 & !ERalpha) & AKT1) | (!MEK1 & ERalpha)) | MEK1)

@@ -16,3 +16,6 @@ Cargo.lock
 *.ipr
 *.iml
 *.iws
+
+# Ignore temporary benchmark run results.
+_run_*

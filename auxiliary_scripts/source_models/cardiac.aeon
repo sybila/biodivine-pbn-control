@@ -1,0 +1,69 @@
+#name:cardiac
+#position:exogen_CanWnt_I:477.3422697852284,374.70272756062934
+$exogen_CanWnt_I:exogen_CanWnt_I
+exogen_CanWnt_I -> exogen_CanWnt_I
+#position:exogen_canWnt_II:365.87909685894846,314.9382123595501
+$exogen_canWnt_II:exogen_CanWnt_I
+exogen_CanWnt_I -> exogen_canWnt_II
+#position:canWnt:237.85134405398486,278.56477228414474
+$canWnt:exogen_canWnt_II
+exogen_canWnt_II -> canWnt
+#position:Mesp1:146.6390997967053,274.61988976219834
+$Mesp1:(canWnt & !exogen_BMP2_II)
+canWnt -> Mesp1
+exogen_BMP2_II -| Mesp1
+#position:exogen_BMP2_II:88.22224106196677,485.9378177800321
+$exogen_BMP2_II:exogen_BMP2_I
+exogen_BMP2_I -> exogen_BMP2_II
+#position:GATAs:26.632928814853358,161.6117195413616
+$GATAs:((Mesp1 | Tbx5) | Nkx2_5)
+Mesp1 -> GATAs
+Tbx5 -> GATAs
+Nkx2_5 -> GATAs
+#position:Tbx5:118.10747458721107,130.71465886614504
+$Tbx5:(((Tbx5 & !((Tbx1 | canWnt) | (Dkk1 & (!Mesp1 & !Tbx5)))) | (Mesp1 & !((Tbx1 | canWnt) | (Dkk1 & (!Mesp1 & !Tbx5))))) | (Nkx2_5 & !((Tbx1 | canWnt) | (Dkk1 & (!Mesp1 & !Tbx5)))))
+Mesp1 -? Tbx5
+canWnt -| Tbx5
+Nkx2_5 -> Tbx5
+Tbx5 -? Tbx5
+Tbx1 -| Tbx5
+Dkk1 -| Tbx5
+#position:Nkx2_5:146.96155926053723,200.1089370023708
+$Nkx2_5:(((((Mesp1 & Dkk1) | (Bmp2 & GATAs)) | (x_Isl1 & GATAs)) | Tbx5) | Tbx1)
+Mesp1 -> Nkx2_5
+x_Isl1 -> Nkx2_5
+Tbx5 -> Nkx2_5
+GATAs -> Nkx2_5
+Bmp2 -> Nkx2_5
+Tbx1 -> Nkx2_5
+Dkk1 -> Nkx2_5
+#position:Tbx1:207.34489629350958,30.999999999999943
+$Tbx1:Foxc1_2
+Foxc1_2 -> Tbx1
+#position:Dkk1:57.382768218004685,291.9033496910912
+$Dkk1:((canWnt & !exogen_BMP2_II) | Mesp1)
+canWnt -> Dkk1
+Mesp1 -> Dkk1
+exogen_BMP2_II -| Dkk1
+#position:x_Isl1:274.78434004805257,200.1813193806032
+$x_Isl1:(((Tbx1 | (canWnt & exogen_canWnt_II)) | Mesp1) | Fgf8)
+canWnt -> x_Isl1
+Mesp1 -> x_Isl1
+exogen_canWnt_II -> x_Isl1
+Fgf8 -> x_Isl1
+Tbx1 -> x_Isl1
+#position:Bmp2:178.23210129981283,405.580738474368
+$Bmp2:(exogen_BMP2_II & !canWnt)
+canWnt -| Bmp2
+exogen_BMP2_II -> Bmp2
+#position:exogen_BMP2_I:22.5,718.9689826828953
+$exogen_BMP2_I:true
+#position:Foxc1_2:330.5526272678077,81.28316840322395
+$Foxc1_2:(canWnt & exogen_canWnt_II)
+canWnt -> Foxc1_2
+exogen_canWnt_II -> Foxc1_2
+#position:Fgf8:238.104750246813,116.06331368280587
+$Fgf8:((Tbx1 & !Mesp1) | (Foxc1_2 & !Mesp1))
+Mesp1 -| Fgf8
+Foxc1_2 -> Fgf8
+Tbx1 -> Fgf8

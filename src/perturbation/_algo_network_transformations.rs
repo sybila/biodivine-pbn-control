@@ -8,6 +8,26 @@ use std::convert::TryFrom;
 ///
 /// This is a necessary pre-processing step before creating a `PerturbationGraph`.
 pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
+
+    let mut network = network.clone();
+    for var in network.variables() {
+        if network.get_update_function(var).is_none() {
+            // Create an explicit parameter to replace the implicit function.
+            let regulators = network.regulators(var);
+            let parameter = network
+                .add_parameter(
+                    format!("update_{}", network.get_variable_name(var)).as_str(),
+                    u32::try_from(regulators.len()).unwrap(),
+                )
+                .unwrap();
+            network
+                .add_update_function(var, FnUpdate::Param(parameter, regulators))
+                .unwrap();
+        }
+    }
+
+    let network = network;
+
     // Copy graph, but with non-observable regulations.
     let mut result = RegulatoryGraph::new(
         network
@@ -47,22 +67,10 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
 
     // Copy update functions.
     for v in result.variables() {
-        // Technically, the models should have equivalent variable ids!
-        if let Some(function) = network.get_update_function(v) {
-            result.add_update_function(v, function.clone()).unwrap();
-        } else {
-            // Create an explicit parameter to replace the implicit function.
-            let regulators = result.regulators(v);
-            let parameter = result
-                .add_parameter(
-                    format!("update_{}", result.get_variable_name(v)).as_str(),
-                    u32::try_from(regulators.len()).unwrap(),
-                )
-                .unwrap();
-            result
-                .add_update_function(v, FnUpdate::Param(parameter, regulators))
-                .unwrap();
-        }
+        // Technically, the models should have equivalent variable ids, so this should work.
+        // Also, we already replaced all missing functions with parameters.
+        let function = network.get_update_function(v).clone().unwrap();
+        result.add_update_function(v, function).unwrap();
     }
 
     result
