@@ -6,7 +6,12 @@ use biodivine_lib_param_bn::symbolic_async_graph::GraphColors;
 impl PerturbationGraph {
     /// Compute one-step control map. That is, controls which work by applying the perturbation
     /// immediately for a single time step.
-    pub fn one_step_control(&self, source: &ArrayBitVector, target: &ArrayBitVector, compute_params: &GraphColors) -> ControlMap {
+    pub fn one_step_control(
+        &self,
+        source: &ArrayBitVector,
+        target: &ArrayBitVector,
+        compute_params: &GraphColors,
+    ) -> ControlMap {
         /*
            To eventually stabilize in target, we have to reach its strong basin using a
            perturbation. We thus first compute the basin and then compute which perturbations
@@ -54,7 +59,11 @@ mod tests {
         for target in attractors.iter().skip(1) {
             let target_state = target.vertices().materialize().iter().next().unwrap();
 
-            let control = perturbations.one_step_control(&source_state, &target_state, perturbations.unit_colors());
+            let control = perturbations.one_step_control(
+                &source_state,
+                &target_state,
+                perturbations.unit_colors(),
+            );
             println!(
                 "Control from {:?} to {:?} cardinality: {}",
                 source_state,

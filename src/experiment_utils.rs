@@ -1,21 +1,35 @@
-use std::convert::TryFrom;
-use std::time::Instant;
-use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
-use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use biodivine_lib_param_bn::BooleanNetwork;
-use biodivine_lib_param_bn::symbolic_async_graph::GraphColors;
 use crate::aeon::reachability::backward;
 use crate::control::ControlMap;
 use crate::perturbation::PerturbationGraph;
+use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
+use biodivine_lib_param_bn::biodivine_std::traits::Set;
+use biodivine_lib_param_bn::symbolic_async_graph::GraphColors;
+use biodivine_lib_param_bn::BooleanNetwork;
+use std::convert::TryFrom;
+use std::time::Instant;
 
-
-pub fn run_control_experiment<F>(source: ArrayBitVector, target: ArrayBitVector, model: BooleanNetwork, control_function: F, control_type: &str)
-    where F: for <'a> Fn(&'a PerturbationGraph, &'a ArrayBitVector, &'a ArrayBitVector, &'a GraphColors) -> ControlMap
+pub fn run_control_experiment<F>(
+    source: ArrayBitVector,
+    target: ArrayBitVector,
+    model: BooleanNetwork,
+    control_function: F,
+    control_type: &str,
+) where
+    F: for<'a> Fn(
+        &'a PerturbationGraph,
+        &'a ArrayBitVector,
+        &'a ArrayBitVector,
+        &'a GraphColors,
+    ) -> ControlMap,
 {
-    println!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {} CONTROL", control_type);
+    println!(
+        ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {} CONTROL",
+        control_type
+    );
     let perturbation_graph = PerturbationGraph::new(&model);
 
-    {   // Print model statistics:
+    {
+        // Print model statistics:
         let model_variables = model.num_vars();
         assert!(i32::try_from(model_variables).is_ok());
 
@@ -30,36 +44,45 @@ pub fn run_control_experiment<F>(source: ArrayBitVector, target: ArrayBitVector,
         println!("Uncertainty colors: {}", model_colors);
         println!("Perturbation colors: {}", perturbation_colors);
         println!("All colors: {}", all_colors);
-        println!("Unknown update functions: {}", model
-            .variables()
-            .filter(|it| {
-                model.get_update_function(*it).is_none()
-            })
-            .count());
-        println!("Lowest cardinality: {}", model
-            .variables()
-            .filter(|it| {
-                model.get_update_function(*it).is_none()
-            })
-            .map(|it| {
-                model.as_graph().regulators(it).len()
-            }).min().unwrap());
-        println!("Highest cardinality: {}", model
-            .variables()
-            .filter(|it| {
-                model.get_update_function(*it).is_none()
-            })
-            .map(|it| {
-                model.as_graph().regulators(it).len()
-            }).max().unwrap());
+        println!(
+            "Unknown update functions: {}",
+            model
+                .variables()
+                .filter(|it| { model.get_update_function(*it).is_none() })
+                .count()
+        );
+        println!(
+            "Lowest cardinality: {}",
+            model
+                .variables()
+                .filter(|it| { model.get_update_function(*it).is_none() })
+                .map(|it| { model.as_graph().regulators(it).len() })
+                .min()
+                .unwrap()
+        );
+        println!(
+            "Highest cardinality: {}",
+            model
+                .variables()
+                .filter(|it| { model.get_update_function(*it).is_none() })
+                .map(|it| { model.as_graph().regulators(it).len() })
+                .max()
+                .unwrap()
+        );
     }
 
     // Compute attractor states in the witness model.
 
     let start_attractor = Instant::now();
     let attractor_colors = get_all_params_with_attractor(&perturbation_graph, &target);
-    println!("Attractor colors: {}", attractor_colors.approx_cardinality());
-    println!("Attractor colors computed in {} ms.", start_attractor.elapsed().as_millis());
+    println!(
+        "Attractor colors: {}",
+        attractor_colors.approx_cardinality()
+    );
+    println!(
+        "Attractor colors computed in {} ms.",
+        start_attractor.elapsed().as_millis()
+    );
     let start = Instant::now();
     let control = control_function(&perturbation_graph, &source, &target, &attractor_colors);
     println!(
@@ -104,7 +127,10 @@ pub fn string_to_state(string_vector: &str) -> ArrayBitVector {
 }
 
 /// Compute all graph colors for which the given state is an attractor state.
-pub fn get_all_params_with_attractor(graph: &PerturbationGraph, state: &ArrayBitVector) -> GraphColors {
+pub fn get_all_params_with_attractor(
+    graph: &PerturbationGraph,
+    state: &ArrayBitVector,
+) -> GraphColors {
     let seed = graph.vertex(state);
     let bwd = backward(graph.as_original(), &seed);
     let mut attractor = seed.clone();

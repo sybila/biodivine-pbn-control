@@ -11,13 +11,18 @@ use biodivine_lib_param_bn::{BooleanNetwork, ParameterId, VariableId, VariableId
 use std::collections::HashMap;
 
 impl PerturbationGraph {
-
     pub fn new(network: &BooleanNetwork) -> PerturbationGraph {
-        PerturbationGraph::with_restricted_variables(network, &network.variables().collect::<Vec<_>>())
+        PerturbationGraph::with_restricted_variables(
+            network,
+            &network.variables().collect::<Vec<_>>(),
+        )
     }
 
     /// Create a new perturbation graph for a given Boolean network.
-    pub fn with_restricted_variables(network: &BooleanNetwork, perturb: &[VariableId]) -> PerturbationGraph {
+    pub fn with_restricted_variables(
+        network: &BooleanNetwork,
+        perturb: &[VariableId],
+    ) -> PerturbationGraph {
         let normalized = normalize_network(network);
 
         let mut original_parameters = HashMap::new();

@@ -10,7 +10,7 @@ impl PerturbationGraph {
         &self,
         source: &ArrayBitVector,
         target: &ArrayBitVector,
-        compute_params: &GraphColors
+        compute_params: &GraphColors,
     ) -> ControlMap {
         /*
            Permanent control works exactly as one-step, but in the perturbed graph instead of original.
@@ -22,7 +22,7 @@ impl PerturbationGraph {
         let can_jump_to = self.post_perturbation(source, &strong_basin);
         ControlMap {
             perturbation_set: can_jump_to,
-            context: self.clone()
+            context: self.clone(),
         }
     }
 }
@@ -61,7 +61,11 @@ mod tests {
         for target in attractors.iter().skip(1) {
             let target_state = target.vertices().materialize().iter().next().unwrap();
 
-            let control = perturbations.permanent_control(&source_state, &target_state, perturbations.unit_colors());
+            let control = perturbations.permanent_control(
+                &source_state,
+                &target_state,
+                perturbations.unit_colors(),
+            );
             println!(
                 "Control from {:?} to {:?} cardinality: {}",
                 source_state,

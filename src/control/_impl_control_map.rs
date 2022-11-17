@@ -63,7 +63,7 @@ impl ControlMap {
         self.controllable_colors().cardinality()
     }
 
-        /// Compute the number of vertices the source can jump to due to different perturbations.
+    /// Compute the number of vertices the source can jump to due to different perturbations.
     pub fn jump_vertices(&self) -> f64 {
         self.perturbation_set.vertices().approx_cardinality()
     }

@@ -11,7 +11,7 @@ impl PerturbationGraph {
         &self,
         source: &ArrayBitVector,
         target: &ArrayBitVector,
-        compute_params: &GraphColors
+        compute_params: &GraphColors,
     ) -> ControlMap {
         /*
            Temporary control is the most challenging, because the control jump needs to be into
@@ -25,7 +25,7 @@ impl PerturbationGraph {
         let can_jump_and_hold = self.post_perturbation(source, &perturbed_strong_basin);
         ControlMap {
             perturbation_set: can_jump_and_hold,
-            context: self.clone()
+            context: self.clone(),
         }
     }
 }
@@ -66,7 +66,11 @@ mod tests {
         for target in attractors.iter().skip(1) {
             let target_state = target.vertices().materialize().iter().next().unwrap();
 
-            let control = perturbations.temporary_control(&source_state, &target_state, perturbations.unit_colors());
+            let control = perturbations.temporary_control(
+                &source_state,
+                &target_state,
+                perturbations.unit_colors(),
+            );
             println!(
                 "Control from {:?} to {:?} cardinality: {}",
                 source_state,
@@ -115,7 +119,11 @@ mod tests {
             // Finally, we know temporary control should usually work in more instances than
             // one-step control. Sadly, our test models contain one instance where temporary and
             // one step are equal :/ However, we can still test that one is a subset of the other.
-            let one_step_control = perturbations.one_step_control(&source_state, &target_state, perturbations.unit_colors());
+            let one_step_control = perturbations.one_step_control(
+                &source_state,
+                &target_state,
+                perturbations.unit_colors(),
+            );
             let extra_controls = control
                 .as_colored_vertices()
                 .minus(one_step_control.as_colored_vertices());

@@ -6,7 +6,7 @@ use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, Symboli
 pub fn backward_within(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
-    bounds: &GraphColoredVertices
+    bounds: &GraphColoredVertices,
 ) -> GraphColoredVertices {
     assert!(initial.is_subset(bounds));
     let mut result = initial.clone();
@@ -92,7 +92,7 @@ pub fn forward(graph: &SymbolicAsyncGraph, initial: &GraphColoredVertices) -> Gr
 pub fn forward_within(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
-    bounds: &GraphColoredVertices
+    bounds: &GraphColoredVertices,
 ) -> GraphColoredVertices {
     let mut result = initial.clone();
 
@@ -125,16 +125,14 @@ pub fn forward_within(
 pub fn forward_closed_within(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
-    bounds: &GraphColoredVertices
+    bounds: &GraphColoredVertices,
 ) -> GraphColoredVertices {
     let mut result = initial.clone();
 
     loop {
         let mut stop = true;
         for var in graph.as_network().variables().rev() {
-            let step = graph
-                .var_post(var, &result)
-                .minus(&result);
+            let step = graph.var_post(var, &result).minus(&result);
 
             if !step.is_empty() {
                 let goes_outside = step.minus(&bounds).colors();
@@ -155,14 +153,12 @@ pub fn forward_closed_within(
 /// Remove all colors for which the `set` isn't backward closed.
 pub fn backward_closed_subset(
     graph: &SymbolicAsyncGraph,
-    set: &GraphColoredVertices
+    set: &GraphColoredVertices,
 ) -> GraphColoredVertices {
     let mut result = set.clone();
 
     for var in graph.as_network().variables().rev() {
-        let bwd_step = graph
-            .var_pre(var, &result)
-            .minus(&result);
+        let bwd_step = graph.var_pre(var, &result).minus(&result);
         result = result.minus_colors(&bwd_step.colors());
     }
 
@@ -172,14 +168,12 @@ pub fn backward_closed_subset(
 /// Remove all colors for which the `set` isn't forward closed.
 pub fn forward_closed_subset(
     graph: &SymbolicAsyncGraph,
-    set: &GraphColoredVertices
+    set: &GraphColoredVertices,
 ) -> GraphColoredVertices {
     let mut result = set.clone();
 
     for var in graph.as_network().variables().rev() {
-        let fwd_step = graph
-            .var_post(var, &result)
-            .minus(&result);
+        let fwd_step = graph.var_post(var, &result).minus(&result);
         result = result.minus_colors(&fwd_step.colors());
     }
 

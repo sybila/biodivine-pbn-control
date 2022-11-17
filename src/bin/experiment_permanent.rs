@@ -11,6 +11,6 @@ fn main() {
         target,
         model,
         PerturbationGraph::permanent_control,
-        "permanent"
+        "permanent",
     );
 }
