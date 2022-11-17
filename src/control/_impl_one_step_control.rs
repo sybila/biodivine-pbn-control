@@ -20,7 +20,7 @@ impl PerturbationGraph {
            Note that colors where target is not in an attractor will be eliminated using the
            strong basin procedure.
         */
-        let target_set = self.vertex(&target).intersect_colors(compute_params);
+        let target_set = self.vertex(target).intersect_colors(compute_params);
         let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set);
         let strong_basin =
             crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin);

@@ -110,11 +110,11 @@ pub fn parse_experiment(file: &str) -> (ArrayBitVector, ArrayBitVector, BooleanN
 
 /// Convert a bit-vector string to an actual bit-vector.
 pub fn string_to_state(string_vector: &str) -> ArrayBitVector {
-    assert!(string_vector.starts_with("["));
-    assert!(string_vector.ends_with("]"));
+    assert!(string_vector.starts_with('['));
+    assert!(string_vector.ends_with(']'));
     let string_vector = &string_vector[1..(string_vector.len() - 1)];
     let mut vector = Vec::new();
-    for segment in string_vector.split(",") {
+    for segment in string_vector.split(',') {
         if segment.trim() == "True" {
             vector.push(true);
         } else if segment.trim() == "False" {
@@ -133,7 +133,7 @@ pub fn get_all_params_with_attractor(
 ) -> GraphColors {
     let seed = graph.vertex(state);
     let bwd = backward(graph.as_original(), &seed);
-    let mut attractor = seed.clone();
+    let mut attractor = seed;
     'forward: loop {
         if cfg!(feature = "print_progress") && attractor.as_bdd().size() > 100_000 {
             println!("FWD-attractor: {}", attractor.as_bdd().size());

@@ -19,5 +19,5 @@ pub fn compute(graph: &SymbolicAsyncGraph) -> Vec<GraphColoredVertices> {
         universe = universe.minus(&bwd);
     }
 
-    return result;
+    result
 }

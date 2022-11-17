@@ -14,10 +14,7 @@ pub fn backward_within(
     loop {
         let mut stop = true;
         for var in graph.as_network().variables().rev() {
-            let step = graph
-                .var_pre(var, &result)
-                .intersect(&bounds)
-                .minus(&result);
+            let step = graph.var_pre(var, &result).intersect(bounds).minus(&result);
 
             if !step.is_empty() {
                 result = result.union(&step);
@@ -101,7 +98,7 @@ pub fn forward_within(
         for var in graph.as_network().variables().rev() {
             let step = graph
                 .var_post(var, &result)
-                .intersect(&bounds)
+                .intersect(bounds)
                 .minus(&result);
 
             if !step.is_empty() {
@@ -135,7 +132,7 @@ pub fn forward_closed_within(
             let step = graph.var_post(var, &result).minus(&result);
 
             if !step.is_empty() {
-                let goes_outside = step.minus(&bounds).colors();
+                let goes_outside = step.minus(bounds).colors();
                 result = result.union(&step).minus_colors(&goes_outside);
                 stop = false;
                 break;

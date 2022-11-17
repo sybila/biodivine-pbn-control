@@ -319,7 +319,7 @@ fn find_witness_attractors(m: &str) -> Vec<ArrayBitVector> {
     let model_string: &str =
         &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
     let model = BooleanNetwork::try_from(model_string).unwrap();
-    let graph = SymbolicAsyncGraph::new(model.clone()).unwrap();
+    let graph = SymbolicAsyncGraph::new(model).unwrap();
     let attractors = biodivine_pbn_control::aeon::attractors::compute(&graph);
     let mut vertices = Vec::new();
     for a in attractors {
@@ -338,7 +338,7 @@ pub fn get_all_params_with_attractor(
 ) -> GraphColors {
     let seed = graph.vertex(state);
     let bwd = backward(graph.as_original(), &seed);
-    let mut attractor = seed.clone();
+    let mut attractor = seed;
     'forward: loop {
         if attractor.as_bdd().size() > 10_000 {
             println!("FWD: {}", attractor.as_bdd().size());
