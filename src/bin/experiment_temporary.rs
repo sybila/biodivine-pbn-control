@@ -11,6 +11,6 @@ fn main() {
         target,
         model,
         PerturbationGraph::temporary_control,
-        "temporary"
+        "temporary",
     );
 }

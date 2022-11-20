@@ -11,13 +11,18 @@ use biodivine_lib_param_bn::{BooleanNetwork, ParameterId, VariableId, VariableId
 use std::collections::HashMap;
 
 impl PerturbationGraph {
-
     pub fn new(network: &BooleanNetwork) -> PerturbationGraph {
-        PerturbationGraph::with_restricted_variables(network, &network.variables().collect::<Vec<_>>())
+        PerturbationGraph::with_restricted_variables(
+            network,
+            &network.variables().collect::<Vec<_>>(),
+        )
     }
 
     /// Create a new perturbation graph for a given Boolean network.
-    pub fn with_restricted_variables(network: &BooleanNetwork, perturb: &[VariableId]) -> PerturbationGraph {
+    pub fn with_restricted_variables(
+        network: &BooleanNetwork,
+        perturb: &[VariableId],
+    ) -> PerturbationGraph {
         let normalized = normalize_network(network);
 
         let mut original_parameters = HashMap::new();
@@ -104,11 +109,11 @@ impl PerturbationGraph {
     }
 
     pub fn strong_basin(&self, target: &ArrayBitVector) -> GraphColoredVertices {
-        let target_set = self.vertex(&target);
+        let target_set = self.vertex(target);
         let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set);
         let strong_basin =
             crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin);
-        return strong_basin;
+        strong_basin
     }
 
     /// Return a subset of vertices and colors where the variable is perturbed to the given value.

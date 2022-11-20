@@ -8,7 +8,6 @@ use std::convert::TryFrom;
 ///
 /// This is a necessary pre-processing step before creating a `PerturbationGraph`.
 pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
-
     let mut network = network.clone();
     for var in network.variables() {
         if network.get_update_function(var).is_none() {
@@ -120,7 +119,8 @@ pub fn make_original_network(
             result
                 .add_update_function(v, uncontrolled_function)
                 .unwrap();
-        } else { // If not perturbed, just copy what we have.
+        } else {
+            // If not perturbed, just copy what we have.
             result.add_update_function(v, function.clone()).unwrap();
         }
     }
@@ -165,10 +165,12 @@ pub fn make_perturbed_network(
 
             // Set controlled function to (v_perturbed => v) && (!v_perturbed => f(...))
             let controlled_implies_v = fn_parameter().implies(FnUpdate::mk_var(v));
-            let not_controlled_implies_f = FnUpdate::mk_not(fn_parameter()).implies(function.clone());
+            let not_controlled_implies_f =
+                FnUpdate::mk_not(fn_parameter()).implies(function.clone());
             let controlled_function = controlled_implies_v.and(not_controlled_implies_f);
             result.add_update_function(v, controlled_function).unwrap();
-        } else { // If not perturbed, just copy what we have.
+        } else {
+            // If not perturbed, just copy what we have.
             result.add_update_function(v, function.clone()).unwrap();
         }
     }
