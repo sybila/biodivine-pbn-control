@@ -1,8 +1,8 @@
 [package]
 name = "biodivine-pbn-control"
-version = "0.2.0"
+version = "0.2.1"
 description = "A library for controlling parametrized Boolean networks."
-authors = ["Samuel Pastva <daemontus@gmail.com>, Eva Smijakova <smijakova.eva@gmail.com>"]
+authors = ["Samuel Pastva <sam.pastva@gmail.com>, Eva Smijakova <smijakova.eva@gmail.com>"]
 edition = "2021"
 license = "MIT"
 exclude = [
@@ -17,8 +17,8 @@ clap = "4.0.26"
 serde_json = "1.0.59"
 itertools = "0.10.1"
 chrono = "0.4.19"
-biodivine-lib-bdd = "0.4.*"
-biodivine-lib-param-bn = "0.3.*"
+biodivine-lib-bdd = ">=0.4.2, <1.0.0"
+biodivine-lib-param-bn = ">=0.4.1, <1.0.0"
 
 [dev-dependencies]
 
