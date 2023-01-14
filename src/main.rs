@@ -13,7 +13,7 @@ use std::convert::TryFrom;
 use std::time::{Duration, Instant};
 use chrono::Local;
 
-const MODELS: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour"]; // , "mapk"];
+const MODELS: [&str; 4] = ["myeloid", "cardiac", "erbb", "tumour"]; // , "mapk"];
 // const MODELS: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
 // const models1: [&str; 2] = ["myeloid", "cardiac"];
 const SUFFIXES: [&str; 7] = [
