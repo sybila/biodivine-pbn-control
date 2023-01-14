@@ -11,21 +11,38 @@ use chrono::Utc;
 use itertools::Itertools;
 use std::convert::TryFrom;
 use std::time::{Duration, Instant};
+use chrono::Local;
 
-const MODELS: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
+const MODELS: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour"]; // , "mapk"];
+// const MODELS: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
 // const models1: [&str; 2] = ["myeloid", "cardiac"];
 const SUFFIXES: [&str; 7] = [
     "witness", "1unknown", "2unknown", "3unknown", "4unknown", "5unknown", "6unknown",
 ];
 const MAX_CONTROL_SIZE: usize = 5;
 
-fn main() {
-    main_models_experiment();
 
-    // main_scalability_experiment();
-    //
-    // main_robustness_experiment()
+fn main() {
+    for model_name in MODELS {
+        let now = Local::now();
+        println!("Computing model {} {}", model_name, now.format("%Y-%m-%d %H:%M:%S"));
+        let model_string: &str =
+            &std::fs::read_to_string(format!("./models/perturbed_models/{}_witness_perturbed.aeon", model_name)).unwrap();
+        let model = BooleanNetwork::try_from(model_string).unwrap();
+        let graph = SymbolicAsyncGraph::new(model).unwrap();
+        let _attractors = biodivine_pbn_control::aeon::attractors::compute(&graph);
+    }
 }
+
+
+
+// fn main() {
+//     // main_models_experiment();
+//     //
+//     // main_scalability_experiment();
+//     //
+//     // main_robustness_experiment()
+// }
 
 fn main_models_experiment() {
     //main_control_template(&MODELS, &["4unknown"], PerturbationGraph::one_step_control, "one-step");
