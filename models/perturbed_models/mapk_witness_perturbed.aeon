@@ -1,0 +1,157 @@
+PTEN -|? AKT
+PDK1 ->? AKT
+AKT -|? p21
+p53 ->? p21
+ATM ->? p53
+p38 ->? p53
+MDM2 -|? p53
+p53 ->? PTEN
+MEK1_2 ->? ERK
+ERK ->? SPRY
+MSK ->? CREB
+CREB ->? BCL2
+AKT ->? BCL2
+TAK1 ->? JNK
+DUSP1 -|? JNK
+MTK1 ->? JNK
+MAP3K1_3 ->? JNK
+TAOK ->? JNK
+JNK ->? ATF2
+p38 ->? ATF2
+TAK1 ->? p38
+DUSP1 -|? p38
+MTK1 ->? p38
+MAP3K1_3 ->? p38
+TAOK ->? p38
+TGFBR_stimulus ->? TGFBR
+TGFBR ->? SMAD
+p21 ->? Growth_Arrest
+ERK ->? RSK
+RSK ->? FOS
+ERK ->? FOS
+ELK1 ->? FOS
+CREB ->? FOS
+JNK ->? ELK1
+ERK ->? ELK1
+p38 ->? ELK1
+TGFBR ->? TAK1
+RSK -|? SOS
+GRB2 ->? SOS
+EGFR ->? GRB2
+FRS2 ->? GRB2
+TGFBR ->? GRB2
+CREB ->? DUSP1
+GADD45 ->? MTK1
+RAS ->? MAP3K1_3
+ATM ->? TAOK
+p38 ->? MAX
+EGFR ->? PLCG
+FGFR3 ->? PLCG
+PLCG ->? PKC
+SMAD ->? GADD45
+p53 ->? GADD45
+p38 ->? PPP2CA
+GRB2 -|? FRS2
+SPRY -|? FRS2
+FGFR3 ->? FRS2
+GRB2 -|? FGFR3
+PKC -|? FGFR3
+FGFR3_stimulus ->? FGFR3
+JNK ->? FOXO3
+AKT -|? FOXO3
+GRB2 -|? EGFR
+PKC -|? EGFR
+SPRY ->? EGFR
+EGFR_stimulus ->? EGFR
+ERK ->? p70
+PDK1 ->? p70
+PI3K ->? PDK1
+MAX ->? MYC
+AKT ->? MYC
+MSK ->? MYC
+ERK ->? MSK
+p38 ->? MSK
+GRB2 ->? GAB1
+PI3K ->? GAB1
+SOS ->? PI3K
+RAS ->? PI3K
+GAB1 ->? PI3K
+RAF ->? MEK1_2
+PPP2CA -|? MEK1_2
+AP1 -|? MEK1_2
+MAP3K1_3 ->? MEK1_2
+MYC ->? p14
+PLCG ->? RAS
+SOS ->? RAS
+JNK ->? JUN
+JUN ->? AP1
+FOS ->? AP1
+ATF2 ->? AP1
+DNA_damage ->? ATM
+BCL2 -|? Apoptosis
+FOXO3 ->? Apoptosis
+ERK -|? Apoptosis
+p53 ->? Apoptosis
+p70 ->? Proliferation
+p21 -|? Proliferation
+MYC ->? Proliferation
+AKT ->? MDM2
+p14 -|? MDM2
+p53 ->? MDM2
+PKC ->? RAF
+ERK -|? RAF
+AKT -|? RAF
+RAS ->? RAF
+$AKT: (!knck_AKT & (overex_AKT | (PDK1 & !PTEN)))
+$AP1: (!knck_AP1 & (overex_AP1 | (JUN & (FOS | ATF2))))
+$ATF2: (!knck_ATF2 & (overex_ATF2 | (p38 | JNK)))
+$ATM: (!knck_ATM & (overex_ATM | DNA_damage))
+$Apoptosis: (!knck_Apoptosis & (overex_Apoptosis | ((FOXO3 & p53) & !(BCL2 | ERK))))
+$BCL2: (!knck_BCL2 & (overex_BCL2 | (CREB & AKT)))
+$CREB: (!knck_CREB & (overex_CREB | MSK))
+$DNA_damage: (!knck_DNA_damage & (overex_DNA_damage | true))
+$DUSP1: (!knck_DUSP1 & (overex_DUSP1 | CREB))
+$EGFR: (!knck_EGFR & (overex_EGFR | ((SPRY & !(PKC | GRB2)) | (EGFR_stimulus & !(PKC | GRB2)))))
+$EGFR_stimulus: (!knck_EGFR_stimulus & (overex_EGFR_stimulus | false))
+$ELK1: (!knck_ELK1 & (overex_ELK1 | ((p38 | JNK) | ERK)))
+$ERK: (!knck_ERK & (overex_ERK | MEK1_2))
+$FGFR3: (!knck_FGFR3 & (overex_FGFR3 | (FGFR3_stimulus & !(GRB2 | PKC))))
+$FGFR3_stimulus: (!knck_FGFR3_stimulus & (overex_FGFR3_stimulus | false))
+$FOS: (!knck_FOS & (overex_FOS | ((ERK & RSK) & (ELK1 | CREB))))
+$FOXO3: (!knck_FOXO3 & (overex_FOXO3 | (JNK & !AKT)))
+$FRS2: (!knck_FRS2 & (overex_FRS2 | (FGFR3 & !(SPRY | GRB2))))
+$GAB1: (!knck_GAB1 & (overex_GAB1 | (PI3K | GRB2)))
+$GADD45: (!knck_GADD45 & (overex_GADD45 | (SMAD | p53)))
+$GRB2: (!knck_GRB2 & (overex_GRB2 | ((EGFR | TGFBR) | FRS2)))
+$Growth_Arrest: (!knck_Growth_Arrest & (overex_Growth_Arrest | p21))
+$JNK: (!knck_JNK & (overex_JNK | ((((((((((TAOK & MTK1) | (TAK1 & TAOK)) | (MTK1 & !DUSP1)) | (TAK1 & MTK1)) | (TAK1 & MAP3K1_3)) | (MAP3K1_3 & MTK1)) | (TAK1 & !DUSP1)) | (TAOK & !DUSP1)) | (TAOK & MAP3K1_3)) | (MAP3K1_3 & !DUSP1))))
+$JUN: (!knck_JUN & (overex_JUN | JNK))
+$MAP3K1_3: (!knck_MAP3K1_3 & (overex_MAP3K1_3 | RAS))
+$MAX: (!knck_MAX & (overex_MAX | p38))
+$MDM2: (!knck_MDM2 & (overex_MDM2 | ((AKT & !p14) | (p53 & !p14))))
+$MEK1_2: (!knck_MEK1_2 & (overex_MEK1_2 | ((RAF & !(AP1 | PPP2CA)) | (MAP3K1_3 & !(AP1 | PPP2CA)))))
+$MSK: (!knck_MSK & (overex_MSK | (ERK | p38)))
+$MTK1: (!knck_MTK1 & (overex_MTK1 | GADD45))
+$MYC: (!knck_MYC & (overex_MYC | ((MSK & AKT) | (MSK & MAX))))
+$PDK1: (!knck_PDK1 & (overex_PDK1 | PI3K))
+$PI3K: (!knck_PI3K & (overex_PI3K | ((RAS & SOS) | GAB1)))
+$PKC: (!knck_PKC & (overex_PKC | PLCG))
+$PLCG: (!knck_PLCG & (overex_PLCG | (EGFR | FGFR3)))
+$PPP2CA: (!knck_PPP2CA & (overex_PPP2CA | p38))
+$PTEN: (!knck_PTEN & (overex_PTEN | p53))
+$Proliferation: (!knck_Proliferation & (overex_Proliferation | ((p70 & MYC) & !p21)))
+$RAF: (!knck_RAF & (overex_RAF | ((PKC & !(ERK | AKT)) | (RAS & !(ERK | AKT)))))
+$RAS: (!knck_RAS & (overex_RAS | (SOS | PLCG)))
+$RSK: (!knck_RSK & (overex_RSK | ERK))
+$SMAD: (!knck_SMAD & (overex_SMAD | TGFBR))
+$SOS: (!knck_SOS & (overex_SOS | (GRB2 & !RSK)))
+$SPRY: (!knck_SPRY & (overex_SPRY | ERK))
+$TAK1: (!knck_TAK1 & (overex_TAK1 | TGFBR))
+$TAOK: (!knck_TAOK & (overex_TAOK | ATM))
+$TGFBR: (!knck_TGFBR & (overex_TGFBR | TGFBR_stimulus))
+$TGFBR_stimulus: (!knck_TGFBR_stimulus & (overex_TGFBR_stimulus | false))
+$p14: (!knck_p14 & (overex_p14 | MYC))
+$p21: (!knck_p21 & (overex_p21 | (p53 & !AKT)))
+$p38: (!knck_p38 & (overex_p38 | ((((((((((MAP3K1_3 & MTK1) | (TAOK & MTK1)) | (TAK1 & MTK1)) | (TAK1 & !DUSP1)) | (TAOK & !DUSP1)) | (TAOK & MAP3K1_3)) | (TAK1 & MAP3K1_3)) | (MTK1 & !DUSP1)) | (TAK1 & TAOK)) | (MAP3K1_3 & !DUSP1))))
+$p53: (!knck_p53 & (overex_p53 | (((p38 & !MDM2) | (ATM & p38)) | (ATM & !MDM2))))
+$p70: (!knck_p70 & (overex_p70 | (PDK1 & ERK)))

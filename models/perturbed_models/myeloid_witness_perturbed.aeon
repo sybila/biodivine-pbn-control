@@ -1,0 +1,41 @@
+CEBPa ->? CEBPa
+GATA1 -|? CEBPa
+FOG1 -|? CEBPa
+SCL -|? CEBPa
+PU1 ->? cJun
+Gfi1 -|? cJun
+Gfi1 -|? EgrNab
+cJun ->? EgrNab
+PU1 ->? EgrNab
+GATA1 ->? EKLF
+Fli1 -|? EKLF
+EKLF -|? Fli1
+GATA1 ->? Fli1
+GATA1 ->? FOG1
+GATA1 ->? GATA1
+GATA2 ->? GATA1
+PU1 -|? GATA1
+Fli1 ->? GATA1
+FOG1 -|? GATA2
+GATA1 -|? GATA2
+PU1 -|? GATA2
+GATA2 ->? GATA2
+CEBPa ->? Gfi1
+EgrNab -|? Gfi1
+CEBPa ->? PU1
+PU1 ->? PU1
+GATA2 -|? PU1
+GATA1 -|? PU1
+GATA1 ->? SCL
+PU1 -|? SCL
+$CEBPa: (!knck_CEBPa & (overex_CEBPa | (CEBPa & (!GATA1 | (!FOG1 | !SCL)))))
+$EKLF: (!knck_EKLF & (overex_EKLF | (GATA1 & !Fli1)))
+$EgrNab: (!knck_EgrNab & (overex_EgrNab | ((PU1 & cJun) & !Gfi1)))
+$FOG1: (!knck_FOG1 & (overex_FOG1 | GATA1))
+$Fli1: (!knck_Fli1 & (overex_Fli1 | (GATA1 & !EKLF)))
+$GATA1: (!knck_GATA1 & (overex_GATA1 | (((GATA1 | GATA2) | Fli1) & !PU1)))
+$GATA2: (!knck_GATA2 & (overex_GATA2 | (GATA2 & ((!GATA1 | !FOG1) & !PU1))))
+$Gfi1: (!knck_Gfi1 & (overex_Gfi1 | (CEBPa & !EgrNab)))
+$PU1: (!knck_PU1 & (overex_PU1 | ((CEBPa | PU1) & (!GATA1 | !GATA2))))
+$SCL: (!knck_SCL & (overex_SCL | (GATA1 & !PU1)))
+$cJun: (!knck_cJun & (overex_cJun | (PU1 & !Gfi1)))

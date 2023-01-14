@@ -1,0 +1,68 @@
+ERalpha ->? IGF1R
+AKT1 ->? IGF1R
+ERBB2_3 -|? IGF1R
+IGF1R ->? MEK1
+ERBB1 ->? MEK1
+ERBB2_3 ->? MEK1
+ERBB1_2 ->? MEK1
+ERBB1_3 ->? MEK1
+EGF ->? ERBB1
+ERBB2 ->? ERBB2_3
+ERBB3 ->? ERBB2_3
+ERBB1 ->? ERBB1_2
+ERBB2 ->? ERBB1_2
+ERBB1 ->? ERBB1_3
+ERBB3 ->? ERBB1_3
+CDK4 -|? p21
+AKT1 -|? p21
+MYC -|? p21
+p21 -|? CDK4
+CyclinD1 ->? CDK4
+p27 -|? CDK4
+MEK1 ->? CyclinD1
+ERalpha ->? CyclinD1
+AKT1 ->? CyclinD1
+MYC ->? CyclinD1
+CDK4 -|? p27
+CDK2 -|? p27
+AKT1 -|? p27
+MYC -|? p27
+IGF1R ->? AKT1
+ERBB1 ->? AKT1
+ERBB2_3 ->? AKT1
+ERBB1_2 ->? AKT1
+ERBB1_3 ->? AKT1
+MEK1 ->? MYC
+ERalpha ->? MYC
+AKT1 ->? MYC
+MEK1 ->? ERalpha
+AKT1 ->? ERalpha
+p21 -|? CDK2
+p27 -|? CDK2
+CyclinE1 ->? CDK2
+MYC ->? CyclinE1
+CDK4 ->? pRB1
+CDK6 ->? pRB1
+CyclinD1 ->? CDK6
+EGF ->? ERBB2
+EGF ->? ERBB3
+$AKT1: (!knck_AKT1 & (overex_AKT1 | ((((((((!IGF1R & !ERBB1) & !ERBB2_3) & !ERBB1_2) & ERBB1_3) | (((!IGF1R & !ERBB1) & !ERBB2_3) & ERBB1_2)) | ((!IGF1R & !ERBB1) & ERBB2_3)) | (!IGF1R & ERBB1)) | IGF1R)))
+$CDK2: (!knck_CDK2 & (overex_CDK2 | ((!p21 & !p27) & CyclinE1)))
+$CDK4: (!knck_CDK4 & (overex_CDK4 | ((!p21 & CyclinD1) & !p27)))
+$CDK6: (!knck_CDK6 & (overex_CDK6 | CyclinD1))
+$CyclinD1: (!knck_CyclinD1 & (overex_CyclinD1 | ((((!MEK1 & ERalpha) & AKT1) & MYC) | ((MEK1 & ERalpha) & MYC))))
+$CyclinE1: (!knck_CyclinE1 & (overex_CyclinE1 | MYC))
+$EGF: (!knck_EGF & (overex_EGF | false))
+$ERBB1: (!knck_ERBB1 & (overex_ERBB1 | EGF))
+$ERBB1_2: (!knck_ERBB1_2 & (overex_ERBB1_2 | (ERBB1 & ERBB2)))
+$ERBB1_3: (!knck_ERBB1_3 & (overex_ERBB1_3 | (ERBB1 & ERBB3)))
+$ERBB2: (!knck_ERBB2 & (overex_ERBB2 | EGF))
+$ERBB2_3: (!knck_ERBB2_3 & (overex_ERBB2_3 | (ERBB2 & ERBB3)))
+$ERBB3: (!knck_ERBB3 & (overex_ERBB3 | EGF))
+$ERalpha: (!knck_ERalpha & (overex_ERalpha | ((!MEK1 & AKT1) | MEK1)))
+$IGF1R: (!knck_IGF1R & (overex_IGF1R | (((!ERalpha & AKT1) & !ERBB2_3) | (ERalpha & !ERBB2_3))))
+$MEK1: (!knck_MEK1 & (overex_MEK1 | ((((((((!IGF1R & !ERBB1) & !ERBB2_3) & !ERBB1_2) & ERBB1_3) | (((!IGF1R & !ERBB1) & !ERBB2_3) & ERBB1_2)) | ((!IGF1R & !ERBB1) & ERBB2_3)) | (!IGF1R & ERBB1)) | IGF1R)))
+$MYC: (!knck_MYC & (overex_MYC | ((((!MEK1 & !ERalpha) & AKT1) | (!MEK1 & ERalpha)) | MEK1)))
+$p21: (!knck_p21 & (overex_p21 | ((!CDK4 & !AKT1) & !MYC)))
+$p27: (!knck_p27 & (overex_p27 | (((!CDK4 & !CDK2) & !AKT1) & !MYC)))
+$pRB1: (!knck_pRB1 & (overex_pRB1 | (CDK4 & CDK6)))
