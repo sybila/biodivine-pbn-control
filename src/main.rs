@@ -13,12 +13,12 @@ use std::convert::TryFrom;
 use std::time::{Duration, Instant};
 use chrono::Local;
 
-const MODELS: [&str; 10] = [
+const MODELS: [&str; 9] = [
     "myeloid",
     "cardiac",
     "erbb",
     // "SKBR3-BREAST-CELL-LINE-LONG-TERM_21",
-    "REPROGRAMMING-TESTES-DERIVED-STEM-CELLS_23",
+    // "REPROGRAMMING-TESTES-DERIVED-STEM-CELLS_23",
     "SEPTATION-INITIATION-NETWORK_23",
     "TUMOR-MICROENVIRONMENT-IN-LYMPHOBLASTIC-LEUKEAMIA-24",
     "TRICHOSTRONGYLUS-RETORTAEFORMIS_25",
