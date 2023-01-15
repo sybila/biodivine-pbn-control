@@ -1,0 +1,105 @@
+v_CXCR4_H ->? v_VLA4_H
+v_VCAM1_M ->? v_VLA4_H
+v_IL1 ->? v_GCSF
+v_lTLR ->? v_TLR_M
+v_FoxO3a_H -|? v_ROS_H
+v_TLR_H ->? v_ROS_H
+v_IL1 ->? v_ROS_H
+v_NfkB_H ->? v_IL1
+v_NfkB_M ->? v_IL1
+v_ROS_M ->? v_IL1
+v_PI3KAkt_H -|? v_IL1
+v_PI3KAkt_M -|? v_IL1
+v_ROS_H ->? v_IL1
+v_GCSF -|? v_CXCR4_H
+v_CXCR7_H -|? v_CXCR4_H
+v_CXCL12_M ->? v_CXCR4_H
+v_Gfi1_H -|? v_CXCR4_H
+v_NfkB_M ->? v_VCAM1_M
+v_Bcatenin_M -|? v_VCAM1_M
+v_PI3KAkt_M ->? v_VCAM1_M
+v_NfkB_M -|? v_CXCL12_M
+v_GCSF -|? v_CXCL12_M
+v_Cx43_M ->? v_CXCL12_M
+v_Bcatenin_M -|? v_CXCL12_M
+v_PI3KAkt_H -|? v_GSK3B_H
+v_GCSF ->? v_ERK_M
+v_ROS_M ->? v_ERK_M
+v_TLR_M ->? v_ERK_M
+v_VLA4_H ->? v_ERK_H
+v_CXCR4_H ->? v_ERK_H
+v_FoxO3a_H -|? v_ERK_H
+v_GCSF ->? v_ERK_H
+v_CXCR7_H ->? v_ERK_H
+v_PI3KAkt_H ->? v_ERK_H
+v_ROS_H ->? v_ERK_H
+v_GSK3B_H -|? v_ERK_H
+v_Gfi1_H ->? v_ERK_H
+v_lTLR ->? v_TLR_H
+v_GSK3B_H -|? v_Bcatenin_H
+v_FoxO3a_H -|? v_NfkB_H
+v_TLR_H ->? v_NfkB_H
+v_PI3KAkt_H ->? v_NfkB_H
+v_ROS_H ->? v_NfkB_H
+v_IL1 ->? v_NfkB_H
+v_VLA4_H ->? v_PI3KAkt_H
+v_CXCR4_H ->? v_PI3KAkt_H
+v_FoxO3a_H -|? v_PI3KAkt_H
+v_GCSF ->? v_PI3KAkt_H
+v_CXCR7_H ->? v_PI3KAkt_H
+v_TLR_H ->? v_PI3KAkt_H
+v_ROS_H ->? v_PI3KAkt_H
+v_GCSF ->? v_Gfi1_H
+v_TLR_H ->? v_Gfi1_H
+v_Gfi1_H -|? v_Gfi1_H
+v_ROS_M ->? v_FoxO3a_M
+v_ERK_M -|? v_FoxO3a_M
+v_Bcatenin_M ->? v_FoxO3a_M
+v_PI3KAkt_M -|? v_FoxO3a_M
+v_NfkB_H ->? v_CXCR7_H
+v_CXCL12_M ->? v_CXCR7_H
+v_Bcatenin_H ->? v_FoxO3a_H
+v_ERK_H -|? v_FoxO3a_H
+v_PI3KAkt_H -|? v_FoxO3a_H
+v_ROS_H ->? v_FoxO3a_H
+v_FoxO3a_M -|? v_ROS_M
+v_TLR_M ->? v_ROS_M
+v_IL1 ->? v_ROS_M
+v_FoxO3a_M -|? v_Bcatenin_M
+v_NfkB_M -|? v_Bcatenin_M
+v_GSK3B_M -|? v_Bcatenin_M
+v_GCSF ->? v_PI3KAkt_M
+v_ROS_M ->? v_PI3KAkt_M
+v_TLR_M ->? v_PI3KAkt_M
+v_PI3KAkt_M -|? v_GSK3B_M
+v_ROS_M ->? v_NfkB_M
+v_ERK_M ->? v_NfkB_M
+v_TLR_M ->? v_NfkB_M
+v_PI3KAkt_M ->? v_NfkB_M
+v_IL1 ->? v_NfkB_M
+$v_Bcatenin_H: (!knck_v_Bcatenin_H & (overex_v_Bcatenin_H | !v_GSK3B_H))
+$v_Bcatenin_M: (!knck_v_Bcatenin_M & (overex_v_Bcatenin_M | !((v_GSK3B_M | v_FoxO3a_M) | v_NfkB_M)))
+$v_CXCL12_M: (!knck_v_CXCL12_M & (overex_v_CXCL12_M | (v_Cx43_M & !((v_Bcatenin_M | v_GCSF) | v_NfkB_M))))
+$v_CXCR4_H: (!knck_v_CXCR4_H & (overex_v_CXCR4_H | (v_CXCL12_M & !((v_CXCR7_H | v_Gfi1_H) | v_GCSF))))
+$v_CXCR7_H: (!knck_v_CXCR7_H & (overex_v_CXCR7_H | (v_CXCL12_M & v_NfkB_H)))
+$v_Cx43_M: (!knck_v_Cx43_M & (overex_v_Cx43_M | updt_v_Cx43_M))
+$v_ERK_H: (!knck_v_ERK_H & (overex_v_ERK_H | ((((((v_CXCR7_H & !(v_GSK3B_H | v_FoxO3a_H)) | ((v_CXCR4_H & v_PI3KAkt_H) & !(v_GSK3B_H | v_FoxO3a_H))) | (v_VLA4_H & !(v_GSK3B_H | v_FoxO3a_H))) | (v_GCSF & !(v_GSK3B_H | v_FoxO3a_H))) | (v_Gfi1_H & !(v_GSK3B_H | v_FoxO3a_H))) | (v_ROS_H & !(v_GSK3B_H | v_FoxO3a_H)))))
+$v_ERK_M: (!knck_v_ERK_M & (overex_v_ERK_M | ((v_ROS_M | v_GCSF) | v_TLR_M)))
+$v_FoxO3a_H: (!knck_v_FoxO3a_H & (overex_v_FoxO3a_H | ((v_Bcatenin_H & !(v_PI3KAkt_H | v_ERK_H)) | (v_ROS_H & !(v_PI3KAkt_H | v_ERK_H)))))
+$v_FoxO3a_M: (!knck_v_FoxO3a_M & (overex_v_FoxO3a_M | ((v_Bcatenin_M & !(v_ERK_M | v_PI3KAkt_M)) | (v_ROS_M & !(v_ERK_M | v_PI3KAkt_M)))))
+$v_GCSF: (!knck_v_GCSF & (overex_v_GCSF | v_IL1))
+$v_GSK3B_H: (!knck_v_GSK3B_H & (overex_v_GSK3B_H | !v_PI3KAkt_H))
+$v_GSK3B_M: (!knck_v_GSK3B_M & (overex_v_GSK3B_M | !v_PI3KAkt_M))
+$v_Gfi1_H: (!knck_v_Gfi1_H & (overex_v_Gfi1_H | ((v_TLR_H & !v_Gfi1_H) | (v_GCSF & !v_Gfi1_H))))
+$v_IL1: (!knck_v_IL1 & (overex_v_IL1 | ((((v_ROS_M & !v_PI3KAkt_M) | (v_NfkB_M & !v_PI3KAkt_M)) | (v_NfkB_H & !v_PI3KAkt_H)) | (v_ROS_H & !v_PI3KAkt_H))))
+$v_NfkB_H: (!knck_v_NfkB_H & (overex_v_NfkB_H | (((v_ROS_H & !v_FoxO3a_H) | (v_TLR_H & !v_FoxO3a_H)) | ((v_IL1 & v_PI3KAkt_H) & !v_FoxO3a_H))))
+$v_NfkB_M: (!knck_v_NfkB_M & (overex_v_NfkB_M | (((v_IL1 & v_PI3KAkt_M) | (v_ROS_M & v_ERK_M)) | v_TLR_M)))
+$v_PI3KAkt_H: (!knck_v_PI3KAkt_H & (overex_v_PI3KAkt_H | (((((v_VLA4_H & !v_FoxO3a_H) | (v_ROS_H & !v_FoxO3a_H)) | ((v_CXCR4_H & v_CXCR7_H) & !v_FoxO3a_H)) | (v_TLR_H & !v_FoxO3a_H)) | (v_GCSF & !v_FoxO3a_H))))
+$v_PI3KAkt_M: (!knck_v_PI3KAkt_M & (overex_v_PI3KAkt_M | ((v_TLR_M | v_ROS_M) | v_GCSF)))
+$v_ROS_H: (!knck_v_ROS_H & (overex_v_ROS_H | ((v_IL1 & v_TLR_H) & !v_FoxO3a_H)))
+$v_ROS_M: (!knck_v_ROS_M & (overex_v_ROS_M | ((v_IL1 & v_TLR_M) & !v_FoxO3a_M)))
+$v_TLR_H: (!knck_v_TLR_H & (overex_v_TLR_H | v_lTLR))
+$v_TLR_M: (!knck_v_TLR_M & (overex_v_TLR_M | v_lTLR))
+$v_VCAM1_M: (!knck_v_VCAM1_M & (overex_v_VCAM1_M | ((v_NfkB_M | v_PI3KAkt_M) | !((v_NfkB_M | v_Bcatenin_M) | v_PI3KAkt_M))))
+$v_VLA4_H: (!knck_v_VLA4_H & (overex_v_VLA4_H | (v_VCAM1_M & v_CXCR4_H)))
+$v_lTLR: (!knck_v_lTLR & (overex_v_lTLR | updt_v_lTLR))

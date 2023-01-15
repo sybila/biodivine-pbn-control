@@ -1,0 +1,73 @@
+v_BCL2 -|? v_BAX
+v_CASP8 ->? v_BAX
+v_XIAP -|? v_apoptosome
+v_ATP ->? v_apoptosome
+v_Cyt_c ->? v_apoptosome
+v_MOMP ->? v_SMAC
+v_RIP1ub ->? v_IKK
+v_NFkB ->? v_cFLIP
+v_NFkB ->? v_BCL2
+v_DISC_TNF ->? v_CASP8
+v_CASP3 ->? v_CASP8
+v_cFLIP -|? v_CASP8
+v_DISC_FAS ->? v_CASP8
+v_MPT -|? v_ATP
+v_FADD ->? v_DISC_TNF
+v_TNFR ->? v_DISC_TNF
+v_NFkB ->? v_XIAP
+v_SMAC -|? v_XIAP
+v_CASP8 -|? v_RIP1
+v_DISC_FAS ->? v_RIP1
+v_TNFR ->? v_RIP1
+v_TNF ->? v_TNFR
+v_NFkB ->? v_cIAP
+v_SMAC -|? v_cIAP
+v_cIAP ->? v_cIAP
+v_apoptosome ->? v_CASP3
+v_XIAP -|? v_CASP3
+v_NFkB ->? v_survival
+v_CASP3 -|? v_NFkB
+v_IKK ->? v_NFkB
+v_ATP -|? v_NonACD
+v_RIP1 ->? v_RIP1k
+v_RIP1 ->? v_RIP1ub
+v_cIAP ->? v_RIP1ub
+v_NFkB -|? v_ROS
+v_RIP1k ->? v_ROS
+v_MPT ->? v_ROS
+v_BCL2 -|? v_MPT
+v_ROS ->? v_MPT
+v_BAX ->? v_MOMP
+v_MPT ->? v_MOMP
+v_CASP3 ->? v_apoptosis
+v_MOMP ->? v_Cyt_c
+v_FASL ->? v_DISC_FAS
+v_FADD ->? v_DISC_FAS
+$v_ATP: (!knck_v_ATP & (overex_v_ATP | !v_MPT))
+$v_BAX: (!knck_v_BAX & (overex_v_BAX | (v_CASP8 & !v_BCL2)))
+$v_BCL2: (!knck_v_BCL2 & (overex_v_BCL2 | v_NFkB))
+$v_CASP3: (!knck_v_CASP3 & (overex_v_CASP3 | (v_apoptosome & !v_XIAP)))
+$v_CASP8: (!knck_v_CASP8 & (overex_v_CASP8 | (((v_CASP3 & !v_cFLIP) | (v_DISC_FAS & !v_cFLIP)) | (v_DISC_TNF & !v_cFLIP))))
+$v_Cyt_c: (!knck_v_Cyt_c & (overex_v_Cyt_c | v_MOMP))
+$v_DISC_FAS: (!knck_v_DISC_FAS & (overex_v_DISC_FAS | (v_FASL & v_FADD)))
+$v_DISC_TNF: (!knck_v_DISC_TNF & (overex_v_DISC_TNF | (v_TNFR & v_FADD)))
+$v_FADD: (!knck_v_FADD & (overex_v_FADD | updt_v_FADD))
+$v_FASL: (!knck_v_FASL & (overex_v_FASL | updt_v_FASL))
+$v_IKK: (!knck_v_IKK & (overex_v_IKK | v_RIP1ub))
+$v_MOMP: (!knck_v_MOMP & (overex_v_MOMP | (v_BAX | v_MPT)))
+$v_MPT: (!knck_v_MPT & (overex_v_MPT | (v_ROS & !v_BCL2)))
+$v_NFkB: (!knck_v_NFkB & (overex_v_NFkB | (v_IKK & !v_CASP3)))
+$v_NonACD: (!knck_v_NonACD & (overex_v_NonACD | (!v_ATP | !v_ATP)))
+$v_RIP1: (!knck_v_RIP1 & (overex_v_RIP1 | ((v_TNFR & !v_CASP8) | (v_DISC_FAS & !v_CASP8))))
+$v_RIP1k: (!knck_v_RIP1k & (overex_v_RIP1k | v_RIP1))
+$v_RIP1ub: (!knck_v_RIP1ub & (overex_v_RIP1ub | (v_cIAP & v_RIP1)))
+$v_ROS: (!knck_v_ROS & (overex_v_ROS | ((v_RIP1k & !v_NFkB) | (v_MPT & !v_NFkB))))
+$v_SMAC: (!knck_v_SMAC & (overex_v_SMAC | v_MOMP))
+$v_TNF: (!knck_v_TNF & (overex_v_TNF | updt_v_TNF))
+$v_TNFR: (!knck_v_TNFR & (overex_v_TNFR | v_TNF))
+$v_XIAP: (!knck_v_XIAP & (overex_v_XIAP | (v_NFkB & !v_SMAC)))
+$v_apoptosis: (!knck_v_apoptosis & (overex_v_apoptosis | v_CASP3))
+$v_apoptosome: (!knck_v_apoptosome & (overex_v_apoptosome | ((v_Cyt_c & v_ATP) & !v_XIAP)))
+$v_cFLIP: (!knck_v_cFLIP & (overex_v_cFLIP | v_NFkB))
+$v_cIAP: (!knck_v_cIAP & (overex_v_cIAP | ((v_NFkB & !v_SMAC) | (v_cIAP & !v_SMAC))))
+$v_survival: (!knck_v_survival & (overex_v_survival | v_NFkB))

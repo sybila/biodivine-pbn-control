@@ -1,0 +1,106 @@
+v_ERBB3 ->? v_ERBB3
+v_stimulus ->? v_ERBB3
+v_pertuzumab -|? v_ERBB3
+v_erlotinib -|? v_ERBB3
+v_AKT -|? v_ERBB3
+v_p70S6K ->? v_PTEN
+v_PTEN ->? v_PTEN
+v_GSKa_b -|? v_PTEN
+v_FoxO1_3a ->? v_FoxO1_3a
+v_AKT -|? v_FoxO1_3a
+v_GSKa_b ->? v_GSKa_b
+v_p53 ->? v_GSKa_b
+v_ERK1_2 ->? v_p70S6K
+v_p70S6K ->? v_p70S6K
+v_ERBB2 ->? v_p70S6K
+v_TSC2 -|? v_p70S6K
+v_PRAS -|? v_p70S6K
+v_RB ->? v_p53
+v_CyclinB1 ->? v_p53
+v_PTEN ->? v_p53
+v_p53 ->? v_p53
+v_ERK1_2 -|? v_cRAF
+v_RPS6 ->? v_cRAF
+v_ERBB2 ->? v_cRAF
+v_cRAF ->? v_cRAF
+v_ERBB1 ->? v_cRAF
+v_p53 -|? v_cRAF
+v_ERBB3 ->? v_Nfkb
+v_RPS6 ->? v_Nfkb
+v_Nfkb ->? v_Nfkb
+v_p70S6K ->? v_CyclinB1
+v_CyclinB1 ->? v_CyclinB1
+v_p53 -|? v_CyclinB1
+v_ERBB1 ->? v_BAX
+v_BAX ->? v_BAX
+v_stimulus ->? v_ERBB1
+v_pertuzumab -|? v_ERBB1
+v_ERBB1 ->? v_ERBB1
+v_erlotinib -|? v_ERBB1
+v_ERBB3 ->? v_AKT
+v_stimulus ->? v_AKT
+v_ERBB2 ->? v_AKT
+v_CyclinB1 -|? v_AKT
+v_ERBB1 ->? v_AKT
+v_PTEN -|? v_AKT
+v_AKT ->? v_AKT
+v_ERK1_2 -|? v_TSC2
+v_TSC2 ->? v_TSC2
+v_ERBB2 ->? v_TSC2
+v_GSKa_b -|? v_TSC2
+v_AKT -|? v_TSC2
+v_RB ->? v_RB
+v_ERBB2 ->? v_RB
+v_TSC2 -|? v_RB
+v_p53 -|? v_RB
+v_CyclinD1 -|? v_RB
+v_cJUN ->? v_cJUN
+v_GSKa_b -|? v_cJUN
+v_p38 ->? v_p38
+v_AKT ->? v_p38
+v_trastuzumab -|? v_ERBB2
+v_stimulus ->? v_ERBB2
+v_ERBB2 ->? v_ERBB2
+v_pertuzumab -|? v_ERBB2
+v_erlotinib -|? v_ERBB2
+v_BAX ->? v_ERBB2
+v_cJUN ->? v_CyclinD1
+v_ERK1_2 ->? v_CyclinD1
+v_PTEN ->? v_CyclinD1
+v_GSKa_b -|? v_CyclinD1
+v_CyclinD1 ->? v_CyclinD1
+v_AKT ->? v_CyclinD1
+v_ERBB3 ->? v_PRAS
+v_PRAS ->? v_PRAS
+v_AKT -|? v_PRAS
+v_ERK1_2 ->? v_ERK1_2
+v_cRAF ->? v_ERK1_2
+v_CyclinB1 ->? v_ERK1_2
+v_ERBB1 ->? v_ERK1_2
+v_RPS6 ->? v_RPS6
+v_p70S6K ->? v_RPS6
+$v_AKT: (!knck_v_AKT & (overex_v_AKT | (((((v_AKT & !(v_PTEN | v_CyclinB1)) | (v_ERBB3 & !(v_PTEN | v_CyclinB1))) | (v_stimulus & !(v_PTEN | v_CyclinB1))) | (v_ERBB1 & !(v_PTEN | v_CyclinB1))) | (v_ERBB2 & !(v_PTEN | v_CyclinB1)))))
+$v_BAX: (!knck_v_BAX & (overex_v_BAX | (v_ERBB1 | v_BAX)))
+$v_CyclinB1: (!knck_v_CyclinB1 & (overex_v_CyclinB1 | ((v_p70S6K & !v_p53) | (v_CyclinB1 & !v_p53))))
+$v_CyclinD1: (!knck_v_CyclinD1 & (overex_v_CyclinD1 | (((((v_CyclinD1 & !v_GSKa_b) | (v_ERK1_2 & !v_GSKa_b)) | (v_cJUN & !v_GSKa_b)) | (v_PTEN & !v_GSKa_b)) | (v_AKT & !v_GSKa_b))))
+$v_ERBB1: (!knck_v_ERBB1 & (overex_v_ERBB1 | ((v_ERBB1 & !(v_erlotinib | v_pertuzumab)) | (v_stimulus & !(v_erlotinib | v_pertuzumab)))))
+$v_ERBB2: (!knck_v_ERBB2 & (overex_v_ERBB2 | (((v_BAX & !((v_trastuzumab | v_erlotinib) | v_pertuzumab)) | (v_stimulus & !((v_trastuzumab | v_erlotinib) | v_pertuzumab))) | (v_ERBB2 & !((v_trastuzumab | v_erlotinib) | v_pertuzumab)))))
+$v_ERBB3: (!knck_v_ERBB3 & (overex_v_ERBB3 | ((v_stimulus & !((v_erlotinib | v_AKT) | v_pertuzumab)) | (v_ERBB3 & !((v_erlotinib | v_AKT) | v_pertuzumab)))))
+$v_ERK1_2: (!knck_v_ERK1_2 & (overex_v_ERK1_2 | (((v_cRAF | v_CyclinB1) | v_ERK1_2) | v_ERBB1)))
+$v_FoxO1_3a: (!knck_v_FoxO1_3a & (overex_v_FoxO1_3a | (v_FoxO1_3a & !v_AKT)))
+$v_GSKa_b: (!knck_v_GSKa_b & (overex_v_GSKa_b | (v_p53 | v_GSKa_b)))
+$v_Nfkb: (!knck_v_Nfkb & (overex_v_Nfkb | ((v_Nfkb | v_ERBB3) | v_RPS6)))
+$v_PRAS: (!knck_v_PRAS & (overex_v_PRAS | ((v_ERBB3 & !v_AKT) | (v_PRAS & !v_AKT))))
+$v_PTEN: (!knck_v_PTEN & (overex_v_PTEN | ((v_PTEN & !v_GSKa_b) | (v_p70S6K & !v_GSKa_b))))
+$v_RB: (!knck_v_RB & (overex_v_RB | ((v_ERBB2 & !((v_p53 | v_TSC2) | v_CyclinD1)) | (v_RB & !((v_p53 | v_TSC2) | v_CyclinD1)))))
+$v_RPS6: (!knck_v_RPS6 & (overex_v_RPS6 | (v_RPS6 | v_p70S6K)))
+$v_TSC2: (!knck_v_TSC2 & (overex_v_TSC2 | ((v_TSC2 & !((v_GSKa_b | v_AKT) | v_ERK1_2)) | (v_ERBB2 & !((v_GSKa_b | v_AKT) | v_ERK1_2)))))
+$v_cJUN: (!knck_v_cJUN & (overex_v_cJUN | (v_cJUN & !v_GSKa_b)))
+$v_cRAF: (!knck_v_cRAF & (overex_v_cRAF | ((((v_ERBB1 & !(v_ERK1_2 | v_p53)) | (v_ERBB2 & !(v_ERK1_2 | v_p53))) | (v_RPS6 & !(v_ERK1_2 | v_p53))) | (v_cRAF & !(v_ERK1_2 | v_p53)))))
+$v_erlotinib: (!knck_v_erlotinib & (overex_v_erlotinib | updt_v_erlotinib))
+$v_p38: (!knck_v_p38 & (overex_v_p38 | (v_AKT | v_p38)))
+$v_p53: (!knck_v_p53 & (overex_v_p53 | (((v_p53 | v_CyclinB1) | v_PTEN) | v_RB)))
+$v_p70S6K: (!knck_v_p70S6K & (overex_v_p70S6K | (((v_ERBB2 & !(v_PRAS | v_TSC2)) | (v_p70S6K & !(v_PRAS | v_TSC2))) | (v_ERK1_2 & !(v_PRAS | v_TSC2)))))
+$v_pertuzumab: (!knck_v_pertuzumab & (overex_v_pertuzumab | updt_v_pertuzumab))
+$v_stimulus: (!knck_v_stimulus & (overex_v_stimulus | updt_v_stimulus))
+$v_trastuzumab: (!knck_v_trastuzumab & (overex_v_trastuzumab | updt_v_trastuzumab))
