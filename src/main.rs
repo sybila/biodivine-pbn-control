@@ -13,18 +13,19 @@ use std::convert::TryFrom;
 use std::time::{Duration, Instant};
 use chrono::Local;
 
-const MODELS: [&str; 8] = [
+const MODELS: [&str; 2] = [
     "myeloid",
-    "cardiac",
-    "erbb",
+    "cardiac"
+    // "erbb",
     // "SKBR3-BREAST-CELL-LINE-LONG-TERM_21",
     // "REPROGRAMMING-TESTES-DERIVED-STEM-CELLS_23",
     // "SEPTATION-INITIATION-NETWORK_23",
-    "TUMOR-MICROENVIRONMENT-IN-LYMPHOBLASTIC-LEUKEAMIA-24",
-    "TRICHOSTRONGYLUS-RETORTAEFORMIS_25",
-    "DEATH-RECEPTOR-SIGNALING_25",
-    "FA-BRCA-PATHWAY_28",
-    "tumour"]; // , "mapk"];
+    // "TUMOR-MICROENVIRONMENT-IN-LYMPHOBLASTIC-LEUKEAMIA-24",
+    // "TRICHOSTRONGYLUS-RETORTAEFORMIS_25",
+    // "DEATH-RECEPTOR-SIGNALING_25",
+    // "FA-BRCA-PATHWAY_28",
+    // "tumour"]; // , "mapk"];
+    ];
 // const MODELS: [&str; 5] = ["myeloid", "cardiac", "erbb", "tumour", "mapk"];
 // const models1: [&str; 2] = ["myeloid", "cardiac"];
 const SUFFIXES: [&str; 7] = [
