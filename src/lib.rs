@@ -11,3 +11,5 @@ pub mod perturbation;
 /// Utility module with helper methods for running experiments based on the attached
 /// network_sampler.py and run_groups.py
 pub mod experiment_utils;
+
+pub mod phenotype_control;

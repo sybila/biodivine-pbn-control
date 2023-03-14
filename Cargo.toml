@@ -18,7 +18,7 @@ serde_json = "1.0.59"
 itertools = "0.10.1"
 chrono = "0.4.19"
 biodivine-lib-bdd = "0.4.*"
-biodivine-lib-param-bn = "0.3.*"
+biodivine-lib-param-bn = "0.4.4"
 
 [dev-dependencies]
 
