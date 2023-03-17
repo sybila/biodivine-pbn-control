@@ -13,12 +13,15 @@ impl PerturbationGraph {
         println!("all space {}", self.as_perturbed().unit_colored_vertices().approx_cardinality());
         println!("phenotype space {}", phenotype.approx_cardinality());
 
-        let attractors = FixedPoints::symbolic(self.as_perturbed(), self.as_perturbed().unit_colored_vertices());
-        println!("all atts {}", attractors.approx_cardinality());
-        let phenotype_violating_attractors = attractors.minus(&phenotype);
+        let phenotype_violating_space = self.as_perturbed().unit_colored_vertices().minus(&phenotype);
+        println!("phenotype space {}", phenotype_violating_space .approx_cardinality());
+
+        let phenotype_violating_attractors = FixedPoints::symbolic(self.as_perturbed(), &phenotype_violating_space);
         println!("violating atts {}", phenotype_violating_attractors.approx_cardinality());
+
         let phenotype_violating_space = aeon::reachability::backward(self.as_perturbed(), &phenotype_violating_attractors);
         println!("violating space {}", phenotype_violating_space.approx_cardinality());
+
         let phenotype_respecting_space = self.as_perturbed().unit_colored_vertices().minus(&phenotype_violating_space);
         println!("ok space {}", phenotype_respecting_space.approx_cardinality());
 

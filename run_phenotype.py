@@ -21,18 +21,19 @@ def SPAWN(command):
 # UNIX time utility (when invoked with -p argument)
 RE_TIME = re.compile("\\s*real\\s*(\\d+\\.?\\d*)\\s*")
 
-models = ["[id-010]__[var-13]__[in-2]__[CARDIAC-DEVELOPMENT].aeon",
-             "[id-090]__[var-14]__[in-4]__[MAPK-REDUCED-2].aeon",
-             "[id-096]__[var-19]__[in-1]__[ERBB-REGULATED-G1-S-TRANSITION].aeon",
-             "SKBR3-BREAST-CELL-LINE-LONG-TERM_21.aeon",
-             "REPROGRAMMING-TESTES-DERIVED-STEM-CELLS_23.aeon",
-             "SEPTATION-INITIATION-NETWORK_23.aeon",
-             "TUMOR-MICROENVIRONMENT-IN-LYMPHOBLASTIC-LEUKEAMIA-24.aeon",
-             "DEATH-RECEPTOR-SIGNALING_25.aeon",
-             "TRICHOSTRONGYLUS-RETORTAEFORMIS_25.aeon",
-             "FA-BRCA-PATHWAY_28.aeon",
-             "[id-065]__[var-30]__[in-2]__[TUMOUR-CELL-INVASION-AND-MIGRATION].aeon",
-             "[id-150]__[var-31]__[in-2]__[CELL-FATE-DECISION-MULTISCALE].aeon",
+models = [
+             # "[id-010]__[var-13]__[in-2]__[CARDIAC-DEVELOPMENT].aeon",
+             # "[id-090]__[var-14]__[in-4]__[MAPK-REDUCED-2].aeon",
+             # "[id-096]__[var-19]__[in-1]__[ERBB-REGULATED-G1-S-TRANSITION].aeon",
+             # "SKBR3-BREAST-CELL-LINE-LONG-TERM_21.aeon",
+             # "REPROGRAMMING-TESTES-DERIVED-STEM-CELLS_23.aeon",
+             # "SEPTATION-INITIATION-NETWORK_23.aeon",
+             # "TUMOR-MICROENVIRONMENT-IN-LYMPHOBLASTIC-LEUKEAMIA-24.aeon",
+             # "DEATH-RECEPTOR-SIGNALING_25.aeon",
+             # "TRICHOSTRONGYLUS-RETORTAEFORMIS_25.aeon",
+             # "FA-BRCA-PATHWAY_28.aeon",
+             # "[id-065]__[var-30]__[in-2]__[TUMOUR-CELL-INVASION-AND-MIGRATION].aeon",
+             # "[id-150]__[var-31]__[in-2]__[CELL-FATE-DECISION-MULTISCALE].aeon",
              "[id-179]__[var-46]__[in-10]__[MICROENVIRONMENT-CONTROL].aeon",
              "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE].aeon",
              "[id-014]__[var-54]__[in-7]__[T-LGL-SURVIVAL-NETWORK-2008].aeon"]
@@ -41,10 +42,11 @@ models = ["[id-010]__[var-13]__[in-2]__[CARDIAC-DEVELOPMENT].aeon",
 if __name__ == "__main__":
     print(">>>>>>>>>> START BENCHMARK RUN")
 
-    CUT_OFF = 120 * 60
-    SCRIPT = "cargo run --release --bin experiment_phenotype"
+    # 2 days
+    CUT_OFF = "48h"
+    SCRIPT = "./target/release/experiment_phenotype"
     INTERACTIVE = False
-    PARALLEL = 2
+    PARALLEL = 1
 
     # Set timeout binary based on OS (macOS needs gtimeout)
     TIMEOUT = 'none'
@@ -83,7 +85,6 @@ if __name__ == "__main__":
     AGGREGATION_LIST = []
 
     BENCHMARKS = models
-
     # Handle data from a finished process. In particular,
     # update AGGREGATION_LIST and TIMES file.
     def PROCESS_RESULT(process, name, output_file):
@@ -119,48 +120,24 @@ if __name__ == "__main__":
                 TIMES.write(name + ", " + "fail" + "\n")
         TIMES.flush()
 
-    if PARALLEL > 0:
-        ACTIVE = []
-        while len(ACTIVE) > 0 or len(BENCHMARKS) > 0:
-            while len(ACTIVE) < PARALLEL and len(BENCHMARKS) > 0:
-                bench = BENCHMARKS.pop(0)
-                name = f"models_phenotype/{bench}"
-                input_file = BENCH_DIR + "/" + bench
-                output_file = OUT_DIR + "/" + name + "_out.txt"
-                command = TIMEOUT + " " + CUT_OFF + " " + SCRIPT + " " + input_file + " > " + output_file + " 2>&1"
-                process = Process(target=SPAWN, args=(command,))
-                process.start()
-                ACTIVE.append((process, name, output_file))
-            time.sleep(1) # Sleep 1s
-            STILL_ACTIVE = []
-            for (process, name, output_file) in ACTIVE:
-                if process.is_alive():
-                    STILL_ACTIVE.append((process, name, output_file))
-                else:
-                    PROCESS_RESULT(process, name, output_file)
-            ACTIVE = STILL_ACTIVE
-    else:
-        for bench in BENCHMARKS:
-            print(">>>>>>>>>> START BENCHMARK", bench, "<<<<<<<<<<")
-            if INTERACTIVE:
-                print("Write 'skip' to go to next benchmark, 'abort' to end the run, or press enter key to continue...")
-                skip = sys.stdin.readline()
-                if skip.startswith("skip"):
-                    print("Skipped!")
-                    continue
-                if skip.startswith("abort"):
-                    print("Aborted!")
-                    break
-            # Benchmark filename without extension
-            name = os.path.splitext(bench)[0].replace("/", "_")
-            print(name)
-            input_file = BENCH_DIR + "/" + bench
-            output_file = OUT_DIR + "/" + name + "_out.txt"
-            command = TIMEOUT + " " + CUT_OFF + " " + SCRIPT + " " + input_file + " > " + output_file + " 2>&1"
+    ACTIVE = []
+    while len(ACTIVE) > 0 or len(BENCHMARKS) > 0:
+        while len(ACTIVE) < PARALLEL and len(BENCHMARKS) > 0:
+            bench = BENCHMARKS.pop(0)
+            input_file = f"models_phenotype/{bench}"
+            output_file = OUT_DIR + "/" + bench + "_out.txt"
+            command = TIMEOUT + " " + CUT_OFF + " time -p " + " " + SCRIPT + " " + input_file + " > " + output_file + " 2>&1"
             process = Process(target=SPAWN, args=(command,))
             process.start()
-            process.join()
-            PROCESS_RESULT(process, name, output_file)
+            ACTIVE.append((process, bench, output_file))
+        time.sleep(1) # Sleep 1s
+        STILL_ACTIVE = []
+        for (process, bench, output_file) in ACTIVE:
+            if process.is_alive():
+                STILL_ACTIVE.append((process, bench, output_file))
+            else:
+                PROCESS_RESULT(process, bench, output_file)
+        ACTIVE = STILL_ACTIVE
 
 
     # At this point, TIMES should be up-to-date, but we
