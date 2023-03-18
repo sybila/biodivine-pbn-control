@@ -1,14 +1,53 @@
+use std::collections::HashSet;
+use std::hash::Hash;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::fixed_points::FixedPoints;
 use biodivine_lib_param_bn::symbolic_async_graph::GraphColoredVertices;
+use biodivine_lib_param_bn::VariableId;
+use chrono::{DateTime, Local};
 use crate::aeon;
 use crate::phenotype_control::PhenotypeControlMap;
+use itertools::Itertools;
 
 impl PerturbationGraph {
-    pub fn phenotype_permanent_control(
+    pub fn ceiled_phenotype_permanent_control(
         &self,
         phenotype: GraphColoredVertices,
+        max_size: i32
+    ) -> PhenotypeControlMap {
+        let now = Local::now();
+        println!("Starting phenotype permanent control ceiled to size {} at: {}", max_size, now);
+        let mut admissible_perturbations = self.as_perturbed().mk_empty_colors();
+        for i in 1..(max_size+1) {
+            for c in self.as_perturbed().as_network().variables().combinations(i as usize) {
+                let mut perturbed = HashSet::new();
+                let mut color_combination = self.as_perturbed().mk_unit_colors();
+                for perturbation in c {
+                    perturbed.insert(perturbation.clone());
+                }
+                for v in self.as_perturbed().as_network().variables() {
+                    if perturbed.contains(&v) {
+                        color_combination = color_combination.intersect(
+                            &self.fix_perturbation(v, None).colors());
+                    } else {
+                        color_combination = color_combination.intersect(
+                            &self.not_perturbed(v)
+                        )
+                    }
+                }
+                admissible_perturbations = admissible_perturbations.union(&color_combination);
+            }
+        }
+
+        let result = self.phenotype_permanent_control (phenotype.intersect_colors(&admissible_perturbations));
+        result
+    }
+
+
+    pub fn phenotype_permanent_control(
+        &self,
+        phenotype: GraphColoredVertices
     ) -> PhenotypeControlMap {
         println!("all space {}", self.as_perturbed().unit_colored_vertices().approx_cardinality());
         println!("phenotype space {}", phenotype.approx_cardinality());
@@ -27,7 +66,7 @@ impl PerturbationGraph {
 
         PhenotypeControlMap {
             perturbation_set: phenotype_respecting_space,
-            context: self.clone(),
+            context: self.clone()
         }
     }
 }
