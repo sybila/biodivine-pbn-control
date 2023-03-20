@@ -48,6 +48,8 @@ if __name__ == "__main__":
     INTERACTIVE = False
     PARALLEL = 1
 
+    PERTURBATION_MAX_SIZE = "3"
+
     # Set timeout binary based on OS (macOS needs gtimeout)
     TIMEOUT = 'none'
 
@@ -126,7 +128,7 @@ if __name__ == "__main__":
             bench = BENCHMARKS.pop(0)
             input_file = f"models_phenotype/{bench}"
             output_file = OUT_DIR + "/" + bench + "_out.txt"
-            command = TIMEOUT + " " + CUT_OFF + " time -p " + " " + SCRIPT + " " + input_file + " > " + output_file + " 2>&1"
+            command = TIMEOUT + " " + CUT_OFF + " time -p " + " " + SCRIPT + " " + input_file + " " + PERTURBATION_MAX_SIZE + " > " + output_file + " 2>&1"
             process = Process(target=SPAWN, args=(command,))
             process.start()
             ACTIVE.append((process, bench, output_file))

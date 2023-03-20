@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, SymbolicAsyncGraph};
+use biodivine_lib_param_bn::symbolic_async_graph::{GraphVertices, SymbolicAsyncGraph};
 use biodivine_lib_param_bn::VariableId;
 
 
 // Obtain subspace from human-readable variable names and their expected values (as conjunction)
-pub fn build_phenotype(graph: &SymbolicAsyncGraph, phenotype: HashMap<&str, bool>) -> GraphColoredVertices {
+pub fn build_phenotype(graph: &SymbolicAsyncGraph, phenotype: HashMap<&str, bool>) -> GraphVertices {
     let mut result = graph.unit_colored_vertices().clone();
     for (var, value) in phenotype {
         let var_id = resolve_var_id(graph, var).unwrap();
@@ -13,7 +13,7 @@ pub fn build_phenotype(graph: &SymbolicAsyncGraph, phenotype: HashMap<&str, bool
         result = result.intersect(&subspace);
     }
 
-    result.clone()
+    result.vertices().clone()
 }
 
 pub fn resolve_var_id(graph: &SymbolicAsyncGraph, var: &str) -> Option<VariableId> {

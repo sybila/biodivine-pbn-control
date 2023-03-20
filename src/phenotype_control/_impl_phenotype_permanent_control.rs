@@ -3,7 +3,7 @@ use std::hash::Hash;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::fixed_points::FixedPoints;
-use biodivine_lib_param_bn::symbolic_async_graph::GraphColoredVertices;
+use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices,GraphVertices,GraphColors};
 use biodivine_lib_param_bn::VariableId;
 use chrono::{DateTime, Local};
 use crate::aeon;
@@ -13,7 +13,7 @@ use itertools::Itertools;
 impl PerturbationGraph {
     pub fn ceiled_phenotype_permanent_control(
         &self,
-        phenotype: GraphColoredVertices,
+        phenotype: GraphVertices,
         max_size: i32
     ) -> PhenotypeControlMap {
         let now = Local::now();
@@ -40,20 +40,25 @@ impl PerturbationGraph {
             }
         }
 
-        let result = self.phenotype_permanent_control (phenotype.intersect_colors(&admissible_perturbations));
+        let result = self.phenotype_permanent_control(phenotype, admissible_perturbations);
         result
     }
 
 
     pub fn phenotype_permanent_control(
         &self,
-        phenotype: GraphColoredVertices
+        phenotype: GraphVertices,
+        admissible_perturbations: GraphColors
     ) -> PhenotypeControlMap {
         println!("all space {}", self.as_perturbed().unit_colored_vertices().approx_cardinality());
-        println!("phenotype space {}", phenotype.approx_cardinality());
+        println!("all vertices {}", self.as_perturbed().unit_colored_vertices().vertices().approx_cardinality());
+        println!("phenotype vertices {}", phenotype.approx_cardinality());
 
-        let phenotype_violating_space = self.as_perturbed().unit_colored_vertices().minus(&phenotype);
-        println!("phenotype space {}", phenotype_violating_space .approx_cardinality());
+        let phenotype_violating_space = self.as_perturbed()
+                                            .unit_colored_vertices()
+                                            .minus_vertices(&phenotype)
+                                            .intersect_colors(&admissible_perturbations);
+        println!("space to explore attractors {}", phenotype_violating_space.approx_cardinality());
 
         let phenotype_violating_attractors = FixedPoints::symbolic(self.as_perturbed(), &phenotype_violating_space);
         println!("violating atts {}", phenotype_violating_attractors.approx_cardinality());
@@ -92,7 +97,8 @@ mod tests {
                 ("EKLF", true),
             ]));
         let control = perturbations.phenotype_permanent_control(
-            erythrocyte_phenotype
+            erythrocyte_phenotype.vertices(),
+            perturbations.as_perturbed().unit_colored_vertices()
         );
 
 
