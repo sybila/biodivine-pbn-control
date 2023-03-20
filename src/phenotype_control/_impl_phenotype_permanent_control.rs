@@ -4,9 +4,9 @@ use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::fixed_points::FixedPoints;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices,GraphVertices,GraphColors};
+use biodivine_lib_param_bn::symbolic_async_graph::reachability::Reachability;
 use biodivine_lib_param_bn::VariableId;
 use chrono::{DateTime, Local};
-use crate::aeon;
 use crate::phenotype_control::PhenotypeControlMap;
 use itertools::Itertools;
 
@@ -63,7 +63,7 @@ impl PerturbationGraph {
         let phenotype_violating_attractors = FixedPoints::symbolic(self.as_perturbed(), &phenotype_violating_space);
         println!("violating atts {}", phenotype_violating_attractors.approx_cardinality());
 
-        let phenotype_violating_space = aeon::reachability::backward(self.as_perturbed(), &phenotype_violating_attractors);
+        let phenotype_violating_space = Reachability::reach_bwd(self.as_perturbed(), &phenotype_violating_attractors);
         println!("violating space {}", phenotype_violating_space.approx_cardinality());
 
         let phenotype_respecting_space = self.as_perturbed().unit_colored_vertices().minus(&phenotype_violating_space);
@@ -97,8 +97,8 @@ mod tests {
                 ("EKLF", true),
             ]));
         let control = perturbations.phenotype_permanent_control(
-            erythrocyte_phenotype.vertices(),
-            perturbations.as_perturbed().unit_colored_vertices()
+            erythrocyte_phenotype,
+            perturbations.as_perturbed().mk_unit_colors()
         );
 
 
