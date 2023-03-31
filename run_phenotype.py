@@ -3,15 +3,11 @@
 #  - We don't invoke UNIX `time` explicitly. Instead we assume that the binary will print the time in a format that we can understand.
 #  - The benchmarks are taken from a two-level hierarchy of folders instead of a single directory (this influences the output as well).
 #  -
-import resource
-import subprocess
 import sys
 import os
 import re
 import time
 from multiprocessing import Process
-import pyproc2
-from shlex import quote
 
 # Spawn a new external process.
 def SPAWN(command):
@@ -94,8 +90,8 @@ if __name__ == "__main__":
     # update AGGREGATION_LIST and TIMES file.
     def PROCESS_RESULT(process, name, output_file):
         print("Finished:", output_file)
-        print(process.pid)
-        print("Max mem: ", MAX_MEM.get(process.pid, -1))
+        # print(pid)
+        # print("Max mem: ", MAX_MEM.get(pid, -1))
         is_success = process.exitcode == 0
         with open(output_file, 'r') as f:
             lines = f.read().splitlines()
@@ -138,16 +134,16 @@ if __name__ == "__main__":
             command = TIMEOUT + " " + CUT_OFF + " time -p " + " " + command_body + " > " + output_file + " 2>&1"
             process = Process(target=SPAWN, args=(command,))
             process.start()
-            pid = pyproc2.find(command_body).pid
-            ACTIVE.append((process, bench, output_file, pid))
+            # pid = pyproc2.find(command_body).pid
+            ACTIVE.append((process, bench, output_file))
         time.sleep(1) # Sleep 1s
         STILL_ACTIVE = []
-        for (process, bench, output_file, pid) in ACTIVE:
+        for (process, bench, output_file) in ACTIVE:
             if process.is_alive():
                 STILL_ACTIVE.append((process, bench, output_file))
-                mem_usage = float(subprocess.getoutput(f"ps u -p {pid} | awk '{{sum=sum+$6}}; END {{print sum}}'")) / 1024
-                if mem_usage > MAX_MEM.get(pid, -1):
-                    MAX_MEM[pid] = mem_usage
+                # mem_usage = float(subprocess.getoutput(f"ps u -p {pid} | awk '{{sum=sum+$6}}; END {{print sum}}'")) / 1024
+                # if mem_usage > MAX_MEM.get(pid, -1):
+                #     MAX_MEM[pid] = mem_usage
             else:
                 PROCESS_RESULT(process, bench, output_file)
         ACTIVE = STILL_ACTIVE
