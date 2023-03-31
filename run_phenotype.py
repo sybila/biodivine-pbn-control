@@ -24,21 +24,20 @@ def SPAWN(command):
 RE_TIME = re.compile("\\s*real\\s*(\\d+\\.?\\d*)\\s*")
 
 models = [
-             # "[id-010]__[var-13]__[in-2]__[CARDIAC-DEVELOPMENT].aeon",
-             # "[id-090]__[var-14]__[in-4]__[MAPK-REDUCED-2].aeon",
-             # "[id-096]__[var-19]__[in-1]__[ERBB-REGULATED-G1-S-TRANSITION].aeon",
-             # "SKBR3-BREAST-CELL-LINE-LONG-TERM_21.aeon",
-             # "REPROGRAMMING-TESTES-DERIVED-STEM-CELLS_23.aeon",
-             # "SEPTATION-INITIATION-NETWORK_23.aeon",
-             # "TUMOR-MICROENVIRONMENT-IN-LYMPHOBLASTIC-LEUKEAMIA-24.aeon",
-             # "DEATH-RECEPTOR-SIGNALING_25.aeon",
-             # "TRICHOSTRONGYLUS-RETORTAEFORMIS_25.aeon",
-             # "FA-BRCA-PATHWAY_28.aeon",
-             # "[id-065]__[var-30]__[in-2]__[TUMOUR-CELL-INVASION-AND-MIGRATION].aeon",
-             # "[id-150]__[var-31]__[in-2]__[CELL-FATE-DECISION-MULTISCALE].aeon",
-             "[id-179]__[var-46]__[in-10]__[MICROENVIRONMENT-CONTROL].aeon",
-             # "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE].aeon",
-             # "[id-014]__[var-54]__[in-7]__[T-LGL-SURVIVAL-NETWORK-2008].aeon"
+    ("cardiac", "FHF"),
+    ("cardiac", "SHF"),
+    ("reduced_mapk", "apoptosis"),
+    ("reduced_mapk", "proliferation"),
+    # ("erbb", "phosporilation"),
+    # ("erbb", "non_phosporilation"),
+    # ("tumour", "apoptosis"),
+    # ("tumour", "proliferation"),
+    # ("cell_fate", "apoptosis"),
+    # ("cell_fate", "proliferation"),
+    # ("full_mapk", "apoptosis"),
+    # ("full_mapk", "proliferation"),
+    # ("t_lgl", "FHF"),
+    # ("t_lgl", "SHF")
 ]
 
 if __name__ == "__main__":
@@ -48,7 +47,7 @@ if __name__ == "__main__":
     CUT_OFF = "48h"
     SCRIPT = "./target/release/experiment_phenotype"
     INTERACTIVE = False
-    PARALLEL = 1
+    PARALLEL = 4
 
     PERTURBATION_MAX_SIZE = "3"
 
@@ -88,7 +87,7 @@ if __name__ == "__main__":
     # Here, save all runtimes.
     AGGREGATION_LIST = []
 
-    BENCHMARKS = [(models[0], size) for size in range(1, 46)]
+    BENCHMARKS = models
 
     MAX_MEM = {}
     # Handle data from a finished process. In particular,
@@ -131,10 +130,11 @@ if __name__ == "__main__":
     ACTIVE = []
     while len(ACTIVE) > 0 or len(BENCHMARKS) > 0:
         while len(ACTIVE) < PARALLEL and len(BENCHMARKS) > 0:
-            bench, size = BENCHMARKS.pop(0)
-            input_file = f"models_phenotype/{bench}"
-            output_file = OUT_DIR + "/" + bench + f"_{size}_out.txt"
-            command_body = SCRIPT + " " + input_file + " " + PERTURBATION_MAX_SIZE + " " + str(size)
+            model, phenotype = BENCHMARKS.pop(0)
+            bench = f"{model}_{phenotype}"
+            # input_file = f"models_phenotype/{bench}"
+            output_file = f"{OUT_DIR}/{bench}_out.txt"
+            command_body = SCRIPT + " " + model + " " + phenotype + " " + "3"
             command = TIMEOUT + " " + CUT_OFF + " time -p " + " " + command_body + " > " + output_file + " 2>&1"
             process = Process(target=SPAWN, args=(command,))
             process.start()
