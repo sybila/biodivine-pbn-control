@@ -1,0 +1,166 @@
+{
+  "emt": {
+    "file": "[id-179]__[var-46]__[in-10]__[MICROENVIRONMENT-CONTROL].aeon",
+    "comment": "From Fontanals control paper",
+    "vars": 56,
+    "targets": {
+      "epithelial": {
+        "v_AJ_b1": true,
+        "v_AJ_b2": true,
+        "v_FA_b1": false,
+        "v_FA_b2": false,
+        "v_FA_b3": false
+      },
+      "hybrid_1": {
+        "v_AJ_b1": true,
+        "v_AJ_b2": true,
+        "v_FA_b1": true,
+        "v_FA_b2": false,
+        "v_FA_b3": false
+      },
+      "hybrid_2": {
+        "v_AJ_b1": true,
+        "v_AJ_b2": false,
+        "v_FA_b1": true,
+        "v_FA_b2": true,
+        "v_FA_b3": false
+      },
+      "hybrid_3": {
+        "v_AJ_b1": true,
+        "v_AJ_b2": true,
+        "v_FA_b1": true,
+        "v_FA_b2": true,
+        "v_FA_b3": true
+      },
+      "mensenchymal_1": {
+        "v_AJ_b1": false,
+        "v_AJ_b2": false,
+        "v_FA_b1": true,
+        "v_FA_b2": false,
+        "v_FA_b3": false
+      },
+      "mensenchymal_2": {
+        "v_AJ_b1": false,
+        "v_AJ_b2": false,
+        "v_FA_b1": true,
+        "v_FA_b2": true,
+        "v_FA_b3": false
+      },
+      "mensenchymal_3": {
+        "v_AJ_b1": false,
+        "v_AJ_b2": false,
+        "v_FA_b1": true,
+        "v_FA_b2": true,
+        "v_FA_b3": true
+      },
+      "undefined": {
+        "v_AJ_b1": false,
+        "v_AJ_b2": false,
+        "v_FA_b1": false,
+        "v_FA_b2": false,
+        "v_FA_b3": false
+      }
+    }
+  },
+  "cardiac": {
+    "file": "[id-010]__[var-13]__[in-2]__[CARDIAC-DEVELOPMENT].aeon",
+    "vars": 15,
+    "comment": "Former benchmarks",
+    "targets": {
+      "FHF": {
+        "v_Isl1": false,
+        "v_Nkx2_5": true
+      },
+      "SHF": {
+        "v_Isl1": true,
+        "v_Tbx5": false
+      }
+    }
+  },
+  "reduced_mapk": {
+    "file": "[id-090]__[var-14]__[in-4]__[MAPK-REDUCED-2].aeon",
+    "comment": "Experimental based on former benchmarks",
+    "vars": 18,
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_Proliferation": false
+      },
+      "proliferation": {
+        "v_Apoptosis": false,
+        "v_Proliferation": true
+      }
+    }
+  },
+  "full_mapk": {
+    "file": "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE].aeon",
+    "comment": "Former benchmarks",
+    "vars": 53,
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_Proliferation": false
+      },
+      "proliferation": {
+        "v_Apoptosis": false,
+        "v_Proliferation": true
+      }
+    }
+  },
+  "t_lgl": {
+    "file": "[id-014]__[var-54]__[in-7]__[T-LGL-SURVIVAL-NETWORK-2008].aeon",
+    "comment": "From Fontanals control paper",
+    "vars": 61,
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_Proliferation": false
+      },
+      "proliferation": {
+        "v_Apoptosis": false,
+        "v_Proliferation": true
+      }
+    }
+  },
+  "cell_fate": {
+    "file": "[id-150]__[var-31]__[in-2]__[CELL-FATE-DECISION-MULTISCALE].aeon",
+    "comment": "From Fontanals control paper",
+    "vars": 33,
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_Survival": false
+      },
+      "survival": {
+        "v_Apoptosis": false,
+        "v_Survival": true
+      }
+    }
+  },
+  "erbb": {
+    "file": "[id-096]__[var-19]__[in-1]__[ERBB-REGULATED-G1-S-TRANSITION].aeon",
+    "comment": "Former benchmark",
+    "vars": 20,
+    "targets": {
+      "phosporilation": {
+        "v_pRB1": true
+      },
+      "non_phosporilation": {
+        "v_pRB1": false
+      }
+    }
+  },
+  "tumour": {
+    "file": "[id-065]__[var-30]__[in-2]__[TUMOUR-CELL-INVASION-AND-MIGRATION].aeon",
+    "comment": "Former benchmark",
+    "vars": 32,
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true
+      },
+      "survival": {
+        "v_Apoptosis": false
+      }
+    }
+  }
+}

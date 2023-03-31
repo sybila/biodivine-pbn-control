@@ -1,11 +1,12 @@
 use std::collections::HashSet;
 use std::hash::Hash;
+use std::time::Instant;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::fixed_points::FixedPoints;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices,GraphVertices,GraphColors};
 use biodivine_lib_param_bn::symbolic_async_graph::reachability::Reachability;
-use biodivine_lib_param_bn::VariableId;
+use biodivine_lib_param_bn::{VariableId, VariableIdIterator};
 use chrono::{DateTime, Local};
 use crate::phenotype_control::PhenotypeControlMap;
 use itertools::Itertools;
@@ -15,13 +16,13 @@ impl PerturbationGraph {
         &self,
         phenotype: GraphVertices,
         max_size: i32,
-        pert_variables: &[VariableId]
+        pert_variables: VariableIdIterator
     ) -> PhenotypeControlMap {
-        let now = Local::now();
-        println!("Starting phenotype permanent control ceiled to size {} controlling only {} at: {}", max_size, pert_variables.len(), now);
+        let now = Instant::now();
+        println!("Starting phenotype permanent control ceiled to size {} controlling {} different variables, started at: {}", max_size, pert_variables.len(), Local::now());
         let mut admissible_perturbations = self.as_perturbed().mk_empty_colors();
         for i in 1..(max_size+1) {
-            for c in pert_variables.iter().combinations(i as usize) {
+            for c in pert_variables.clone().combinations(i as usize) {
                 let mut perturbed = HashSet::new();
                 let mut color_combination = self.as_perturbed().mk_unit_colors();
                 for perturbation in c {
@@ -42,6 +43,9 @@ impl PerturbationGraph {
         }
 
         let result = self.phenotype_permanent_control(phenotype, admissible_perturbations);
+        let duration = now.elapsed();
+        println!("Control map computation finished at {:?} ", Local::now());
+        println!("Time elapsed for computing control map: {:?}", duration);
         result
     }
 
@@ -105,7 +109,7 @@ mod tests {
 
         // Trivial working control
         let working_colors = control.perturbation_working_colors(
-            HashMap::from([
+            &HashMap::from([
                 (String::from("EKLF"), true)
             ]));
 
@@ -113,7 +117,7 @@ mod tests {
 
         // Trivial not-working control
         let not_working_colors = control.perturbation_working_colors(
-            HashMap::from([
+            &HashMap::from([
                 (String::from("EKLF"), false)
             ]));
 
@@ -122,7 +126,7 @@ mod tests {
 
         // Non-trivial working control
         let working_colors = control.perturbation_working_colors(
-            HashMap::from([
+            &HashMap::from([
                 (String::from("Fli1"), false),
                 (String::from("GATA1"), true),
                 (String::from("GATA2"), true)
@@ -132,7 +136,7 @@ mod tests {
 
 
         let not_working_colors = control.perturbation_working_colors(
-            HashMap::from([
+            &HashMap::from([
                 (String::from("CEBPa"), true),
                 (String::from("PU1"), false),
             ]));
