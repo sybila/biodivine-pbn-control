@@ -3,6 +3,7 @@
     "file": "[id-179]__[var-46]__[in-10]__[MICROENVIRONMENT-CONTROL].aeon",
     "comment": "From Fontanals control paper",
     "vars": 56,
+    "uncontrollable": ["v_AJ_b1","v_AJ_b2","v_FA_b1","v_FA_b2","v_FA_b3"],
     "targets": {
       "epithelial": {
         "v_AJ_b1": true,
@@ -66,6 +67,7 @@
     "file": "[id-010]__[var-13]__[in-2]__[CARDIAC-DEVELOPMENT].aeon",
     "vars": 15,
     "comment": "Former benchmarks",
+    "uncontrollable": ["v_Isl1", "v_Nkx2_5"],
     "targets": {
       "FHF": {
         "v_Isl1": false,
@@ -81,6 +83,7 @@
     "file": "[id-090]__[var-14]__[in-4]__[MAPK-REDUCED-2].aeon",
     "comment": "Experimental based on former benchmarks",
     "vars": 18,
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_DNA_damage", "v_EGFR_stimulus", "v_FGFR3_stimulus"],
     "targets": {
       "apoptosis": {
         "v_Apoptosis": true,
@@ -96,6 +99,7 @@
     "file": "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE].aeon",
     "comment": "Former benchmarks",
     "vars": 53,
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation"],
     "targets": {
       "apoptosis": {
         "v_Apoptosis": true,
@@ -111,6 +115,7 @@
     "file": "[id-014]__[var-54]__[in-7]__[T-LGL-SURVIVAL-NETWORK-2008].aeon",
     "comment": "From Fontanals control paper",
     "vars": 61,
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation"],
     "targets": {
       "apoptosis": {
         "v_Apoptosis": true,
@@ -125,6 +130,7 @@
   "cell_fate": {
     "file": "[id-150]__[var-31]__[in-2]__[CELL-FATE-DECISION-MULTISCALE].aeon",
     "comment": "From Fontanals control paper",
+    "uncontrollable": ["v_Apoptosis", "v_Survival"],
     "vars": 33,
     "targets": {
       "apoptosis": {
@@ -141,6 +147,7 @@
     "file": "[id-096]__[var-19]__[in-1]__[ERBB-REGULATED-G1-S-TRANSITION].aeon",
     "comment": "Former benchmark",
     "vars": 20,
+    "uncontrollable": ["v_pRB1"],
     "targets": {
       "phosporilation": {
         "v_pRB1": true
@@ -153,6 +160,7 @@
   "tumour": {
     "file": "[id-065]__[var-30]__[in-2]__[TUMOUR-CELL-INVASION-AND-MIGRATION].aeon",
     "comment": "Former benchmark",
+    "uncontrollable":["v_Apoptosis", "v_CellCycleArrest", "v_Invasion", "v_Migration"],
     "vars": 32,
     "targets": {
       "apoptosis": {

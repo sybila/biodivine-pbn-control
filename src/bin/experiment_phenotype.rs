@@ -2,10 +2,12 @@ use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::time::Instant;
+use std::vec;
 use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use chrono::Local;
 use itertools::Itertools;
+use serde_json::Value;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
 use biodivine_pbn_control::experiment_utils::{parse_experiment, run_control_experiment};
 use biodivine_pbn_control::perturbation::PerturbationGraph;
@@ -37,7 +39,17 @@ fn main() {
     // }
     // let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &p_vars);
 
-    let perturbation_graph = PerturbationGraph::new(&bn);
+    let mut controllable_vars = Vec::new();
+    let uncontrollable = config[model]["uncontrollable"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
+    for v in bn.variables() {
+        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) {
+            controllable_vars.push(v);
+        }
+    }
+
+    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &controllable_vars);
+
+
     let phenotype_map  = config[model]["targets"][phenotype].as_object().unwrap();
     let mut phenotype_vals = HashMap::new();
     for (k,v) in phenotype_map {
@@ -53,7 +65,7 @@ fn main() {
     // All colors considered by the perturbation graph
     let all_colors = perturbation_graph.unit_colors().approx_cardinality();
     // The (combinatorial) portion of colours that appear due to perturbation parameters.
-    let perturbation_colors = 2.0f64.powi(model_variables as i32);
+    let perturbation_colors = 2.0f64.powi(controllable_vars.len() as i32);
     // The (combinatorial) portion of colours that are carried over from the original model.
     let model_colors = all_colors / perturbation_colors;
 
@@ -88,7 +100,7 @@ fn main() {
     );
 
 
-    let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, bn.variables());
+    let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone());
 
 
     let now = Instant::now();
@@ -98,11 +110,15 @@ fn main() {
         let mut max_cardinality = 0.0;
         let mut max_cardinality_control = HashMap::new();
         let mut non_zero_working = 1;
-        let mut union_working_colors = perturbation_graph.as_original().mk_empty_colors();
-        for controlled in bn.variables().clone().combinations(i as usize) {
-            for over_expressed in powerset(&controlled.clone()) {
+        // let mut union_working_colors = perturbation_graph.as_original().mk_empty_colors();
+        for controlled in controllable_vars.iter().combinations(i as usize) {
+            let mut controlled_cpy = Vec::new();
+            for c in controlled {
+                controlled_cpy.push(c.clone());
+            }
+            for over_expressed in powerset(&(controlled_cpy.clone())) {
                 let mut control = HashMap::new();
-                for v in controlled.clone() {
+                for v in controlled_cpy.clone() {
                     if over_expressed.contains(&v) {
                         control.insert(bn.get_variable_name(v).clone(), true);
                     } else {
@@ -117,13 +133,15 @@ fn main() {
                         max_cardinality = working_colors.approx_cardinality();
                         max_cardinality_control = control;
                     }
-                    union_working_colors = working_colors.union(&union_working_colors);
+                    // union_working_colors = union_working_colors.union(&working_colors);
                 }
             }
         }
+
         println!("Max cardinality control for size {:?}: {:?} working for {:?} colors", i, max_cardinality_control, max_cardinality);
         println!("Controls of size {:?} working for some colors: {:?}", i, non_zero_working);
-        println!("Union working colors cardinality of size {:?}: {:?}", i, union_working_colors.approx_cardinality());
+        // SOME VAR PROJECT IS MISSING :(
+        // println!("Union working colors cardinality of size {:?}: {:?}", i, union_working_colors.approx_cardinality());
     }
 
     let duration = now.elapsed();
