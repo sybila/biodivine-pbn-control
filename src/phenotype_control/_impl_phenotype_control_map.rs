@@ -12,7 +12,7 @@ impl PhenotypeControlMap {
         &self.perturbation_set
     }
 
-    pub fn perturbation_working_colors(&self, perturbation: HashMap<String, bool>) -> GraphColors {
+    pub fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors {
         let mut perturbation_bdd = self.perturbation_set.as_bdd().clone();
         // Obtain BDD having given variables perturbed to the specified value and remaining variables having unperturbed
         for v in self.context.as_perturbed().as_network().variables() {
