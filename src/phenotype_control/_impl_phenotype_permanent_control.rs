@@ -14,13 +14,14 @@ impl PerturbationGraph {
     pub fn ceiled_phenotype_permanent_control(
         &self,
         phenotype: GraphVertices,
-        max_size: i32
+        max_size: i32,
+        pert_variables: &[VariableId]
     ) -> PhenotypeControlMap {
         let now = Local::now();
-        println!("Starting phenotype permanent control ceiled to size {} at: {}", max_size, now);
+        println!("Starting phenotype permanent control ceiled to size {} controlling only {} at: {}", max_size, pert_variables.len(), now);
         let mut admissible_perturbations = self.as_perturbed().mk_empty_colors();
         for i in 1..(max_size+1) {
-            for c in self.as_perturbed().as_network().variables().combinations(i as usize) {
+            for c in pert_variables.iter().combinations(i as usize) {
                 let mut perturbed = HashSet::new();
                 let mut color_combination = self.as_perturbed().mk_unit_colors();
                 for perturbation in c {

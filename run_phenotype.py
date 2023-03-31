@@ -3,12 +3,14 @@
 #  - We don't invoke UNIX `time` explicitly. Instead we assume that the binary will print the time in a format that we can understand.
 #  - The benchmarks are taken from a two-level hierarchy of folders instead of a single directory (this influences the output as well).
 #  -
-
+import resource
+import subprocess
 import sys
 import os
 import re
 import time
 from multiprocessing import Process
+import pyproc2
 from shlex import quote
 
 # Spawn a new external process.
@@ -35,9 +37,9 @@ models = [
              # "[id-065]__[var-30]__[in-2]__[TUMOUR-CELL-INVASION-AND-MIGRATION].aeon",
              # "[id-150]__[var-31]__[in-2]__[CELL-FATE-DECISION-MULTISCALE].aeon",
              "[id-179]__[var-46]__[in-10]__[MICROENVIRONMENT-CONTROL].aeon",
-             "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE].aeon",
-             "[id-014]__[var-54]__[in-7]__[T-LGL-SURVIVAL-NETWORK-2008].aeon"]
-
+             # "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE].aeon",
+             # "[id-014]__[var-54]__[in-7]__[T-LGL-SURVIVAL-NETWORK-2008].aeon"
+]
 
 if __name__ == "__main__":
     print(">>>>>>>>>> START BENCHMARK RUN")
@@ -86,11 +88,15 @@ if __name__ == "__main__":
     # Here, save all runtimes.
     AGGREGATION_LIST = []
 
-    BENCHMARKS = models
+    BENCHMARKS = [(models[0], size) for size in range(1, 46)]
+
+    MAX_MEM = {}
     # Handle data from a finished process. In particular,
     # update AGGREGATION_LIST and TIMES file.
     def PROCESS_RESULT(process, name, output_file):
         print("Finished:", output_file)
+        print(process.pid)
+        print("Max mem: ", MAX_MEM.get(process.pid, -1))
         is_success = process.exitcode == 0
         with open(output_file, 'r') as f:
             lines = f.read().splitlines()
@@ -125,18 +131,23 @@ if __name__ == "__main__":
     ACTIVE = []
     while len(ACTIVE) > 0 or len(BENCHMARKS) > 0:
         while len(ACTIVE) < PARALLEL and len(BENCHMARKS) > 0:
-            bench = BENCHMARKS.pop(0)
+            bench, size = BENCHMARKS.pop(0)
             input_file = f"models_phenotype/{bench}"
-            output_file = OUT_DIR + "/" + bench + "_out.txt"
-            command = TIMEOUT + " " + CUT_OFF + " time -p " + " " + SCRIPT + " " + input_file + " " + PERTURBATION_MAX_SIZE + " > " + output_file + " 2>&1"
+            output_file = OUT_DIR + "/" + bench + f"_{size}_out.txt"
+            command_body = SCRIPT + " " + input_file + " " + PERTURBATION_MAX_SIZE + " " + str(size)
+            command = TIMEOUT + " " + CUT_OFF + " time -p " + " " + command_body + " > " + output_file + " 2>&1"
             process = Process(target=SPAWN, args=(command,))
             process.start()
-            ACTIVE.append((process, bench, output_file))
+            pid = pyproc2.find(command_body).pid
+            ACTIVE.append((process, bench, output_file, pid))
         time.sleep(1) # Sleep 1s
         STILL_ACTIVE = []
-        for (process, bench, output_file) in ACTIVE:
+        for (process, bench, output_file, pid) in ACTIVE:
             if process.is_alive():
                 STILL_ACTIVE.append((process, bench, output_file))
+                mem_usage = float(subprocess.getoutput(f"ps u -p {pid} | awk '{{sum=sum+$6}}; END {{print sum}}'")) / 1024
+                if mem_usage > MAX_MEM.get(pid, -1):
+                    MAX_MEM[pid] = mem_usage
             else:
                 PROCESS_RESULT(process, bench, output_file)
         ACTIVE = STILL_ACTIVE
