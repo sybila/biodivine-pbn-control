@@ -24,16 +24,16 @@ models = [
     ("cardiac", "SHF"),
     ("reduced_mapk", "apoptosis"),
     ("reduced_mapk", "proliferation"),
-    # ("erbb", "phosporilation"),
-    # ("erbb", "non_phosporilation"),
-    # ("tumour", "apoptosis"),
-    # ("tumour", "proliferation"),
-    # ("cell_fate", "apoptosis"),
-    # ("cell_fate", "proliferation"),
-    # ("full_mapk", "apoptosis"),
-    # ("full_mapk", "proliferation"),
-    # ("t_lgl", "FHF"),
-    # ("t_lgl", "SHF")
+    ("erbb", "phosporilation"),
+    ("erbb", "non_phosporilation"),
+    ("tumour", "apoptosis"),
+    ("tumour", "proliferation"),
+    ("cell_fate", "apoptosis"),
+    ("cell_fate", "proliferation"),
+    ("full_mapk", "apoptosis"),
+    ("full_mapk", "proliferation"),
+    ("t_lgl", "FHF"),
+    ("t_lgl", "SHF")
 ]
 
 if __name__ == "__main__":
