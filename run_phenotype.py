@@ -22,18 +22,27 @@ RE_TIME = re.compile("\\s*real\\s*(\\d+\\.?\\d*)\\s*")
 models = [
     ("cardiac", "FHF"),
     ("cardiac", "SHF"),
+    ("cardiac", "None"),
     ("reduced_mapk", "apoptosis"),
     ("reduced_mapk", "proliferation"),
+    ("reduced_mapk", "no_decision"),
+    ("reduced_mapk", "growth_arrest"),
     ("erbb", "phosporilation"),
     ("erbb", "non_phosporilation"),
     ("tumour", "apoptosis"),
-    ("tumour", "proliferation"),
+    ("tumour", "emt"),
+    ("tumour", "hybrid"),
+    ("tumour", "metastasis"),
     ("cell_fate", "apoptosis"),
-    ("cell_fate", "proliferation"),
+    ("cell_fate", "survival"),
+    ("cell_fate", "naive"),
+    ("cell_fate", "necrosis"),
     ("full_mapk", "apoptosis"),
     ("full_mapk", "proliferation"),
-    ("t_lgl", "FHF"),
-    ("t_lgl", "SHF")
+    ("full_mapk", "no_decision"),
+    ("full_mapk", "growth_arrest"),
+    ("t_lgl", "apoptosis"),
+    ("t_lgl", "survival")
 ]
 
 if __name__ == "__main__":

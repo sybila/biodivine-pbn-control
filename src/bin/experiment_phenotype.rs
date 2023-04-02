@@ -41,8 +41,9 @@ fn main() {
 
     let mut controllable_vars = Vec::new();
     let uncontrollable = config[model]["uncontrollable"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
+    let inputs = config[model]["inputs"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
     for v in bn.variables() {
-        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) {
+        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) && !inputs.contains(&bn.get_variable_name(v).as_str()) {
             controllable_vars.push(v);
         }
     }
@@ -70,6 +71,8 @@ fn main() {
     let model_colors = all_colors / perturbation_colors;
 
     println!("Variables: {}", model_variables);
+    println!("Inputs: {}", inputs.len());
+    println!("Controllable variables: {}", controllable_vars.len());
     println!("Uncertainty colors: {}", model_colors);
     println!("Perturbation colors: {}", perturbation_colors);
     println!("All colors: {}", all_colors);

@@ -3,6 +3,7 @@
     "file": "[id-179]__[var-46]__[in-10]__[MICROENVIRONMENT-CONTROL].aeon",
     "comment": "From Fontanals control paper",
     "vars": 56,
+    "inputs": ["v_ROS", "v_IL6", "v_DELTA", "v_TGFB", "v_FAT4_L", "v_EGF", "v_ECM", "v_HGF", "v_RPTL", "v_WNT"],
     "uncontrollable": ["v_AJ_b1","v_AJ_b2","v_FA_b1","v_FA_b2","v_FA_b3"],
     "targets": {
       "epithelial": {
@@ -67,14 +68,19 @@
     "file": "[id-010]__[var-13]__[in-2]__[CARDIAC-DEVELOPMENT].aeon",
     "vars": 15,
     "comment": "Former benchmarks",
-    "uncontrollable": ["v_Isl1", "v_Nkx2_5"],
+    "inputs": ["v_exogen_CanWnt_I", "v_exogen_BMP2_I"],
+    "uncontrollable": ["v_Tbx1", "v_Tbx5"],
     "targets": {
       "FHF": {
-        "v_Isl1": false,
-        "v_Nkx2_5": true
+        "v_Tbx1": false,
+        "v_Tbx5": true
       },
       "SHF": {
-        "v_Isl1": true,
+        "v_Tbx1": true,
+        "v_Tbx5": false
+      },
+      "None": {
+        "v_Tbx1": false,
         "v_Tbx5": false
       }
     }
@@ -83,15 +89,28 @@
     "file": "[id-090]__[var-14]__[in-4]__[MAPK-REDUCED-2].aeon",
     "comment": "Experimental based on former benchmarks",
     "vars": 18,
-    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_DNA_damage", "v_EGFR_stimulus", "v_FGFR3_stimulus"],
+    "inputs": ["v_DNA_damage", "v_EGFR_stimulus", "v_FGFR3_stimulus", "v_TGFBR_stimulus"],
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Growth_Arrest"],
     "targets": {
       "apoptosis": {
         "v_Apoptosis": true,
+        "v_Growth_Arrest": true,
         "v_Proliferation": false
       },
       "proliferation": {
         "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
         "v_Proliferation": true
+      },
+      "no_decision": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": false
+      },
+      "growth_arrest": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
       }
     }
   },
@@ -99,15 +118,28 @@
     "file": "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE].aeon",
     "comment": "Former benchmarks",
     "vars": 53,
-    "uncontrollable": ["v_Apoptosis", "v_Proliferation"],
+    "inputs": ["v_DNA_damage", "v_EGFR_stimulus", "v_FGFR3_stimulus", "v_TGFBR_stimulus"],
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Growth_Arrest"],
     "targets": {
       "apoptosis": {
         "v_Apoptosis": true,
+        "v_Growth_Arrest": true,
         "v_Proliferation": false
       },
       "proliferation": {
         "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
         "v_Proliferation": true
+      },
+      "no_decision": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": false
+      },
+      "growth_arrest": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": false
       }
     }
   },
@@ -115,7 +147,8 @@
     "file": "[id-014]__[var-54]__[in-7]__[T-LGL-SURVIVAL-NETWORK-2008].aeon",
     "comment": "From Fontanals control paper",
     "vars": 61,
-    "uncontrollable": ["v_Apoptosis", "v_Proliferation"],
+    "inputs": ["v_Stimuli", "v_Stimuli2", "v_CD45", "v_IL15", "v_IFNG", "v_PDGF", "v_TAX"],
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Cytoskeleton_signaling"],
     "targets": {
       "apoptosis": {
         "v_Apoptosis": true,
@@ -130,16 +163,29 @@
   "cell_fate": {
     "file": "[id-150]__[var-31]__[in-2]__[CELL-FATE-DECISION-MULTISCALE].aeon",
     "comment": "From Fontanals control paper",
-    "uncontrollable": ["v_Apoptosis", "v_Survival"],
+    "inputs": ["v_FASL", "v_FADD"],
+    "uncontrollable": ["v_Apoptosis", "v_Survival", "v_NonACD", "v_DEATH", "v_DIVISION"],
     "vars": 33,
     "targets": {
+      "naive": {
+        "v_NonACD": false,
+        "v_Apoptosis": false,
+        "v_Survival": false
+      },
       "apoptosis": {
+        "v_NonACD": false,
         "v_Apoptosis": true,
         "v_Survival": false
       },
       "survival": {
+        "v_NonACD": false,
         "v_Apoptosis": false,
         "v_Survival": true
+      },
+      "necrosis": {
+        "v_NonACD": true,
+        "v_Apoptosis": false,
+        "v_Survival": false
       }
     }
   },
@@ -147,6 +193,7 @@
     "file": "[id-096]__[var-19]__[in-1]__[ERBB-REGULATED-G1-S-TRANSITION].aeon",
     "comment": "Former benchmark",
     "vars": 20,
+    "inputs": ["v_EGF"],
     "uncontrollable": ["v_pRB1"],
     "targets": {
       "phosporilation": {
@@ -160,14 +207,41 @@
   "tumour": {
     "file": "[id-065]__[var-30]__[in-2]__[TUMOUR-CELL-INVASION-AND-MIGRATION].aeon",
     "comment": "Former benchmark",
-    "uncontrollable":["v_Apoptosis", "v_CellCycleArrest", "v_Invasion", "v_Migration"],
+    "uncontrollable":["v_Apoptosis", "v_CellCycleArrest", "v_Invasion", "v_Migration", "v_EMT", "v_Metastasis"],
+    "inputs": ["v_DNAdamage", "v_ECM"],
     "vars": 32,
     "targets": {
-      "apoptosis": {
-        "v_Apoptosis": true
+      "hybrid": {
+        "v_Apoptosis": false,
+        "v_CellCycleArrest": false,
+        "v_Invasion": false,
+        "v_Migration": false,
+        "v_EMT": false,
+        "v_Metastasis": false
       },
-      "survival": {
-        "v_Apoptosis": false
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_CellCycleArrest": true,
+        "v_Invasion": false,
+        "v_Migration": false,
+        "v_EMT": false,
+        "v_Metastasis": false
+      },
+      "emt": {
+        "v_Apoptosis": false,
+        "v_CellCycleArrest": true,
+        "v_Invasion": false,
+        "v_Migration": false,
+        "v_EMT": true,
+        "v_Metastasis": false
+      },
+      "metastasis": {
+        "v_Apoptosis": false,
+        "v_CellCycleArrest": true,
+        "v_Invasion": true,
+        "v_Migration": true,
+        "v_EMT": true,
+        "v_Metastasis": true
       }
     }
   }
