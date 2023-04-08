@@ -109,43 +109,7 @@ fn main() {
     let now = Instant::now();
     println!("Starting control enumeration at at: {}", Local::now());
 
-    for i in 1..(max_control_size+1) {
-        let mut max_cardinality = 0.0;
-        let mut max_cardinality_control = HashMap::new();
-        let mut non_zero_working = 1;
-        // let mut union_working_colors = perturbation_graph.as_original().mk_empty_colors();
-        for controlled in controllable_vars.iter().combinations(i as usize) {
-            let mut controlled_cpy = Vec::new();
-            for c in controlled {
-                controlled_cpy.push(c.clone());
-            }
-            for over_expressed in powerset(&(controlled_cpy.clone())) {
-                let mut control = HashMap::new();
-                for v in controlled_cpy.clone() {
-                    if over_expressed.contains(&v) {
-                        control.insert(bn.get_variable_name(v).clone(), true);
-                    } else {
-                        control.insert(bn.get_variable_name(v).clone(), false);
-                    }
-                }
-
-                let working_colors = result.perturbation_working_colors(&control);
-                if working_colors.approx_cardinality() > 0.0 {
-                    non_zero_working += 1;
-                    if working_colors.approx_cardinality() > max_cardinality {
-                        max_cardinality = working_colors.approx_cardinality();
-                        max_cardinality_control = control;
-                    }
-                    // union_working_colors = union_working_colors.union(&working_colors);
-                }
-            }
-        }
-
-        println!("Max cardinality control for size {:?}: {:?} working for {:?} colors", i, max_cardinality_control, max_cardinality);
-        println!("Controls of size {:?} working for some colors: {:?}", i, non_zero_working);
-        // SOME VAR PROJECT IS MISSING :(
-        // println!("Union working colors cardinality of size {:?}: {:?}", i, union_working_colors.approx_cardinality());
-    }
+    result.ceiled_size_perturbation_working_colors(max_control_size, model_colors, &controllable_vars);
 
     let duration = now.elapsed();
     println!("Control enumeration finished at {:?} ", Local::now());

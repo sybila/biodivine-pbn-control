@@ -123,7 +123,7 @@
     "targets": {
       "apoptosis": {
         "v_Apoptosis": true,
-        "v_Growth_Arrest": true,
+        "v_Growth_Arrest": false,
         "v_Proliferation": false
       },
       "proliferation": {
@@ -138,7 +138,7 @@
       },
       "growth_arrest": {
         "v_Apoptosis": false,
-        "v_Growth_Arrest": false,
+        "v_Growth_Arrest": true,
         "v_Proliferation": false
       }
     }

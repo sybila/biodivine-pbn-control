@@ -42,7 +42,7 @@ models = [
     ("full_mapk", "no_decision"),
     ("full_mapk", "growth_arrest"),
     ("t_lgl", "apoptosis"),
-    ("t_lgl", "survival")
+    ("t_lgl", "proliferation")
 ]
 
 if __name__ == "__main__":
