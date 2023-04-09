@@ -10,18 +10,20 @@ use biodivine_lib_param_bn::{VariableId, VariableIdIterator};
 use chrono::{DateTime, Local};
 use crate::phenotype_control::PhenotypeControlMap;
 use itertools::Itertools;
+use crate::aeon::attractors;
 
 impl PerturbationGraph {
     pub fn ceiled_phenotype_permanent_control(
         &self,
         phenotype: GraphVertices,
-        max_size: i32,
+        max_size: usize,
         pert_variables: Vec<VariableId>
     ) -> PhenotypeControlMap {
         let now = Instant::now();
         println!("Starting phenotype permanent control ceiled to size {} controlling {} different variables, started at: {}", max_size, pert_variables.len(), Local::now());
         let mut admissible_perturbations = self.as_perturbed().mk_empty_colors();
-        for i in 1..(max_size+1) {
+
+        for i in 0..(max_size+1) {
             for c in pert_variables.iter().combinations(i as usize) {
                 let mut perturbed = HashSet::new();
                 let mut color_combination = self.as_perturbed().mk_unit_colors();
@@ -59,14 +61,38 @@ impl PerturbationGraph {
         println!("all vertices {}", self.as_perturbed().unit_colored_vertices().vertices().approx_cardinality());
         println!("phenotype vertices {}", phenotype.approx_cardinality());
 
-        let phenotype_violating_space = self.as_perturbed()
-                                            .unit_colored_vertices()
-                                            .minus_vertices(&phenotype)
-                                            .intersect_colors(&admissible_perturbations);
-        println!("space to explore attractors {}", phenotype_violating_space.approx_cardinality());
+        // If unperturbed model doesn't contain complex attractors, we can use fixed_points
+        let unperturbed_attractors = attractors::compute(self.as_original());
+        let mut unperturbed_attractors_all = self.as_original().mk_empty_vertices();
+        for ua in unperturbed_attractors {
+            unperturbed_attractors_all = unperturbed_attractors_all.union(&ua);
+        }
+        let unperturbed_attractors_fps = FixedPoints::symbolic(self.as_original(), self.as_original().unit_colored_vertices());
 
-        let phenotype_violating_attractors = FixedPoints::symbolic(self.as_perturbed(), &phenotype_violating_space);
-        println!("violating atts {}", phenotype_violating_attractors.approx_cardinality());
+        let mut phenotype_violating_attractors= self.as_original().mk_empty_vertices();
+        println!("FPs {:?}", unperturbed_attractors_fps.vertices().approx_cardinality());
+        println!("ALL {:?}", unperturbed_attractors_all.vertices().approx_cardinality());
+        if unperturbed_attractors_all.vertices().is_subset(&unperturbed_attractors_fps.vertices()) {
+            println!("------- Using fixed points implementation");
+            let phenotype_violating_space = self.as_perturbed()
+                .unit_colored_vertices()
+                .minus_vertices(&phenotype)
+                .intersect_colors(&admissible_perturbations);
+            println!("space to explore attractors {}", phenotype_violating_space.approx_cardinality());
+            phenotype_violating_attractors = FixedPoints::symbolic(self.as_perturbed(), &phenotype_violating_space);
+        } else {
+            println!("------- Using all attractors implementation");
+            let complex_attractors = attractors::compute(self.as_original());
+            for ca in complex_attractors {
+                let states_in_ca_but_not_phenotype = ca.minus_vertices(&phenotype);
+                let colors_with_states_outside_phenotype = states_in_ca_but_not_phenotype.colors();
+                let relevant_atts = ca.intersect_colors(&colors_with_states_outside_phenotype);
+                let violating_attractors = ca.intersect(&relevant_atts);
+                phenotype_violating_attractors = phenotype_violating_attractors.union(&violating_attractors);
+            }
+        }
+
+        println!("violating atts cardinality {}", phenotype_violating_attractors.approx_cardinality());
 
         let phenotype_violating_space = Reachability::reach_bwd(self.as_perturbed(), &phenotype_violating_attractors);
         println!("violating space {}", phenotype_violating_space.approx_cardinality());
@@ -139,6 +165,79 @@ mod tests {
             &HashMap::from([
                 (String::from("CEBPa"), true),
                 (String::from("PU1"), false),
+            ]));
+
+        assert_eq!(0.0, not_working_colors.approx_cardinality());
+
+        let not_working_colors = control.perturbation_working_colors(
+            &HashMap::from([
+            ]));
+
+        assert_eq!(0.0, not_working_colors.approx_cardinality());
+    }
+
+
+    #[test]
+    pub fn test_ceiled_permanent_myeloid() {
+        let model_string = &std::fs::read_to_string("models/myeloid_witness.aeon").unwrap();
+        let model = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+        println!("========= {}({}) =========", "models/myeloid_witness.aeon", model.num_vars());
+        let mut all_vars = Vec::new();
+        for v in model.variables() {
+            all_vars.push(v.clone());
+        }
+
+        let perturbations = PerturbationGraph::new(&model);
+        let erythrocyte_phenotype = build_phenotype(
+            perturbations.as_perturbed(),
+            HashMap::from([
+                ("EKLF", true),
+            ]));
+        let control = perturbations.ceiled_phenotype_permanent_control(
+            erythrocyte_phenotype,
+            3,
+            all_vars
+        );
+
+
+        // Trivial working control
+        let working_colors = control.perturbation_working_colors(
+            &HashMap::from([
+                (String::from("EKLF"), true)
+            ]));
+
+        assert_eq!(1.0, working_colors.approx_cardinality());
+
+        // Trivial not-working control
+        let not_working_colors = control.perturbation_working_colors(
+            &HashMap::from([
+                (String::from("EKLF"), false)
+            ]));
+
+        assert_eq!(0.0, not_working_colors.approx_cardinality());
+
+
+        // Non-trivial working control
+        let working_colors = control.perturbation_working_colors(
+            &HashMap::from([
+                (String::from("Fli1"), false),
+                (String::from("GATA1"), true),
+                (String::from("GATA2"), true)
+            ]));
+
+        assert_eq!(1.0, working_colors.approx_cardinality());
+
+
+        let not_working_colors = control.perturbation_working_colors(
+            &HashMap::from([
+                (String::from("CEBPa"), true),
+                (String::from("PU1"), false),
+            ]));
+
+        assert_eq!(0.0, not_working_colors.approx_cardinality());
+
+        let not_working_colors = control.perturbation_working_colors(
+            &HashMap::from([
             ]));
 
         assert_eq!(0.0, not_working_colors.approx_cardinality());

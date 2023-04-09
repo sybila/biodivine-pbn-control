@@ -1,10 +1,12 @@
 use std::collections::HashMap;
+use std::fs::File;
 use std::hash::Hash;
+use std::io::Write;
 use std::time::Instant;
 use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
 use biodivine_lib_param_bn::VariableId;
-use itertools::min;
+use itertools::{max, min};
 use crate::phenotype_control::PhenotypeControlMap;
 
 impl PhenotypeControlMap {
@@ -20,6 +22,7 @@ impl PhenotypeControlMap {
         let mut perturbation_bdd = self.perturbation_set.as_bdd().clone();
         // Obtain BDD having given variables perturbed to the specified value and remaining variables having unperturbed
         for v in self.context.as_perturbed().as_network().variables() {
+            // println!("{:?}", GraphColoredVertices::new(perturbation_bdd.clone(), &self.context.as_perturbed().symbolic_context()).colors().approx_cardinality());
             let var_name = self.context.as_perturbed().as_network().get_variable_name(v);
             if perturbation.contains_key(var_name) {
                 let perturbation_value = perturbation.get(var_name).unwrap();
@@ -33,8 +36,12 @@ impl PhenotypeControlMap {
             }
         }
 
+        // let mut file = File::create("./dot_result.txt").unwrap();
+        // file.write_all(perturbation_bdd.to_dot_string(self.context.as_symbolic_context().bdd_variable_set(), true).as_bytes()).unwrap();
+
         // Do universal projection across all non-perturbed variables
         for v in self.context.variables() {
+            // println!("{:?}", GraphColoredVertices::new(perturbation_bdd.clone(), &self.context.as_perturbed().symbolic_context()).colors().approx_cardinality());
             let var_name = self.context.as_perturbed().as_network().get_variable_name(v);
             if !perturbation.contains_key(var_name) {
                 let var = self.context.as_symbolic_context().get_state_variable(v);
@@ -52,7 +59,11 @@ impl PhenotypeControlMap {
     }
 
     // Returns all perturbations of working for at least min_cardinality colours with size up to max_size
-    pub fn ceiled_size_perturbation_working_colors(&self, max_size: i32, min_cardinality: f64, controllable_vars: &Vec<VariableId>) -> Vec<HashMap<String, bool>> {
+    pub fn ceiled_size_perturbation_working_colors(&self, max_size: usize,
+                                                   min_cardinality: f64,
+                                                   controllable_vars: &Vec<VariableId>,
+                                                   stop_early:bool)
+                                                   -> Vec<HashMap<String, bool>> {
         let mut perturbations = Vec::new();
         for i in 1..(max_size+1) {
             let now = Instant::now();
@@ -61,13 +72,18 @@ impl PhenotypeControlMap {
             println!("Perturbations working for at least {:?} colors : {:?}", min_cardinality, controls.len());
             let duration = now.elapsed();
             println!("Exploring perturbations of size {:?} took {:?}", i, duration);
+
             perturbations.append(&mut controls);
+
+            if stop_early && perturbations.len() > 0 {
+                return perturbations
+            }
         }
         return perturbations
     }
 
-    fn rec_ceiled_size_perturbation_working_colors(&self, remaining_size: i32, min_cardinality: f64, controllable_vars: &Vec<VariableId>, current_perturbation_bdd: Bdd, current_perturbation: HashMap<String, bool>) -> Vec<HashMap<String, bool>> {
-        if remaining_size == 0 {
+    fn rec_ceiled_size_perturbation_working_colors(&self, max_size: usize, min_cardinality: f64, controllable_vars: &Vec<VariableId>, current_perturbation_bdd: Bdd, current_perturbation: HashMap<String, bool>) -> Vec<HashMap<String, bool>> {
+        if current_perturbation.len() == max_size {
             let mut result_bdd = current_perturbation_bdd.clone();
             for v in controllable_vars {
                 let var_name = self.context.as_perturbed().as_network().get_variable_name(v.clone());
@@ -91,7 +107,7 @@ impl PhenotypeControlMap {
             }
 
             let gc = GraphColoredVertices::new(result_bdd, &self.context.as_perturbed().symbolic_context()).colors();
-            // println!("{:?} {:?}", current_perturbation, gc.approx_cardinality());
+
             if gc.approx_cardinality() >= min_cardinality {
                 return vec![current_perturbation]
             } else {
@@ -101,14 +117,18 @@ impl PhenotypeControlMap {
 
         let mut values = Vec::new();
         for var in controllable_vars {
+            let var_name = self.context.as_perturbed().as_network().get_variable_name(var.clone());
+            if current_perturbation.contains_key(var_name) {
+                continue
+            }
             for value in [true, false] {
                 let mut new_perturbation = current_perturbation.clone();
-                new_perturbation.insert(self.context.as_perturbed().as_network().get_variable_name(var.clone()).clone(), value);
+                new_perturbation.insert(var_name.to_string(), value);
                 let bdd_var = self.context.as_perturbed().symbolic_context().get_state_variable(var.clone());
                 let mut result_bdd = current_perturbation_bdd.clone();
                 result_bdd = result_bdd.and(&self.context.fix_perturbation(var.clone(), Some(value.clone())).into_bdd());
                 result_bdd = result_bdd.var_project(bdd_var);
-                let mut other = self.rec_ceiled_size_perturbation_working_colors(remaining_size-1, min_cardinality, controllable_vars, result_bdd, new_perturbation);
+                let mut other = self.rec_ceiled_size_perturbation_working_colors(max_size, min_cardinality, controllable_vars, result_bdd, new_perturbation);
                 values.append(&mut other);
             }
         }

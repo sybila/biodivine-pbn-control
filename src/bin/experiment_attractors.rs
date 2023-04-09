@@ -9,7 +9,7 @@ use std::time::Instant;
 fn main() {
     let models = [
         "[id-010]__[var-13]__[in-2]__[CARDIAC-DEVELOPMENT].aeon",
-        "[id-090]__[var-14]__[in-4]__[MAPK-REDUCED-2].aeon",
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon",
         "[id-096]__[var-19]__[in-1]__[ERBB-REGULATED-G1-S-TRANSITION].aeon",
         "[id-065]__[var-30]__[in-2]__[TUMOUR-CELL-INVASION-AND-MIGRATION].aeon",
         "[id-150]__[var-31]__[in-2]__[CELL-FATE-DECISION-MULTISCALE].aeon",

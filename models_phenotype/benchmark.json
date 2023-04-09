@@ -86,7 +86,7 @@
     }
   },
   "reduced_mapk": {
-    "file": "[id-090]__[var-14]__[in-4]__[MAPK-REDUCED-2].aeon",
+    "file": "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon",
     "comment": "Experimental based on former benchmarks",
     "vars": 18,
     "inputs": ["v_DNA_damage", "v_EGFR_stimulus", "v_FGFR3_stimulus", "v_TGFBR_stimulus"],
@@ -123,7 +123,7 @@
     "targets": {
       "apoptosis": {
         "v_Apoptosis": true,
-        "v_Growth_Arrest": false,
+        "v_Growth_Arrest": true,
         "v_Proliferation": false
       },
       "proliferation": {

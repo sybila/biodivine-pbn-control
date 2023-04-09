@@ -1,10 +1,13 @@
 use std::borrow::Borrow;
 use std::collections::{HashMap, HashSet};
+use std::fs::File;
 use std::hash::Hash;
+use std::io::Write;
 use std::time::Instant;
 use std::vec;
 use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
+use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
 use chrono::Local;
 use itertools::Itertools;
 use serde_json::Value;
@@ -16,7 +19,7 @@ fn main() {
     let args = std::env::args().collect::<Vec<_>>();
     let model = args[1].as_str();
     let phenotype = args[2].as_str();
-    let max_control_size: i32 = args[3].parse::<i32>().unwrap();
+    let max_control_size: usize = args[3].parse::<usize>().unwrap();
     // let max_control_vars: usize = args[4].parse::<usize>().unwrap();
     let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
     let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
@@ -47,6 +50,10 @@ fn main() {
             controllable_vars.push(v);
         }
     }
+
+    // let ag = SymbolicAsyncGraph::new(bn.clone()).unwrap();
+    // let w = ag.pick_witness(ag.unit_colors());
+    // let perturbation_graph = PerturbationGraph::with_restricted_variables(&w, &controllable_vars);
 
     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &controllable_vars);
 
@@ -105,11 +112,13 @@ fn main() {
 
     let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone());
 
+    let zero_perturbation_working_colors = result.perturbation_working_colors(&HashMap::from([]));
+    println!("No perturbation working for {:?}", zero_perturbation_working_colors.approx_cardinality());
 
     let now = Instant::now();
-    println!("Starting control enumeration at at: {}", Local::now());
+    println!("Starting control enumeration at: {}", Local::now());
 
-    result.ceiled_size_perturbation_working_colors(max_control_size, model_colors, &controllable_vars);
+    result.ceiled_size_perturbation_working_colors(max_control_size, model_colors, &controllable_vars, false);
 
     let duration = now.elapsed();
     println!("Control enumeration finished at {:?} ", Local::now());
