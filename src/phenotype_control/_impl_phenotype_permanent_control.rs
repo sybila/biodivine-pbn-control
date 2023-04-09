@@ -94,11 +94,15 @@ impl PerturbationGraph {
 
         println!("violating atts cardinality {}", phenotype_violating_attractors.approx_cardinality());
 
+        let now = Instant::now();
+
         let phenotype_violating_space = Reachability::reach_bwd(self.as_perturbed(), &phenotype_violating_attractors);
         println!("violating space {}", phenotype_violating_space.approx_cardinality());
 
         let phenotype_respecting_space = self.as_perturbed().unit_colored_vertices().minus(&phenotype_violating_space);
         println!("ok space {}", phenotype_respecting_space.approx_cardinality());
+
+        print!("space computation took: {:?}", now.elapsed());
 
         PhenotypeControlMap {
             perturbation_set: phenotype_respecting_space,
