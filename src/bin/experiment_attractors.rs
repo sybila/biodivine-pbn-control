@@ -31,5 +31,13 @@ fn main() {
 
         let duration = now.elapsed();
         println!("{:?}: Time elapsed for attractor search: {:?}", m, duration);
+
+
+        let now = Instant::now();
+
+        let _attractors2 = biodivine_pbn_control::aeon::attractors::compute(&graph);
+
+        let duration = now.elapsed();
+        println!("{:?}: Time elapsed for attractor search: {:?}", m, duration);
     }
 }
