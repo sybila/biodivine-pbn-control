@@ -19,6 +19,7 @@ fn main() {
     let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
 
     for m in models {
+        println!(m);
         let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
         let model_file = config[m]["file"].as_str().unwrap();
         let controllable_vars = get_controllable_vars(m, model_file);
