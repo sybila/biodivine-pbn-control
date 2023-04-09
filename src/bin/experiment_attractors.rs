@@ -19,7 +19,7 @@ fn main() {
     let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
 
     for m in models {
-        println!(m);
+        println!("{}", m);
         let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
         let model_file = config[m]["file"].as_str().unwrap();
         let controllable_vars = get_controllable_vars(m, model_file);
@@ -57,7 +57,7 @@ fn get_controllable_vars(model_name: &str, model_file: &str) -> Vec<VariableId> 
     let uncontrollable = config[model_name]["uncontrollable"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
     let inputs = config[model_name]["inputs"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
     for v in bn.variables() {
-        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) && !inputs.contains(&bn.get_variable_name(v).as_str()) && !extra_forbidden.contains(&bn.get_variable_name(v).as_str()) {
+        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) && !inputs.contains(&bn.get_variable_name(v).as_str()){
             controllable_vars.push(v);
         }
     }
