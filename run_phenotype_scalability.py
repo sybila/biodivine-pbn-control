@@ -92,7 +92,7 @@ if __name__ == "__main__":
     # Here, save all runtimes.
     AGGREGATION_LIST = []
 
-    BENCHMARKS = range(1,52)
+    BENCHMARKS = [i for i in range(1,52)]
 
     MAX_MEM = {}
     # Handle data from a finished process. In particular,
