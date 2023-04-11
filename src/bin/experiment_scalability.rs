@@ -27,9 +27,18 @@ fn main() {
     let model_string = std::fs::read_to_string( format!("./models_phenotype/{}", model_name)).unwrap();
     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
 
+    let mut controllable_vars = Vec::new();
+    let uncontrollable = config[model]["uncontrollable"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
+    let inputs = config[model]["inputs"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
+    for v in bn.variables() {
+        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) && !inputs.contains(&bn.get_variable_name(v).as_str()) {
+            controllable_vars.push(v);
+        }
+    }
+
     let mut p_vars = Vec::new();
     let mut i = 0;
-    for v in bn.variables() {
+    for v in controllable_vars.clone() {
         if i == 0 {
             i += 1;
             continue;
@@ -41,22 +50,6 @@ fn main() {
         i += 1;
     }
     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &p_vars);
-
-    let mut controllable_vars = Vec::new();
-    let uncontrollable = config[model]["uncontrollable"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
-    let inputs = config[model]["inputs"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
-    for v in bn.variables() {
-        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) && !inputs.contains(&bn.get_variable_name(v).as_str()) {
-            controllable_vars.push(v);
-        }
-    }
-
-    // let ag = SymbolicAsyncGraph::new(bn.clone()).unwrap();
-    // let w = ag.pick_witness(ag.unit_colors());
-    // let perturbation_graph = PerturbationGraph::with_restricted_variables(&w, &controllable_vars);
-
-    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &controllable_vars);
-
 
     let phenotype_map  = config[model]["targets"][phenotype].as_object().unwrap();
     let mut phenotype_vals = HashMap::new();
@@ -73,13 +66,13 @@ fn main() {
     // All colors considered by the perturbation graph
     let all_colors = perturbation_graph.unit_colors().approx_cardinality();
     // The (combinatorial) portion of colours that appear due to perturbation parameters.
-    let perturbation_colors = 2.0f64.powi(controllable_vars.len() as i32);
+    let perturbation_colors = 2.0f64.powi(p_vars.len() as i32);
     // The (combinatorial) portion of colours that are carried over from the original model.
     let model_colors = all_colors / perturbation_colors;
 
     println!("Variables: {}", model_variables);
     println!("Inputs: {}", inputs.len());
-    println!("Controllable variables: {}", controllable_vars.len());
+    println!("Controllable variables: {}", p_vars.len());
     println!("Uncertainty colors: {}", model_colors);
     println!("Perturbation colors: {}", perturbation_colors);
     println!("All colors: {}", all_colors);
@@ -110,7 +103,7 @@ fn main() {
     );
 
 
-    let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone());
+    let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, p_vars.clone());
 
     let zero_perturbation_working_colors = result.perturbation_working_colors(&HashMap::from([]));
     println!("No perturbation working for {:?}", zero_perturbation_working_colors.approx_cardinality());
@@ -118,7 +111,7 @@ fn main() {
     let now = Instant::now();
     println!("Starting control enumeration at: {}", Local::now());
 
-    result.ceiled_size_perturbation_working_colors(max_control_size, model_colors, &controllable_vars, false);
+    result.ceiled_size_perturbation_working_colors(max_control_size, model_colors, &p_vars, false);
 
     let duration = now.elapsed();
     println!("Control enumeration finished at {:?} ", Local::now());
