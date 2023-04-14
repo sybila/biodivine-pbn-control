@@ -136,8 +136,8 @@ if __name__ == "__main__":
     while len(ACTIVE) > 0 or len(BENCHMARKS) > 0:
         while len(ACTIVE) < PARALLEL and len(BENCHMARKS) > 0:
             b = BENCHMARKS.pop()
-            model = "t_lgl"
-            phenotype = "apoptosis"
+            model = "emt"
+            phenotype = "epithelial"
             bench = f"{model}_{phenotype}"
             # input_file = f"models_phenotype/{bench}"
             output_file = f"{OUT_DIR}/{b}_out.txt"
