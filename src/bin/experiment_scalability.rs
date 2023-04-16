@@ -39,15 +39,11 @@ fn main() {
     let mut p_vars = Vec::new();
     let mut i = 0;
     for v in controllable_vars.clone() {
-        if i == 0 {
-            i += 1;
-            continue;
-        }
-        if i > max_control_vars {
-            break;
-        }
         p_vars.push(v);
         i += 1;
+        if i >= max_control_vars {
+            break;
+        }
     }
     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &p_vars);
 

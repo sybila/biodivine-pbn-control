@@ -52,7 +52,7 @@ if __name__ == "__main__":
     CUT_OFF = "48h"
     SCRIPT = "./target/release/experiment_scalability"
     INTERACTIVE = False
-    PARALLEL = 4
+    PARALLEL = 16
 
     PERTURBATION_MAX_SIZE = "3"
 
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     # Here, save all runtimes.
     AGGREGATION_LIST = []
 
-    BENCHMARKS = [i for i in reversed(range(1,52))]
+    BENCHMARKS = [i for i in reversed(range(1,42))]
 
     MAX_MEM = {}
     # Handle data from a finished process. In particular,
@@ -137,7 +137,7 @@ if __name__ == "__main__":
         while len(ACTIVE) < PARALLEL and len(BENCHMARKS) > 0:
             b = BENCHMARKS.pop()
             model = "emt"
-            phenotype = "epithelial"
+            phenotype = "hybrid_2"
             bench = f"{model}_{phenotype}"
             # input_file = f"models_phenotype/{bench}"
             output_file = f"{OUT_DIR}/{b}_out.txt"
