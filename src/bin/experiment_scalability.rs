@@ -107,7 +107,7 @@ fn main() {
     let now = Instant::now();
     println!("Starting control enumeration at: {}", Local::now());
 
-    result.ceiled_size_perturbation_working_colors(max_control_size, model_colors, &p_vars, false);
+    result.ceiled_size_perturbation_working_colors(max_control_size, model_colors, &p_vars, false, false);
 
     let duration = now.elapsed();
     println!("Control enumeration finished at {:?} ", Local::now());

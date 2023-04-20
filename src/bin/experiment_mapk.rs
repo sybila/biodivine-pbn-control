@@ -10,7 +10,7 @@ use biodivine_pbn_control::aeon::phentoype::build_phenotype;
 
 fn main() {
     let mapk_full = "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE].aeon";
-    let mapk_reduced = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon";
+    let mapk_reduced = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__witness.aeon";
     let mapk_lof_p53 = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__LOF__p53.aeon";
     let mapk_lof_pten_p14 = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__LOF__PTEN_p14.aeon";
 
@@ -34,17 +34,18 @@ fn main() {
     proliferation.insert("v_Growth_Arrest", false);
     proliferation.insert("v_Proliferation", true );
 
-    // let phenotypes = vec![apoptosis, growth_arrest, proliferation];
-    let phenotypes = vec![apoptosis];
+    let phenotypes = vec![apoptosis, growth_arrest, proliferation];
+    // let phenotypes = vec![apoptosis];
 
     for p in phenotypes {
+        println!("{:?}", p);
         // Find controls in normal networks
         control_ceiled(mapk_reduced, &mapk_reduced_controllable, p.clone());
         // control_ceiled_to_3(mapk_full, &mapk_controllable, p.clone());
     }
 }
 
-const MAX_CONTROL: usize = 2;
+const MAX_CONTROL: usize = 1;
 
 fn control_ceiled(model_file: &str, controllable_vars: &Vec<VariableId>, p: HashMap<&str, bool>) {
     let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
@@ -58,7 +59,10 @@ fn control_ceiled(model_file: &str, controllable_vars: &Vec<VariableId>, p: Hash
     println!("{:?}", controllable_vars);
     let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, MAX_CONTROL, controllable_vars.clone());
 
-    println!("{:?}", result.ceiled_size_perturbation_working_colors(MAX_CONTROL, model_colors, &controllable_vars.clone(), false))
+    let zero_perturbation_working_colors = result.perturbation_working_colors(&HashMap::from([]));
+    println!("No perturbation working for {:?}: {:?}", zero_perturbation_working_colors.approx_cardinality(),  zero_perturbation_working_colors.to_dot_string(perturbation_graph.as_symbolic_context()));
+
+    result.ceiled_size_perturbation_working_colors(MAX_CONTROL, model_colors, &controllable_vars.clone(), false, true);
 }
 
 fn get_controllable_vars(model_file: &str, model_name: &str, extra_forbidden: Vec<&str>) -> Vec<VariableId> {
@@ -70,9 +74,9 @@ fn get_controllable_vars(model_file: &str, model_name: &str, extra_forbidden: Ve
 
     let mut controllable_vars = Vec::new();
     let uncontrollable = config[model_name]["uncontrollable"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
-    let inputs = config[model_name]["inputs"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
+    // let inputs = config[model_name]["inputs"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
     for v in bn.variables() {
-        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) && !inputs.contains(&bn.get_variable_name(v).as_str()) && !extra_forbidden.contains(&bn.get_variable_name(v).as_str()) {
+        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) && !extra_forbidden.contains(&bn.get_variable_name(v).as_str()) {
             controllable_vars.push(v);
         }
     }

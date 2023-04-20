@@ -62,13 +62,14 @@ impl PhenotypeControlMap {
     pub fn ceiled_size_perturbation_working_colors(&self, max_size: usize,
                                                    min_cardinality: f64,
                                                    controllable_vars: &Vec<VariableId>,
-                                                   stop_early:bool)
+                                                   stop_early:bool,
+                                                   verbose: bool)
                                                    -> Vec<HashMap<String, bool>> {
         let mut perturbations = Vec::new();
         for i in 1..(max_size+1) {
             let now = Instant::now();
             println!("Exploring perturbations of size {:?}", i);
-            let mut controls = self.rec_ceiled_size_perturbation_working_colors(i, min_cardinality, controllable_vars, self.perturbation_set.as_bdd().clone(), HashMap::new());
+            let mut controls = self.rec_ceiled_size_perturbation_working_colors(i, min_cardinality, controllable_vars, self.perturbation_set.as_bdd().clone(), HashMap::new(), verbose);
             println!("Perturbations working for at least {:?} colors : {:?}", min_cardinality, controls.len());
             let duration = now.elapsed();
             println!("Exploring perturbations of size {:?} took {:?}", i, duration);
@@ -82,7 +83,7 @@ impl PhenotypeControlMap {
         return perturbations
     }
 
-    fn rec_ceiled_size_perturbation_working_colors(&self, max_size: usize, min_cardinality: f64, controllable_vars: &Vec<VariableId>, current_perturbation_bdd: Bdd, current_perturbation: HashMap<String, bool>) -> Vec<HashMap<String, bool>> {
+    fn rec_ceiled_size_perturbation_working_colors(&self, max_size: usize, min_cardinality: f64, controllable_vars: &Vec<VariableId>, current_perturbation_bdd: Bdd, current_perturbation: HashMap<String, bool>, verbose: bool) -> Vec<HashMap<String, bool>> {
         if current_perturbation.len() == max_size {
             let mut result_bdd = current_perturbation_bdd.clone();
             for v in controllable_vars {
@@ -109,6 +110,10 @@ impl PhenotypeControlMap {
             let gc = GraphColoredVertices::new(result_bdd, &self.context.as_perturbed().symbolic_context()).colors();
 
             if gc.approx_cardinality() >= min_cardinality {
+                if verbose {
+                    // println!("{:?}: {:?}", current_perturbation, gc.to_dot_string(self.context.as_symbolic_context()));
+                    println!("{:?}: ", current_perturbation);
+                }
                 return vec![current_perturbation]
             } else {
                 return Vec::new()
@@ -116,20 +121,28 @@ impl PhenotypeControlMap {
         }
 
         let mut values = Vec::new();
+        let mut found_vars = Vec::new();
+        let mut pointer_ok = current_perturbation.len() == 0;
         for var in controllable_vars {
             let var_name = self.context.as_perturbed().as_network().get_variable_name(var.clone());
-            if current_perturbation.contains_key(var_name) {
-                continue
-            }
-            for value in [true, false] {
-                let mut new_perturbation = current_perturbation.clone();
-                new_perturbation.insert(var_name.to_string(), value);
-                let bdd_var = self.context.as_perturbed().symbolic_context().get_state_variable(var.clone());
-                let mut result_bdd = current_perturbation_bdd.clone();
-                result_bdd = result_bdd.and(&self.context.fix_perturbation(var.clone(), Some(value.clone())).into_bdd());
-                result_bdd = result_bdd.var_project(bdd_var);
-                let mut other = self.rec_ceiled_size_perturbation_working_colors(max_size, min_cardinality, controllable_vars, result_bdd, new_perturbation);
-                values.append(&mut other);
+            if pointer_ok {
+                for value in [true, false] {
+                    let mut new_perturbation = current_perturbation.clone();
+                    new_perturbation.insert(var_name.to_string(), value);
+                    let bdd_var = self.context.as_perturbed().symbolic_context().get_state_variable(var.clone());
+                    let mut result_bdd = current_perturbation_bdd.clone();
+                    result_bdd = result_bdd.and(&self.context.fix_perturbation(var.clone(), Some(value.clone())).into_bdd());
+                    result_bdd = result_bdd.var_project(bdd_var);
+                    let mut other = self.rec_ceiled_size_perturbation_working_colors(max_size, min_cardinality, controllable_vars, result_bdd, new_perturbation, verbose);
+                    values.append(&mut other);
+                }
+            } else {
+                if current_perturbation.contains_key(var_name) {
+                    found_vars.push(var_name);
+                    if current_perturbation.len() == found_vars.len() {
+                        pointer_ok = true;
+                    }
+                }
             }
         }
 
