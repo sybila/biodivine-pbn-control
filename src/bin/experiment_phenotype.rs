@@ -110,7 +110,7 @@ fn main() {
     );
 
 
-    let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone());
+    let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone(), "heuristic");
 
     let zero_perturbation_working_colors = result.perturbation_working_colors(&HashMap::from([]));
     println!("No perturbation working for {:?}", zero_perturbation_working_colors.approx_cardinality());

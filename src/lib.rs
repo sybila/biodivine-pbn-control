@@ -13,3 +13,5 @@ pub mod perturbation;
 pub mod experiment_utils;
 
 pub mod phenotype_control;
+
+pub mod tests;
