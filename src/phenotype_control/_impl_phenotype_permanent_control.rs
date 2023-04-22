@@ -168,6 +168,7 @@ impl PerturbationGraph {
         let phenotype_respecting_space = self
             .as_perturbed()
             .unit_colored_vertices()
+            .intersect_colors(&admissible_perturbations)
             .minus(&phenotype_violating_space);
         println!(
             "ok space {}",

@@ -228,6 +228,39 @@ fn mapk_phenotype_require_fgfr3_oe_perturbation(#[case] stay: bool,
     assert_eq!(working_colors.intersect(&tested_color).approx_cardinality(), 1.0);
 }
 
+
+#[rstest]
+fn sandbox() {
+    let stay = true;
+    let phenotype = "proliferation";
+    let perturbed_vals = "{\"v_p53\": false, \"v_EGFR\": true}";
+    const  MAPK_REDUCED_FILE: &str = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__witness_0000.aeon";
+    println!(">>>>>>> TEST: {:?} {:?} {:?}", stay, phenotype, perturbed_vals);
+    let mapk_reduced_controllable = get_controllable_vars(MAPK_REDUCED_FILE, MAPK_REDUCED_KEY, vec![]);
+    let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", MAPK_REDUCED_FILE)).unwrap();
+    let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+
+    // let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+    let perturbation_graph = PerturbationGraph::new(&bn);
+
+    println!("{:?}", perturbation_graph.as_perturbed().mk_unit_colored_vertices().to_dot_string(perturbation_graph.as_symbolic_context()));
+
+    let mut phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
+    if !stay {
+        // Don't stay -> avoid
+        phenotype_space = perturbation_graph.mk_unit_colored_vertices().minus_vertices(&phenotype_space).vertices();
+    }
+
+    let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
+
+    // println!("{:?}" ,control_map.as_bdd().to_dot_string(perturbation_graph.as_symbolic_context().bdd_variable_set(), true));
+
+    let perturbation = parse_simple_json_dict(perturbed_vals);
+    let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+    assert_eq!(working_colors, 1.0);
+}
+
+
 fn parse_simple_json_dict(perturbations: &str) -> HashMap<String, bool> {
     let parsed: HashMap<String,serde_json::Value> = serde_json::from_str(perturbations).unwrap();
     let mut perturbation_vals = HashMap::new();
