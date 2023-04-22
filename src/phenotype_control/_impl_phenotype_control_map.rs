@@ -66,6 +66,7 @@ impl PhenotypeControlMap {
                                                    verbose: bool)
                                                    -> Vec<HashMap<String, bool>> {
         let mut perturbations = Vec::new();
+        let mut minimal_found = false;
         for i in 1..(max_size+1) {
             let now = Instant::now();
             println!("Exploring perturbations of size {:?}", i);
@@ -76,8 +77,12 @@ impl PhenotypeControlMap {
 
             perturbations.append(&mut controls);
 
-            if stop_early && perturbations.len() > 0 {
-                return perturbations
+            if perturbations.len() > 0 && !minimal_found {
+                println!("Minaml perturbations: {:?}", perturbations);
+                minimal_found = true;
+                if stop_early {
+                    return perturbations
+                }
             }
         }
         return perturbations

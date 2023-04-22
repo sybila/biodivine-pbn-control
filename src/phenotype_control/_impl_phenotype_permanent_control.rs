@@ -111,6 +111,8 @@ impl PerturbationGraph {
         println!("phenotype vertices {}", phenotype.approx_cardinality());
 
 
+        let now = Instant::now();
+
         let selected_attractor_search_method;
         if attractor_search_method  == "heuristic" {
             selected_attractor_search_method= self.get_attractor_type_in_unperturbed_network()
@@ -147,6 +149,8 @@ impl PerturbationGraph {
             panic!("Unknown attractor search method {:?}", attractor_search_method);
         }
 
+        print!("Attractor search computation took: {:?}", now.elapsed());
+
         println!(
             "violating atts cardinality {}",
             phenotype_violating_attractors.approx_cardinality()
@@ -179,8 +183,6 @@ impl PerturbationGraph {
     }
 
     fn get_attractor_type_in_unperturbed_network(&self) -> &str{
-        let selected_attractor_search_method: &str;
-
         let unperturbed_attractors = attractors::compute(self.as_original());
         let mut unperturbed_attractors_all = self.as_original().mk_empty_vertices();
         for ua in unperturbed_attractors {
