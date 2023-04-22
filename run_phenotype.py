@@ -52,7 +52,7 @@ if __name__ == "__main__":
     CUT_OFF = "48h"
     SCRIPT = "./target/release/experiment_phenotype"
     INTERACTIVE = False
-    PARALLEL = 4
+    PARALLEL = 8
 
     PERTURBATION_MAX_SIZE = "3"
 
