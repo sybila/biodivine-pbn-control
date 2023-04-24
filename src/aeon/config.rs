@@ -32,5 +32,6 @@ pub(crate) fn get_trivial_phenotype(model_name: &str, phenotype_name: &str, stg:
     for (k,v) in phenotype_map {
         phenotype_vals.insert(k.as_str(), v.as_bool().unwrap());
     }
+    println!("{:?}", phenotype_vals);
     build_phenotype(stg.as_perturbed(),phenotype_vals)
 }

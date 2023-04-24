@@ -145,8 +145,12 @@ impl PerturbationGraph {
     pub fn build_colors_with_values(&self, bn: &BooleanNetwork, values: HashMap<String, bool>) -> GraphColors {
         let mut colors = self.as_original().mk_empty_colors();
         for v in bn.variables() {
-            // let variable_parameter = bn.find_parameter(v).unwrap();
-            // assert_eq!(bn.get_parameter(variable_parameter).get_name().as_str(), format!("param_{}", v.as_str()));
+            let function = bn.get_update_function(v);
+            if !function.is_none() {
+                continue
+            }
+            println!("{:?}", bn.get_variable_name(v));
+
             let v_name = bn.get_variable_name(v);
             let value;
             if values.contains_key(v_name) {
@@ -154,6 +158,9 @@ impl PerturbationGraph {
             } else {
                 value = false;
             }
+
+            // let variable_parameter = bn.find_parameter((param_prefix + v_name).as_str()).unwrap();
+            // assert_eq!(bn.get_parameter(variable_parameter).get_name().as_str(), format!("param_{}", v.as_str()));
 
             let colors_v_set;
             if value {

@@ -136,7 +136,7 @@ impl PerturbationGraph {
                 FixedPoints::symbolic(self.as_perturbed(), &phenotype_violating_space);
         } else if selected_attractor_search_method == "complex" {
             println!("------- Using all attractors implementation");
-            let complex_attractors = attractors::compute_restricted(self.as_original(), self.mk_unit_colored_vertices().intersect_colors(&admissible_perturbations));
+            let complex_attractors = attractors::compute_restricted(self.as_perturbed(), self.mk_unit_colored_vertices().intersect_colors(&admissible_perturbations));
             for ca in complex_attractors {
                 let states_in_ca_but_not_phenotype = ca.minus_vertices(&phenotype);
                 let colors_with_states_outside_phenotype = states_in_ca_but_not_phenotype.colors();

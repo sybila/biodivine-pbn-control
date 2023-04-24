@@ -2,8 +2,9 @@ use rstest::rstest;
 use std::collections::HashMap;
 use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
+use biodivine_lib_param_bn::FnUpdate::Var;
 use crate::aeon::config::{get_controllable_vars, get_trivial_phenotype};
-use biodivine_lib_param_bn::symbolic_async_graph::GraphVertices;
+use biodivine_lib_param_bn::symbolic_async_graph::{GraphVertices, SymbolicAsyncGraph};
 use serde_json::{Map, Value};
 use crate::aeon::phentoype::build_phenotype;
 use crate::perturbation::PerturbationGraph;
@@ -156,25 +157,23 @@ fn mapk_witness_phenotype_require_fgfr3_oe_perturbation(#[case] stay: bool,
 }
 
 
-// Figure 4C, EGFR over-expression - model with inputs, EGFR normal and needs to be perturbed, working just for colors with correct inputs
+// witness model (all inputs 0)
 #[rstest]
-#[case(false, "no_decision", "{}", "{\"v_EGFR\": true}")] // r3
-#[case(true, "proliferation", "{\"v_p53\": false, }", "{\"v_EGFR\": true}")] // r5
-#[case(true, "apoptosis", "{}", "{\"v_EGFR\": true, \"v_DNA_damage\": true}")] // r7
-#[case(true, "apoptosis", "{}", "{\"v_EGFR\": true, \"v_TGFBR_stimulus\": true}")] // r13
-#[case(false, "apoptosis", "{\"v_AKT\": true, \"v_PI3K\": true, }", "{\"v_EGFR\": true}")] // r11
-#[case(true, "proliferation", "{\"v_p14\": false, }", "{\"v_EGFR\": true}")] // r9
-#[case(false, "apoptosis", "{\"v_PTEN\": false, }", "{\"v_EGFR\": true}")] // r15
-fn mapk_phenotype_require_egfr_oe_perturbation(#[case] stay: bool,
-                                               #[case] phenotype: &str,
-                                               #[case] perturbed_vals: &str,
-                                               #[case] color_vals: &str) {
-    const  MAPK_REDUCED_FILE: &str = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon";
-    println!(">>>>>>> TEST: {:?} {:?} {:?}", stay, phenotype, perturbed_vals);
-    let mapk_reduced_controllable = get_controllable_vars(MAPK_REDUCED_FILE, MAPK_REDUCED_KEY, vec![]);
+#[case(true, "apoptosis")]
+#[case(false, "apoptosis")]
+#[case(true, "proliferation")]
+#[case(false, "proliferation")]
+#[case(true, "no_decision")]
+#[case(false, "no_decision")]
+fn find_all_controls(#[case] stay: bool, #[case] phenotype: &str) {
+    const  MAPK_REDUCED_FILE: &str = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__witness_0000.aeon";
+    println!(">>>>>>> TEST: {:?} {:?}", stay, phenotype);
+
+    let mapk_reduced_controllable = get_controllable_vars(MAPK_REDUCED_FILE, MAPK_REDUCED_KEY, vec![]).clone();
+    let mapk_reduced_controllable2 = get_controllable_vars(MAPK_REDUCED_FILE, MAPK_REDUCED_KEY, vec![]).clone();
     let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", MAPK_REDUCED_FILE)).unwrap();
     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
-    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &(mapk_reduced_controllable.clone()));
 
     let mut phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
     if !stay {
@@ -184,81 +183,149 @@ fn mapk_phenotype_require_egfr_oe_perturbation(#[case] stay: bool,
 
     let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
 
-    let perturbation = parse_simple_json_dict(perturbed_vals);
-    let working_colors = control_map.perturbation_working_colors(&perturbation);
+    let zero_perturbation_working_colors = control_map.perturbation_working_colors(&HashMap::from([]));
+    println!("No perturbation working for {:?} colors", zero_perturbation_working_colors.approx_cardinality());
 
-    let parsed_color = parse_simple_json_dict(color_vals);
-    let tested_color = perturbation_graph.build_colors_with_values(&bn, parsed_color);
-    assert_eq!(working_colors.intersect(&tested_color).approx_cardinality(), 1.0);
+    println!("{:?}", control_map.ceiled_size_perturbation_working_colors(3, 1.0, &mapk_reduced_controllable2.clone(), false, false));
+    // let perturbation = parse_simple_json_dict(perturbed_vals);
+    // let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+    assert_eq!(0.0, 1.0);
 }
+
+
+// Figure 4C, EGFR over-expression - model with inputs, EGFR normal and needs to be perturbed, working just for colors with correct inputs
+// #[rstest]
+// #[case(false, "no_decision", "{\"v_EGFR\": true}", "{}")] // r3
+// #[case(true, "proliferation", "{\"v_p53\": false, \"v_EGFR\": true}", "{}")] // r5
+// #[case(true, "apoptosis", "{\"v_EGFR\": true}", "{\"v_DNA_damage\": true}")] // r7
+// #[case(true, "apoptosis", "{\"v_EGFR\": true}", "{\"v_TGFBR_stimulus\": true}")] // r13
+// #[case(false, "apoptosis", "{\"v_AKT\": true, \"v_PI3K\": true, \"v_EGFR\": true}", "{}")] // r11
+// #[case(true, "proliferation", "{\"v_p14\": false, \"v_EGFR\": true}", "{}")] // r9
+// #[case(false, "apoptosis", "{\"v_PTEN\": false, \"v_EGFR\": true}", "{}")] // r15
+// fn mapk_phenotype_require_egfr_oe_perturbation(#[case] stay: bool,
+//                                                #[case] phenotype: &str,
+//                                                #[case] perturbed_vals: &str,
+//                                                #[case] color_vals: &str) {
+// fn mapk_phenotype() {
+//     let stay = false;
+//     let phenotype = "no_decision";
+//     let perturbed_vals = "{\"v_EGFR\": true}";
+//     let color_vals = "{}";
+//
+//     const  MAPK_REDUCED_FILE: &str = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon";
+//     println!(">>>>>>> TEST: {:?} {:?} {:?}", stay, phenotype, perturbed_vals);
+//     let mapk_reduced_controllable = get_controllable_vars(MAPK_REDUCED_FILE, MAPK_REDUCED_KEY, vec!["v_DNA_damage", "v_EGFR_stimulus", "v_FGFR3_stimulus", "v_TGFBR_stimulus"]);
+//     let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", MAPK_REDUCED_FILE)).unwrap();
+//     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+//     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+//
+//     let mut phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
+//     if !stay {
+//         // Don't stay -> avoid
+//         phenotype_space = perturbation_graph.mk_unit_colored_vertices().minus_vertices(&phenotype_space).vertices();
+//     }
+//
+//     let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
+//
+//     let perturbation = parse_simple_json_dict(perturbed_vals);
+//     let working_colors = control_map.perturbation_working_colors(&perturbation);
+//     // println!("{:?}", working_colors.to_dot_string(perturbation_graph.as_perturbed().symbolic_context()));
+//
+//     let parsed_color = parse_simple_json_dict(color_vals);
+//     let tested_color = perturbation_graph.build_colors_with_values(&bn, parsed_color);
+//     assert_eq!(working_colors.intersect(&tested_color).approx_cardinality(), 1.0);
+// }
 
 
 // Figure 4C, FGFR3 gain of function - model with inputs, FGFR3 normal and needs to be perturbed, working just for colors with correct input values
-#[rstest]
-#[case(false, "apoptosis", "{\"v_p53\": false, }", "{\"v_FGFR3\": true}")] // r6
-#[case(true, "apoptosis", "{}", "{\"v_FGFR3\": true, \"v_DNA_damage\": true}")] // r8
-#[case(true, "apoptosis", "{}", "{\"v_FGFR3\": true, \"v_TGFBR_stimulus\": true}")] // r14
-#[case(false, "apoptosis", "{\"v_AKT\": true, \"v_PI3K\": true, }", "{\"v_FGFR3\": true}")] // r12
-#[case(false, "apoptosis", "{\"v_p14\": false, }", "{\"v_FGFR3\": true}")] // r10
-#[case(false, "apoptosis", "{\"v_PTEN\": false, }", "{\"v_FGFR3\": true}")] // r16
-fn mapk_phenotype_require_fgfr3_oe_perturbation(#[case] stay: bool,
-                                                #[case] phenotype: &str,
-                                                #[case] perturbed_vals: &str,
-                                                #[case] color_vals: &str) {
-    const  MAPK_REDUCED_FILE: &str = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__witness_0000.aeon";
-    println!(">>>>>>> TEST: {:?} {:?} {:?}", stay, phenotype, perturbed_vals);
-    let mapk_reduced_controllable = get_controllable_vars(MAPK_REDUCED_FILE, MAPK_REDUCED_KEY, vec![]);
-    let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", MAPK_REDUCED_FILE)).unwrap();
-    let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
-    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+// #[rstest]
+// #[case(false, "apoptosis", "{\"v_p53\": false, \"v_FGFR3\": true}", "{}")] // r6
+// // #[case(true, "apoptosis", "{\"v_FGFR3\": true}", "{\"v_DNA_damage\": true}")] // r8
+// // #[case(true, "apoptosis", "{\"v_FGFR3\": true}", "{\"v_TGFBR_stimulus\": true}")] // r14
+// // #[case(false, "apoptosis", "{\"v_AKT\": true, \"v_PI3K\": true, \"v_FGFR3\": true}", "{}")] // r12
+// // #[case(false, "apoptosis", "{\"v_p14\": false, \"v_FGFR3\": true}", "{}")] // r10
+// // #[case(false, "apoptosis", "{\"v_PTEN\": false, \"v_FGFR3\": true}", "{}")] // r16
+// fn mapk_phenotype_require_fgfr3_oe_perturbation(#[case] stay: bool,
+//                                                 #[case] phenotype: &str,
+//                                                 #[case] perturbed_vals: &str,
+//                                                 #[case] color_vals: &str) {
+//     const  MAPK_REDUCED_FILE: &str = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon";
+//     println!(">>>>>>> TEST: {:?} {:?} {:?}", stay, phenotype, perturbed_vals);
+//     let mapk_reduced_controllable = get_controllable_vars(MAPK_REDUCED_FILE, MAPK_REDUCED_KEY, vec![]);
+//     let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", MAPK_REDUCED_FILE)).unwrap();
+//     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+//     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+//
+//     let mut phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
+//     if !stay {
+//         // Don't stay -> avoid
+//         phenotype_space = perturbation_graph.mk_unit_colored_vertices().minus_vertices(&phenotype_space).vertices();
+//     }
+//
+//     let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
+//
+//     let perturbation = parse_simple_json_dict(perturbed_vals);
+//     let working_colors = control_map.perturbation_working_colors(&perturbation);
+//
+//     let parsed_color = parse_simple_json_dict(color_vals);
+//     let tested_color = perturbation_graph.build_colors_with_values(&bn, parsed_color);
+//     assert_eq!(working_colors.intersect(&tested_color).approx_cardinality(), 1.0);
+// }
 
-    let mut phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
-    if !stay {
-        // Don't stay -> avoid
-        phenotype_space = perturbation_graph.mk_unit_colored_vertices().minus_vertices(&phenotype_space).vertices();
-    }
 
-    let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
+// #[rstest]
+// fn sandbox(#[case] var: i32) {
+//     let stay = true;
+//     let phenotype = "proliferation";
+//     let perturbed_vals = "{\"v_p53\": false, \"v_EGFR\": true}";
+//     const  MAPK_REDUCED_FILE: &str = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon";
+//     println!(">>>>>>> TEST: {:?} {:?} {:?}", stay, phenotype, perturbed_vals);
+//     let mapk_reduced_controllable = get_controllable_vars(MAPK_REDUCED_FILE, MAPK_REDUCED_KEY, vec![]);
+//     let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", MAPK_REDUCED_FILE)).unwrap();
+//     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+//     // let stg = PerturbationGraph::new(bn).unwrap();
+//
+//     let mut counter = 1;
+//     for v in bn.clone().variables() {
+//         if counter == var {
+//             println!("{:?}", bn.get_variable_name(v));
+//             // stg.symbolic_context().mk_implicit_function_is_true(v, &[]);
+//         }
+//         counter += 1
+//     }
 
-    let perturbation = parse_simple_json_dict(perturbed_vals);
-    let working_colors = control_map.perturbation_working_colors(&perturbation);
-
-    let parsed_color = parse_simple_json_dict(color_vals);
-    let tested_color = perturbation_graph.build_colors_with_values(&bn, parsed_color);
-    assert_eq!(working_colors.intersect(&tested_color).approx_cardinality(), 1.0);
-}
-
-
-#[rstest]
-fn sandbox() {
-    let stay = true;
-    let phenotype = "proliferation";
-    let perturbed_vals = "{\"v_p53\": false, \"v_EGFR\": true}";
-    const  MAPK_REDUCED_FILE: &str = "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__witness_0000.aeon";
-    println!(">>>>>>> TEST: {:?} {:?} {:?}", stay, phenotype, perturbed_vals);
-    let mapk_reduced_controllable = get_controllable_vars(MAPK_REDUCED_FILE, MAPK_REDUCED_KEY, vec![]);
-    let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", MAPK_REDUCED_FILE)).unwrap();
-    let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+    // for p in bn.clone().parameters() {
+    //     // println!("{:?}", bn.get_parameter(p).get_name());
+    // }
 
     // let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
-    let perturbation_graph = PerturbationGraph::new(&bn);
-
-    println!("{:?}", perturbation_graph.as_perturbed().mk_unit_colored_vertices().to_dot_string(perturbation_graph.as_symbolic_context()));
-
-    let mut phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
-    if !stay {
-        // Don't stay -> avoid
-        phenotype_space = perturbation_graph.mk_unit_colored_vertices().minus_vertices(&phenotype_space).vertices();
-    }
-
-    let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
-
-    // println!("{:?}" ,control_map.as_bdd().to_dot_string(perturbation_graph.as_symbolic_context().bdd_variable_set(), true));
-
-    let perturbation = parse_simple_json_dict(perturbed_vals);
-    let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
-    assert_eq!(working_colors, 1.0);
-}
+    // // let perturbation_graph = PerturbationGraph::new(&bn);
+    //
+    // println!("{:?}", perturbation_graph.as_perturbed().mk_unit_colored_vertices().to_dot_string(perturbation_graph.as_symbolic_context()));
+    //
+    //
+    // for v in perturbation_graph.as_perturbed().as_network().clone().variables() {
+    //     let pbn = perturbation_graph.as_perturbed().as_network().clone();
+    //     let function = pbn.get_update_function(v).clone().unwrap();
+    //     println!("{:?}", function.to_string(&perturbation_graph.as_perturbed().as_network()));
+    // }
+    //
+    //
+    // let mut phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
+    // if !stay {
+    //     // Don't stay -> avoid
+    //     phenotype_space = perturbation_graph.mk_unit_colored_vertices().minus_vertices(&phenotype_space).vertices();
+    // }
+    //
+    // let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
+    //
+    // // println!("{:?}" ,control_map.as_bdd().to_dot_string(perturbation_graph.as_symbolic_context().bdd_variable_set(), true));
+    //
+    // let perturbation = parse_simple_json_dict(perturbed_vals);
+    // let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+    // assert_eq!(working_colors, 1.0);
+    // assert_eq!(0.0, 1.0);
+// }
 
 
 fn parse_simple_json_dict(perturbations: &str) -> HashMap<String, bool> {

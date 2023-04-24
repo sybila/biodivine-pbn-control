@@ -143,6 +143,35 @@
       }
     }
   },
+  "full_mapk_uncertain": {
+    "file": "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE]_uncertain.aeon",
+    "comment": "Former benchmarks",
+    "vars": 56,
+    "inputs": ["$v_MEK1_2"],
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Growth_Arrest"],
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      },
+      "proliferation": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": true
+      },
+      "no_decision": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": false
+      },
+      "growth_arrest": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      }
+    }
+  },
   "t_lgl": {
     "file": "[id-014]__[var-54]__[in-7]__[T-LGL-SURVIVAL-NETWORK-2008].aeon",
     "comment": "From Fontanals control paper",

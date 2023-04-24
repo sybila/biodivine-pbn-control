@@ -22,10 +22,10 @@ impl PhenotypeControlMap {
         let mut perturbation_bdd = self.perturbation_set.as_bdd().clone();
         // Obtain BDD having given variables perturbed to the specified value and remaining variables having unperturbed
         for v in self.context.as_perturbed().as_network().variables() {
-            println!("{:?}", GraphColoredVertices::new(perturbation_bdd.clone(), &self.context.as_perturbed().symbolic_context()).colors().approx_cardinality());
+            // println!("{:?}", GraphColoredVertices::new(perturbation_bdd.clone(), &self.context.as_perturbed().symbolic_context()).colors().approx_cardinality());
             let var_name = self.context.as_perturbed().as_network().get_variable_name(v);
             if perturbation.contains_key(var_name) {
-                println!("{:?}", var_name);
+                // println!("{:?}", var_name);
                 let perturbation_value = perturbation.get(var_name).unwrap();
                 let bdd_var = self.context.as_perturbed().symbolic_context().get_state_variable(v);
                 // Fix states & params to the perturbation value
@@ -42,7 +42,7 @@ impl PhenotypeControlMap {
 
         // Do universal projection across all non-perturbed variables
         for v in self.context.variables() {
-            println!("{:?}", GraphColoredVertices::new(perturbation_bdd.clone(), &self.context.as_perturbed().symbolic_context()).colors().approx_cardinality());
+            // println!("{:?}", GraphColoredVertices::new(perturbation_bdd.clone(), &self.context.as_perturbed().symbolic_context()).colors().approx_cardinality());
             let var_name = self.context.as_perturbed().as_network().get_variable_name(v);
             if !perturbation.contains_key(var_name) {
                 let var = self.context.as_symbolic_context().get_state_variable(v);
