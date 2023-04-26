@@ -56,8 +56,8 @@ v_TGFBR_stimulus -> v_PI3K
 v_EGFR -> v_PI3K
 v_FRS2 -> v_PI3K
 v_PI3K -> v_PI3K
-v_PI3K -> v_AKT
-v_PTEN -| v_AKT
+v_PI3K -? v_AKT
+v_PTEN -? v_AKT
 v_TGFBR_stimulus -> v_MSK
 v_DNA_damage -> v_MSK
 v_ERK -> v_MSK
