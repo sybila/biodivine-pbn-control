@@ -375,6 +375,7 @@ fn mapk_working_apoptosis(#[case] model_file: &str) {
         for perturbed_vals in working_perturbations_without_inputs.clone() {
             let perturbation = parse_simple_json_dict(perturbed_vals);
             let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+            println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
             println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
 
         }
@@ -400,6 +401,7 @@ fn mapk_working_apoptosis(#[case] model_file: &str) {
         for perturbed_vals in working_perturbations_without_inputs.iter().chain(working_perturbations_with_inputs.iter()) {
             let perturbation = parse_simple_json_dict(perturbed_vals);
             let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+            println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
             println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
 
         }
@@ -454,8 +456,8 @@ fn mapk_working_proliferation(#[case] model_file: &str) {
         for perturbed_vals in working_perturbations_without_inputs.clone() {
             let perturbation = parse_simple_json_dict(perturbed_vals);
             let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+            println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
             println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
-
         }
     }
 
@@ -479,6 +481,7 @@ fn mapk_working_proliferation(#[case] model_file: &str) {
         for perturbed_vals in working_perturbations_without_inputs.iter() {
             let perturbation = parse_simple_json_dict(perturbed_vals);
             let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+            println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
             println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
 
         }
@@ -522,8 +525,8 @@ fn mapk_working_no_decision(#[case] model_file: &str) {
         for perturbed_vals in working_perturbations_without_inputs.clone() {
             let perturbation = parse_simple_json_dict(perturbed_vals);
             let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+            println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
             println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
-
         }
     }
 
@@ -547,6 +550,7 @@ fn mapk_working_no_decision(#[case] model_file: &str) {
         for perturbed_vals in working_perturbations_without_inputs.iter() {
             let perturbation = parse_simple_json_dict(perturbed_vals);
             let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+            println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
             println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
 
         }
