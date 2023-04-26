@@ -47,8 +47,8 @@ models = [
 if __name__ == "__main__":
     print(">>>>>>>>>> START BENCHMARK RUN")
 
-    # 2 days
-    CUT_OFF = "48h"
+    # 4 days
+    CUT_OFF = "96h"
     SCRIPT = "./target/release/experiment_phenotype"
     INTERACTIVE = False
     PARALLEL = 8
