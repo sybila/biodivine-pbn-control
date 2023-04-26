@@ -47,10 +47,10 @@ v_TGFBR_stimulus -| v_FGFR3
 v_EGFR -| v_FGFR3
 v_FGFR3 -? v_FGFR3
 v_FRS2 -| v_FGFR3
-v_TGFBR_stimulus -| v_FRS2
-v_ERK -| v_FRS2
-v_EGFR -| v_FRS2
-v_FGFR3 -> v_FRS2
+v_TGFBR_stimulus -? v_FRS2
+v_ERK -? v_FRS2
+v_EGFR -? v_FRS2
+v_FGFR3 -? v_FRS2
 v_FRS2 -? v_FRS2
 v_TGFBR_stimulus -> v_PI3K
 v_EGFR -> v_PI3K

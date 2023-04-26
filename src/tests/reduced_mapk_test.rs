@@ -334,8 +334,10 @@ const MAX_CONTROL: usize = 3;
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
+#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
+#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
 fn mapk_working_apoptosis(#[case] model_file: &str) {
     let inputs = vec!["v_DNA_damage","v_EGFR_stimulus","v_FGFR3_stimulus","v_TGFBR_stimulus"];
     let working_perturbations_with_inputs = vec!["{\"v_DNA_damage\": true}",
@@ -357,7 +359,9 @@ fn mapk_working_apoptosis(#[case] model_file: &str) {
     // Models with inputs -> perturbations without inputs
     if vec!["[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon",
         "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon",
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon"].iter().any(|v| v.clone().to_string() == model_file.to_string())  {
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon",
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon"]
+        .iter().any(|v| v.clone().to_string() == model_file.to_string())  {
         let extra_forbidden = inputs.clone();
         let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, extra_forbidden);
         let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
@@ -383,7 +387,9 @@ fn mapk_working_apoptosis(#[case] model_file: &str) {
 
     // Models without inputs -> all perturbations
     if ["[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon",
-       "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon"].iter().any(|v| v.clone().to_string() == model_file.to_string()) {
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon",
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon",
+        ].iter().any(|v| v.clone().to_string() == model_file.to_string()) {
         let extra_forbidden = inputs.clone();
         let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, extra_forbidden);
         let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
@@ -414,8 +420,10 @@ fn mapk_working_apoptosis(#[case] model_file: &str) {
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
+#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
+#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
 fn mapk_working_proliferation(#[case] model_file: &str) {
     let inputs = vec!["v_DNA_damage","v_EGFR_stimulus","v_FGFR3_stimulus","v_TGFBR_stimulus"];
 
@@ -438,7 +446,9 @@ fn mapk_working_proliferation(#[case] model_file: &str) {
     // Models with inputs -> perturbations without inputs
     if  ["[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon",
         "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon",
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon"].iter().any(|v| v.clone().to_string() == model_file.to_string()) {
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon",
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon",
+        ].iter().any(|v| v.clone().to_string() == model_file.to_string()) {
         let extra_forbidden = inputs.clone();
         let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, extra_forbidden);
         let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
@@ -463,7 +473,8 @@ fn mapk_working_proliferation(#[case] model_file: &str) {
 
     // Models without inputs -> all perturbations
     if ["[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon",
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon"].iter().any(|v| v.clone().to_string() == model_file.to_string()) {
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon",
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon"].iter().any(|v| v.clone().to_string() == model_file.to_string()) {
         let extra_forbidden = inputs.clone();
         let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, extra_forbidden);
         let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
@@ -493,8 +504,10 @@ fn mapk_working_proliferation(#[case] model_file: &str) {
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
+#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
 #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
+#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
 fn mapk_working_no_decision(#[case] model_file: &str) {
     let inputs = vec!["v_DNA_damage","v_EGFR_stimulus","v_FGFR3_stimulus","v_TGFBR_stimulus"];
 
@@ -507,7 +520,9 @@ fn mapk_working_no_decision(#[case] model_file: &str) {
     // Models with inputs -> perturbations without inputs
     if ["[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon",
         "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon",
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon"].iter().any(|v| v.clone().to_string() == model_file.to_string()) {
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon",
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon"]
+        .iter().any(|v| v.clone().to_string() == model_file.to_string()) {
         let extra_forbidden = inputs.clone();
         let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, extra_forbidden);
         let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
@@ -532,7 +547,9 @@ fn mapk_working_no_decision(#[case] model_file: &str) {
 
     // Models without inputs -> all perturbations
     if ["[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon",
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon"].iter().any(|v| v.clone().to_string() == model_file.to_string()) {
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon",
+        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon"]
+        .iter().any(|v| v.clone().to_string() == model_file.to_string()) {
         let extra_forbidden = inputs.clone();
         let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, extra_forbidden);
         let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
