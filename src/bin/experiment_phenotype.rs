@@ -14,6 +14,7 @@ use serde_json::Value;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
 use biodivine_pbn_control::experiment_utils::{parse_experiment, run_control_experiment};
 use biodivine_pbn_control::perturbation::PerturbationGraph;
+use biodivine_pbn_control::phenotype_control::_simplified_algorithm::bounded_phenotype_control;
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
@@ -109,7 +110,9 @@ fn main() {
             .unwrap()
     );
 
+    bounded_phenotype_control(&perturbation_graph, &phenotype, max_control_size);
 
+    /*
     let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone(), "complex");
 
     let zero_perturbation_working_colors = result.perturbation_working_colors(&HashMap::from([]));
@@ -123,6 +126,7 @@ fn main() {
     let duration = now.elapsed();
     println!("Control enumeration finished at {:?} ", Local::now());
     println!("Time elapsed for control enumeration: {:?}", duration);
+     */
 }
 
 fn powerset(s: &[VariableId]) -> Vec<Vec<VariableId>> {

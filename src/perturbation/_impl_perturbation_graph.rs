@@ -60,6 +60,10 @@ impl PerturbationGraph {
         self.perturbation_parameters.get(&variable).cloned()
     }
 
+    pub fn num_perturbation_parameters(&self) -> usize {
+        self.perturbation_parameters.len()
+    }
+
     /*
         WARNING: The unit color set in the perturbed graph is not correct! It enforces
         observability and for a regulation to be observable, the variable cannot be perturbed.

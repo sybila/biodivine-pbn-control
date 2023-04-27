@@ -1,7 +1,7 @@
 use crate::aeon::attractors;
 use crate::perturbation::PerturbationGraph;
 use crate::phenotype_control::PhenotypeControlMap;
-use biodivine_lib_bdd::{Bdd, BddPartialValuation, BddVariable};
+use biodivine_lib_bdd::{Bdd, bdd, BddPartialValuation, BddVariable};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::fixed_points::FixedPoints;
 use biodivine_lib_param_bn::symbolic_async_graph::reachability::Reachability;
@@ -11,6 +11,7 @@ use chrono::Local;
 use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
 use std::time::Instant;
+use crate::phenotype_control::_symbolic_utils::mk_bdd_up_to_bound;
 
 impl PerturbationGraph {
     pub fn ceiled_phenotype_permanent_control(
@@ -31,53 +32,19 @@ impl PerturbationGraph {
         // Then, make a map which gives us a BDD variable of the "perturbation parameter"
         // for each network variable.
         let symbolic_context = self.as_symbolic_context();
-        let mut perturbation_bdd_vars = HashMap::new();
-        for var in self.variables() {
+        let mut perturbation_bdd_vars = Vec::new();
+        for var in perturbation_variables {
             if let Some(p) = self.get_perturbation_parameter(var) {
                 let table = symbolic_context.get_explicit_function_table(p);
                 assert_eq!(0, table.arity);
-                perturbation_bdd_vars.insert(var, table.symbolic_variables()[0]);
+                perturbation_bdd_vars.push(table.symbolic_variables()[0]);
+            } else {
+                panic!("Variable does not have a perturbation parameter.")
             }
         }
 
-        // A partial valuation that is false exactly for all perturbation parameters
-        // (i.e. this is the "non-perturbed" color).
-        let all_false_valuation = perturbation_bdd_vars
-            .values()
-            .map(|v| (*v, false))
-            .collect::<Vec<_>>();
-        let all_false_valuation = BddPartialValuation::from_values(&all_false_valuation);
-
-        // Resolve perturbation_variables into their BDD counterparts.
-        let bdd_perturbation_variables = perturbation_variables
-            .iter()
-            .map(|var| {
-                *perturbation_bdd_vars
-                    .get(var)
-                    .expect("Variable does not have a perturbation parameter.")
-            })
-            .collect::<Vec<_>>();
-
-        let mut admissible_bdd = symbolic_context.bdd_variable_set().mk_conjunctive_clause(&all_false_valuation);
-        for _i in 0..max_size {
-            let mut new_bdd = admissible_bdd.clone();
-            for var in &bdd_perturbation_variables {
-                // First, filter perturbations in `admissible_bdd` to those which do not perturb
-                // `var`. Then flip the perturbation parameter such that the perturbations in the
-                // resulting BDD actually do perturb `var`.
-                // In other words, take perturbations of size `k` where `var` is not perturbed,
-                // and then perturb `var` in all of them, resulting in perturbations of size `k+1`.
-                let var_not_perturbed = symbolic_context.bdd_variable_set().mk_literal(*var, false);
-                let also_perturbs_var = Bdd::fused_binary_flip_op(
-                    (&admissible_bdd, None),
-                    (&var_not_perturbed, None),
-                    Some(*var),
-                    biodivine_lib_bdd::op_function::and
-                );
-                new_bdd = new_bdd.or(&also_perturbs_var);
-            }
-            admissible_bdd = new_bdd;
-        }
+        let bdd_vars = self.as_symbolic_context().bdd_variable_set();
+        let admissible_bdd = mk_bdd_up_to_bound(bdd_vars, &perturbation_bdd_vars, max_size);
 
         let colors = self.empty_colors().copy(admissible_bdd);
         admissible_perturbations = admissible_perturbations.union(&colors);
