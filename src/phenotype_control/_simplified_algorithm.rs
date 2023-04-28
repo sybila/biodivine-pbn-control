@@ -184,10 +184,10 @@ pub fn bounded_phenotype_control(
 
         println!("[{}] Best robustness {} for {} perturbations.", perturbation_size, best_robustness, with_best_robustness);
 
-        if best_robustness == 1.0 {
-            println!("Sufficient robustness achieved for perturbation size {}.", perturbation_size);
-            return;
-        }
+        // if best_robustness == 1.0 {
+        //     println!("Sufficient robustness achieved for perturbation size {}.", perturbation_size);
+        //     return;
+        // }
     }
 
     println!("Sufficient robustness not achieved with perturbation size {}.", size_bound);
