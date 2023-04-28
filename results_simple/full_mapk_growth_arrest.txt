@@ -1,0 +1,84 @@
+Variables: 53
+Inputs: 4
+Controllable variables: 46
+Uncertainty colors: 16
+Perturbation colors: 70368744177664
+All colors: 1125899906842624
+Unknown update functions: 4
+Lowest cardinality: 0
+Highest cardinality: 0
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 0
+[0] Elapsed: 252ms
+[0] Best robustness 0 for 0 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 46
+[1] >> fixed(Q) sets in control map: 7
+[1] >>>> {"v_p38": true}: 1; rho = 0.06
+[1] >>>> {"v_p21": true}: 1; rho = 0.06
+[1] >>>> {"v_MEK1_2": true}: 12; rho = 0.75
+[1] >>>> {"v_JNK": false}: 12; rho = 0.75
+[1] >>>> {"v_FOXO3": false}: 12; rho = 0.75
+[1] >>>> {"v_ERK": true}: 12; rho = 0.75
+[1] >>>> {"v_BCL2": true}: 12; rho = 0.75
+[1] Elapsed: 2752ms
+[1] Best robustness 0.75 for 5 perturbations.
+Perturbation size: 2
+[2] >> Admissible fixed(Q) sets: 1035
+[2] >> fixed(Q) sets in control map: 299
+[2] >>>> {"v_p38": true, "v_p70": false}: 1; rho = 0.06
+[2] >>>> {"v_p70": true, "v_p38": true}: 1; rho = 0.06
+[2] >>>> {"v_p53": true, "v_p38": true}: 1; rho = 0.06
+[2] >>>> {"v_p70": false, "v_p21": true}: 1; rho = 0.06
+[2] >>>> {"v_p70": true, "v_p21": true}: 1; rho = 0.06
+[2] >>>> {"v_p21": true, "v_p53": false}: 16; rho = 1.00
+[2] >>>> {"v_p53": true, "v_MEK1_2": true}: 16; rho = 1.00
+[2] >>>> {"v_MEK1_2": true, "v_p38": true}: 16; rho = 1.00
+[2] >>>> {"v_p21": true, "v_MEK1_2": true}: 16; rho = 1.00
+[2] >>>> {"v_MEK1_2": true, "v_TGFBR": true}: 16; rho = 1.00
+[2] >>>> {"v_MEK1_2": true, "v_TAOK": true}: 16; rho = 1.00
+[2] >>>> {"v_MEK1_2": true, "v_TAK1": true}: 16; rho = 1.00
+[2] >>>> {"v_p53": true, "v_JNK": false}: 16; rho = 1.00
+[2] >>>> {"v_p38": true, "v_JNK": false}: 16; rho = 1.00
+[2] >>>> {"v_p21": true, "v_JNK": false}: 16; rho = 1.00
+[2] >>>> {"v_JNK": false, "v_TGFBR": true}: 16; rho = 1.00
+[2] >>>> {"v_JNK": false, "v_TAOK": true}: 16; rho = 1.00
+[2] >>>> {"v_TAK1": true, "v_JNK": false}: 16; rho = 1.00
+[2] >>>> {"v_JNK": false, "v_GRB2": true}: 16; rho = 1.00
+[2] >>>> {"v_JNK": false, "v_FRS2": true}: 16; rho = 1.00
+[2] >>>> {"v_FOXO3": false, "v_p53": true}: 16; rho = 1.00
+[2] >>>> {"v_FOXO3": false, "v_p38": true}: 16; rho = 1.00
+[2] >>>> {"v_p21": true, "v_FOXO3": false}: 16; rho = 1.00
+[2] >>>> {"v_TGFBR": true, "v_FOXO3": false}: 16; rho = 1.00
+[2] >>>> {"v_FOXO3": false, "v_TAOK": true}: 16; rho = 1.00
+[2] >>>> {"v_FOXO3": false, "v_TAK1": true}: 16; rho = 1.00
+[2] >>>> {"v_GRB2": true, "v_FOXO3": false}: 16; rho = 1.00
+[2] >>>> {"v_FOXO3": false, "v_FRS2": true}: 16; rho = 1.00
+[2] >>>> {"v_p53": true, "v_ERK": true}: 16; rho = 1.00
+[2] >>>> {"v_p38": true, "v_ERK": true}: 16; rho = 1.00
+[2] >>>> {"v_p21": true, "v_ERK": true}: 16; rho = 1.00
+[2] >>>> {"v_ERK": true, "v_TGFBR": true}: 16; rho = 1.00
+[2] >>>> {"v_ERK": true, "v_TAOK": true}: 16; rho = 1.00
+[2] >>>> {"v_ERK": true, "v_TAK1": true}: 16; rho = 1.00
+[2] >>>> {"v_MEK1_2": true, "v_DUSP1": false}: 16; rho = 1.00
+[2] >>>> {"v_ERK": true, "v_DUSP1": false}: 16; rho = 1.00
+[2] >>>> {"v_CREB": false, "v_MEK1_2": true}: 16; rho = 1.00
+[2] >>>> {"v_CREB": false, "v_ERK": true}: 16; rho = 1.00
+[2] >>>> {"v_BCL2": true, "v_p53": true}: 16; rho = 1.00
+[2] >>>> {"v_BCL2": true, "v_p38": true}: 16; rho = 1.00
+[2] >>>> {"v_p21": true, "v_BCL2": true}: 16; rho = 1.00
+[2] >>>> {"v_BCL2": true, "v_TGFBR": true}: 16; rho = 1.00
+[2] >>>> {"v_BCL2": true, "v_TAOK": true}: 16; rho = 1.00
+[2] >>>> {"v_TAK1": true, "v_BCL2": true}: 16; rho = 1.00
+[2] >>>> {"v_GRB2": true, "v_BCL2": true}: 16; rho = 1.00
+[2] >>>> {"v_FRS2": true, "v_BCL2": true}: 16; rho = 1.00
+[2] >>>> {"v_ATM": true, "v_MEK1_2": true}: 16; rho = 1.00
+[2] >>>> {"v_ATM": true, "v_JNK": false}: 16; rho = 1.00
+[2] >>>> {"v_ATM": true, "v_FOXO3": false}: 16; rho = 1.00
+[2] >>>> {"v_ATM": true, "v_ERK": true}: 16; rho = 1.00
+[2] >>>> {"v_ATM": true, "v_BCL2": true}: 16; rho = 1.00
+[2] >>>> {"v_p21": true, "v_AKT": true}: 16; rho = 1.00
+[2] Elapsed: 40901ms
+[2] Best robustness 1 for 47 perturbations.
+Sufficient robustness achieved for perturbation size 2.

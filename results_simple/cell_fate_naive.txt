@@ -1,0 +1,33 @@
+Variables: 33
+Inputs: 2
+Controllable variables: 26
+Uncertainty colors: 4
+Perturbation colors: 67108864
+All colors: 268435456
+Unknown update functions: 2
+Lowest cardinality: 0
+Highest cardinality: 0
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 0
+[0] Elapsed: 145ms
+[0] Best robustness 0 for 0 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 26
+[1] >> fixed(Q) sets in control map: 0
+[1] Elapsed: 1292ms
+[1] Best robustness 0 for 0 perturbations.
+Perturbation size: 2
+[2] >> Admissible fixed(Q) sets: 325
+[2] >> fixed(Q) sets in control map: 11
+[2] >>>> {"v_BCL2": true, "v_mcIAP": false}: 4; rho = 1.00
+[2] >>>> {"v_cIAP": false, "v_BCL2": true}: 4; rho = 1.00
+[2] >>>> {"v_BCL2": true, "v_SMAC": true}: 4; rho = 1.00
+[2] >>>> {"v_BCL2": true, "v_RIP1ub": false}: 4; rho = 1.00
+[2] >>>> {"v_BCL2": true, "v_RIP1": false}: 4; rho = 1.00
+[2] >>>> {"v_BCL2": true, "v_NFKB1": false}: 4; rho = 1.00
+[2] >>>> {"v_IKK": false, "v_BCL2": true}: 4; rho = 1.00
+[2] >>>> {"v_CASP8": true, "v_BCL2": true}: 4; rho = 1.00
+[2] Elapsed: 6194ms
+[2] Best robustness 1 for 8 perturbations.
+Sufficient robustness achieved for perturbation size 2.

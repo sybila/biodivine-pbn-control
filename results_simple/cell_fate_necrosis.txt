@@ -1,0 +1,21 @@
+Variables: 33
+Inputs: 2
+Controllable variables: 26
+Uncertainty colors: 4
+Perturbation colors: 67108864
+All colors: 268435456
+Unknown update functions: 2
+Lowest cardinality: 0
+Highest cardinality: 0
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 0
+[0] Elapsed: 86ms
+[0] Best robustness 0 for 0 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 26
+[1] >> fixed(Q) sets in control map: 1
+[1] >>>> {"v_MPT": true}: 4; rho = 1.00
+[1] Elapsed: 800ms
+[1] Best robustness 1 for 1 perturbations.
+Sufficient robustness achieved for perturbation size 1.

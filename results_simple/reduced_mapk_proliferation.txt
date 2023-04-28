@@ -1,0 +1,29 @@
+Variables: 17
+Inputs: 4
+Controllable variables: 10
+Uncertainty colors: 16
+Perturbation colors: 1024
+All colors: 16384
+Unknown update functions: 4
+Lowest cardinality: 0
+Highest cardinality: 0
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 0
+[0] Elapsed: 0ms
+[0] Best robustness 0 for 0 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 10
+[1] >> fixed(Q) sets in control map: 1
+[1] >>>> {"v_ERK": true}: 4; rho = 0.25
+[1] Elapsed: 4ms
+[1] Best robustness 0.25 for 1 perturbations.
+Perturbation size: 2
+[2] >> Admissible fixed(Q) sets: 45
+[2] >> fixed(Q) sets in control map: 10
+[2] >>>> {"v_ERK": true, "v_p53": false}: 16; rho = 1.00
+[2] >>>> {"v_ERK": true, "v_PTEN": false}: 16; rho = 1.00
+[2] >>>> {"v_AKT": true, "v_ERK": true}: 16; rho = 1.00
+[2] Elapsed: 13ms
+[2] Best robustness 1 for 3 perturbations.
+Sufficient robustness achieved for perturbation size 2.

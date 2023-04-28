@@ -1,0 +1,70 @@
+Variables: 33
+Inputs: 2
+Controllable variables: 26
+Uncertainty colors: 4
+Perturbation colors: 67108864
+All colors: 268435456
+Unknown update functions: 2
+Lowest cardinality: 0
+Highest cardinality: 0
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 0
+[0] Elapsed: 334ms
+[0] Best robustness 0 for 0 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 26
+[1] >> fixed(Q) sets in control map: 0
+[1] Elapsed: 2604ms
+[1] Best robustness 0 for 0 perturbations.
+Perturbation size: 2
+[2] >> Admissible fixed(Q) sets: 325
+[2] >> fixed(Q) sets in control map: 56
+[2] >>>> {"v_mcIAP": false, "v_mROS": false}: 1; rho = 0.25
+[2] >>>> {"v_cIAP": false, "v_mROS": false}: 1; rho = 0.25
+[2] >>>> {"v_cFLIP": false, "v_mROS": false}: 1; rho = 0.25
+[2] >>>> {"v_mROS": false, "v_SMAC": true}: 1; rho = 0.25
+[2] >>>> {"v_mcIAP": false, "v_ROS": false}: 1; rho = 0.25
+[2] >>>> {"v_ROS": false, "v_cIAP": false}: 1; rho = 0.25
+[2] >>>> {"v_ROS": false, "v_cFLIP": false}: 1; rho = 0.25
+[2] >>>> {"v_SMAC": true, "v_ROS": false}: 1; rho = 0.25
+[2] >>>> {"v_mROS": false, "v_RIP1ub": false}: 1; rho = 0.25
+[2] >>>> {"v_ROS": false, "v_RIP1ub": false}: 1; rho = 0.25
+[2] >>>> {"v_RIP1": false, "v_mROS": false}: 1; rho = 0.25
+[2] >>>> {"v_ROS": false, "v_RIP1": false}: 1; rho = 0.25
+[2] >>>> {"v_NFKB1": false, "v_mROS": false}: 1; rho = 0.25
+[2] >>>> {"v_ROS": false, "v_NFKB1": false}: 1; rho = 0.25
+[2] >>>> {"v_MPT": false, "v_mcIAP": false}: 1; rho = 0.25
+[2] >>>> {"v_cIAP": false, "v_MPT": false}: 1; rho = 0.25
+[2] >>>> {"v_cFLIP": false, "v_MPT": false}: 1; rho = 0.25
+[2] >>>> {"v_SMAC": true, "v_MPT": false}: 1; rho = 0.25
+[2] >>>> {"v_RIP1ub": false, "v_MPT": false}: 1; rho = 0.25
+[2] >>>> {"v_RIP1": false, "v_MPT": false}: 1; rho = 0.25
+[2] >>>> {"v_MPT": false, "v_NFKB1": false}: 1; rho = 0.25
+[2] >>>> {"v_MOMP": true, "v_mROS": false}: 4; rho = 1.00
+[2] >>>> {"v_MOMP": true, "v_ROS": false}: 4; rho = 1.00
+[2] >>>> {"v_RIP1ub": true, "v_MOMP": true}: 4; rho = 1.00
+[2] >>>> {"v_MOMP": true, "v_MPT": false}: 4; rho = 1.00
+[2] >>>> {"v_MOMP": true, "v_IKK": true}: 4; rho = 1.00
+[2] >>>> {"v_CASP8": true, "v_mROS": false}: 4; rho = 1.00
+[2] >>>> {"v_CASP8": true, "v_ROS": false}: 4; rho = 1.00
+[2] >>>> {"v_MPT": false, "v_CASP8": true}: 4; rho = 1.00
+[2] >>>> {"v_CASP3": true, "v_mROS": false}: 4; rho = 1.00
+[2] >>>> {"v_CASP3": true, "v_ROS": false}: 4; rho = 1.00
+[2] >>>> {"v_CASP3": true, "v_MPT": false}: 4; rho = 1.00
+[2] >>>> {"v_MOMP": true, "v_BCL2": true}: 4; rho = 1.00
+[2] >>>> {"v_CASP3": true, "v_BCL2": true}: 4; rho = 1.00
+[2] >>>> {"v_mROS": false, "v_BAX": true}: 4; rho = 1.00
+[2] >>>> {"v_ROS": false, "v_BAX": true}: 4; rho = 1.00
+[2] >>>> {"v_BAX": true, "v_RIP1ub": true}: 4; rho = 1.00
+[2] >>>> {"v_BAX": true, "v_MPT": false}: 4; rho = 1.00
+[2] >>>> {"v_BAX": true, "v_IKK": true}: 4; rho = 1.00
+[2] >>>> {"v_BAX": true, "v_BCL2": true}: 4; rho = 1.00
+[2] >>>> {"v_MPT": true, "v_ATP": true}: 4; rho = 1.00
+[2] >>>> {"v_ATP": true, "v_MOMP": true}: 4; rho = 1.00
+[2] >>>> {"v_CASP8": true, "v_ATP": true}: 4; rho = 1.00
+[2] >>>> {"v_CASP3": true, "v_ATP": true}: 4; rho = 1.00
+[2] >>>> {"v_ATP": true, "v_BAX": true}: 4; rho = 1.00
+[2] Elapsed: 11529ms
+[2] Best robustness 1 for 24 perturbations.
+Sufficient robustness achieved for perturbation size 2.

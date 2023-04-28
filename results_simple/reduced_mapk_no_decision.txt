@@ -1,0 +1,43 @@
+Variables: 17
+Inputs: 4
+Controllable variables: 10
+Uncertainty colors: 16
+Perturbation colors: 1024
+All colors: 16384
+Unknown update functions: 4
+Lowest cardinality: 0
+Highest cardinality: 0
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 1
+[0] >>>> {}: 1; rho = 0.06
+[0] Elapsed: 4ms
+[0] Best robustness 0.0625 for 1 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 10
+[1] >> fixed(Q) sets in control map: 10
+[1] >>>> {"v_p53": false}: 13; rho = 0.81
+[1] >>>> {"v_AKT": true}: 13; rho = 0.81
+[1] Elapsed: 38ms
+[1] Best robustness 0.8125 for 2 perturbations.
+Perturbation size: 2
+[2] >> Admissible fixed(Q) sets: 45
+[2] >> fixed(Q) sets in control map: 45
+[2] >>>> {"v_p14": false, "v_p53": false}: 13; rho = 0.81
+[2] >>>> {"v_p14": true, "v_p53": false}: 13; rho = 0.81
+[2] >>>> {"v_p53": false, "v_PTEN": false}: 13; rho = 0.81
+[2] >>>> {"v_p53": true, "v_PTEN": false}: 14; rho = 0.88
+[2] >>>> {"v_p53": false, "v_PTEN": true}: 16; rho = 1.00
+[2] >>>> {"v_p53": false, "v_PI3K": false}: 16; rho = 1.00
+[2] >>>> {"v_p53": false, "v_MSK": false}: 16; rho = 1.00
+[2] >>>> {"v_FRS2": true, "v_PTEN": false}: 16; rho = 1.00
+[2] >>>> {"v_ERK": false, "v_p53": false}: 16; rho = 1.00
+[2] >>>> {"v_AKT": false, "v_p53": false}: 16; rho = 1.00
+[2] >>>> {"v_p53": true, "v_AKT": true}: 16; rho = 1.00
+[2] >>>> {"v_AKT": true, "v_PI3K": false}: 16; rho = 1.00
+[2] >>>> {"v_AKT": true, "v_MSK": false}: 16; rho = 1.00
+[2] >>>> {"v_FRS2": true, "v_AKT": true}: 16; rho = 1.00
+[2] >>>> {"v_AKT": true, "v_ERK": false}: 16; rho = 1.00
+[2] Elapsed: 118ms
+[2] Best robustness 1 for 11 perturbations.
+Sufficient robustness achieved for perturbation size 2.
