@@ -7,8 +7,8 @@ v_MSK -> v_CREB
 v_TGFBR -> v_TAK1
 v_MAP3K1_3 -> v_MEK1_2
 v_RAF -> v_MEK1_2
-v_PPP2CA -| v_MEK1_2
-v_AP1 -| v_MEK1_2
+v_PPP2CA -?? v_MEK1_2
+v_AP1 -?? v_MEK1_2
 v_p53 -> v_p21
 v_AKT -| v_p21
 v_GRB2 -> v_GAB1

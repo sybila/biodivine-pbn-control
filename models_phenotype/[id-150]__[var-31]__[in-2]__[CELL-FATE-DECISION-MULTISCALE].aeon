@@ -1,4 +1,4 @@
-v_TNF -> v_TNF
+v_TNF -? v_TNF
 v_NFKB1 -> v_TNF
 v_TNF -> v_TNFR
 v_TNFR -> v_DISC_TNF
@@ -34,7 +34,7 @@ v_SMAC -| v_cIAP
 v_mcIAP -> v_cIAP
 v_MOMP -> v_Cyt_c
 v_SMAC -| v_XIAP
-v_mXIAP -> v_XIAP
+v_mXIAP -? v_XIAP
 v_ATP -> v_apoptosome
 v_Cyt_c -> v_apoptosome
 v_XIAP -| v_apoptosome

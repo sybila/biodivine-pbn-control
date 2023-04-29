@@ -24,7 +24,7 @@ v_p63 -> v_miR200
 v_p73 -> v_miR200
 v_ZEB1 -| v_miR200
 v_p53 -> v_miR200
-v_Migration -> v_Metastasis
+v_Migration -? v_Metastasis
 v_AKT2 -| v_p73
 v_DNAdamage -> v_p73
 v_AKT1 -| v_p73

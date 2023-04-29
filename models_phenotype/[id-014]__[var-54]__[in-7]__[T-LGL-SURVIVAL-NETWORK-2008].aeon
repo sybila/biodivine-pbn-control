@@ -41,7 +41,7 @@ v_RAS -> v_GAP
 v_IL2 -| v_GAP
 v_IL15 -| v_GAP
 v_Apoptosis -| v_GAP
-v_GAP -> v_GAP
+v_GAP -? v_GAP
 v_PDGFR -> v_PI3K
 v_RAS -> v_PI3K
 v_Apoptosis -| v_PI3K
@@ -145,7 +145,7 @@ v_NFKB -> v_RANTES
 v_Apoptosis -| v_RANTES
 v_JAK -> v_STAT3
 v_Apoptosis -| v_STAT3
-v_Apoptosis -> v_Apoptosis
+v_Apoptosis -? v_Apoptosis
 v_Caspase -> v_Apoptosis
 v_IL2RB -> v_FYN
 v_TCR -> v_FYN
@@ -169,7 +169,7 @@ v_NFKB -> v_IAP
 v_Apoptosis -| v_IAP
 v_BID -| v_IAP
 v_IFNG -> v_P2
-v_P2 -> v_P2
+v_P2 -? v_P2
 v_Apoptosis -| v_P2
 v_Stimuli2 -| v_P2
 v_IL2RB -> v_MCL1
