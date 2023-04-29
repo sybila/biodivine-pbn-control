@@ -28,7 +28,8 @@ fn main() {
             "no_decision",
             "growth_arrest"
         ] {
-            let max_control_size = 2;
+            println!(">>>>>>>>>>>>>> {:?} {:?}", model_name, phenotype);
+            let max_control_size = 3;
             let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
             let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
             let model_string = std::fs::read_to_string( format!("./models_phenotype/{}", model_name)).unwrap();
