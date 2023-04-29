@@ -13,11 +13,11 @@ v_p53 -> v_p21
 v_AKT -| v_p21
 v_GRB2 -> v_GAB1
 v_PI3K -> v_GAB1
-v_MAP3K1_3 -> v_JNK
-v_MTK1 -> v_JNK
+v_MAP3K1_3 -?? v_JNK
+v_MTK1 -?? v_JNK
 v_TAOK -> v_JNK
 v_DUSP1 -?? v_JNK
-v_TAK1 -> v_JNK
+v_TAK1 -?? v_JNK
 v_p38 -> v_MAX
 v_PLCG -> v_RAS
 v_SOS -> v_RAS
@@ -34,11 +34,11 @@ v_RAS -> v_MAP3K1_3
 v_ERK -> v_ELK1
 v_JNK -> v_ELK1
 v_p38 -> v_ELK1
-v_MAP3K1_3 -> v_p38
+v_MAP3K1_3 -?? v_p38
 v_MTK1 -> v_p38
-v_DUSP1 -?? v_p38
+v_DUSP1-?? v_p38
 v_TAOK -> v_p38
-v_TAK1 -> v_p38
+v_TAK1 -?? v_p38
 v_p70 -> v_Proliferation
 v_p21 -| v_Proliferation
 v_MYC -> v_Proliferation
@@ -55,8 +55,8 @@ v_SPRY -> v_EGFR
 v_EGFR_stimulus -> v_EGFR
 v_GRB2 -| v_EGFR
 v_PKC -| v_EGFR
-v_SPRY -? v_FRS2
-v_GRB2 -? v_FRS2
+v_SPRY -| v_FRS2
+v_GRB2 -| v_FRS2
 v_FGFR3 -> v_FRS2
 v_p14 -| v_MDM2
 v_p53 -> v_MDM2
@@ -102,6 +102,8 @@ v_RAS -> v_RAF
 v_AKT -| v_RAF
 v_PKC -> v_RAF
 v_TGFBR -> v_SMAD
+v_p1 -? v_JNK
+v_p2 -?? v_p38
 $v_AKT: (v_PDK1 & !v_PTEN)
 $v_AP1: (v_JUN & (v_ATF2 | v_FOS))
 $v_ATF2: (v_JNK | v_p38)
@@ -121,7 +123,7 @@ $v_GAB1: (v_PI3K | v_GRB2)
 $v_GADD45: (v_p53 | v_SMAD)
 $v_GRB2: ((v_EGFR | v_TGFBR) | v_FRS2)
 $v_Growth_Arrest: v_p21
-$v_JNK: (p1 & ((((((((((v_TAOK & v_MAP3K1_3) | (v_TAK1 & !v_DUSP1)) | (v_MAP3K1_3 & v_MTK1)) | (v_TAK1 & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_TAOK & v_MTK1)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & !v_DUSP1))) | (!a & (((((((((v_TAOK & v_MAP3K1_3) | (v_TAK1)) | (v_MAP3K1_3 & v_MTK1)) | (v_TAK1 & v_MAP3K1_3)) | (v_MAP3K1_3)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_TAOK & v_MTK1)) | (v_MTK1 &)) | (v_TAOK))
+$v_JNK: (((v_p1 & (((((((((v_TAOK & v_MAP3K1_3) | (v_TAK1 & !v_DUSP1)) | (v_MAP3K1_3 & v_MTK1)) | (v_TAK1 & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_TAOK & v_MTK1)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & !v_DUSP1))) & (!v_p1 & ((((((((((v_TAOK & v_MAP3K1_3) | (v_TAK1 & !v_DUSP1)) | (v_MAP3K1_3 & v_MTK1)) | (v_TAK1 & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_TAOK & v_MTK1)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & !v_DUSP1))))
 $v_JUN: v_JNK
 $v_MAP3K1_3: v_RAS
 $v_MAX: v_p38
@@ -148,7 +150,7 @@ $v_TAOK: v_ATM
 $v_TGFBR: v_TGFBR_stimulus
 $v_p14: v_MYC
 $v_p21: (v_p53 & !v_AKT)
-$v_p38: (p2 & (((((((((v_MAP3K1_3 & v_MTK1) | (v_TAK1 & !v_DUSP1)) | (v_TAOK & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MAP3K1_3)) | (v_TAOK & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & v_MTK1)) & (!p2 & (((((((((v_MAP3K1_3 & v_MTK1) | (v_TAK1)) | (v_TAOK & v_MAP3K1_3)) | (v_MAP3K1_3)) | (v_TAK1 & v_MAP3K1_3)) | (v_TAOK)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_MTK1)) | (v_TAOK & v_MTK1))
+$v_p38: ((v_p2 & (((((((((v_MAP3K1_3 & v_MTK1) | (v_TAK1 & !v_DUSP1)) | (v_TAOK & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MAP3K1_3)) | (v_TAOK & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & v_MTK1)) & (!v_p2 & (((((((((v_MAP3K1_3 & v_MTK1) | (v_TAK1)) | (v_TAOK & v_MAP3K1_3)) | (v_MAP3K1_3)) | (v_TAK1 & v_MAP3K1_3)) | (v_TAOK)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_MTK1)) | (v_TAOK & v_MTK1)))
 $v_p53: (((v_p38 & !v_MDM2) | (v_ATM & !v_MDM2)) | (v_ATM & v_p38))
 $v_p70: (v_PDK1 & v_ERK)
 $v_DNA_damage: false

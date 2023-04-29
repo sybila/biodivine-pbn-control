@@ -35,7 +35,7 @@ fn main() {
             let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
 
             let mut controllable_vars = Vec::new();
-            let uncontrollable = config["fulL_mapk"]["uncontrollable"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
+            let uncontrollable = config["full_mapk"]["uncontrollable"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
             let inputs = config["full_mapk"]["inputs"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
             for v in bn.variables() {
                 if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) && !inputs.contains(&bn.get_variable_name(v).as_str()) {
