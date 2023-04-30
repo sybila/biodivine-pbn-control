@@ -53,7 +53,7 @@ if __name__ == "__main__":
     INTERACTIVE = False
     PARALLEL = 8
 
-    PERTURBATION_MAX_SIZE = ["1", "2", "3"]
+    PERTURBATION_MAX_SIZE = "3"
 
     # Set timeout binary based on OS (macOS needs gtimeout)
     TIMEOUT = 'none'
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     # Here, save all runtimes.
     AGGREGATION_LIST = []
 
-    BENCHMARKS = list(itertools.product(models, PERTURBATION_MAX_SIZE))
+    BENCHMARKS = models
 
     MAX_MEM = {}
     # Handle data from a finished process. In particular,
@@ -134,12 +134,11 @@ if __name__ == "__main__":
     ACTIVE = []
     while len(ACTIVE) > 0 or len(BENCHMARKS) > 0:
         while len(ACTIVE) < PARALLEL and len(BENCHMARKS) > 0:
-            x, max_size = BENCHMARKS.pop(0)
-            model, phenotype = x
-            bench = f"{model}_{phenotype}_{max_size}"
+            model, phenotype = BENCHMARKS.pop(0)
+            bench = f"{model}_{phenotype}"
             # input_file = f"models_phenotype/{bench}"
             output_file = f"{OUT_DIR}/{bench}_out.txt"
-            command_body = SCRIPT + " " + model + " " + phenotype + " " + max_size
+            command_body = SCRIPT + " " + model + " " + phenotype + " " + PERTURBATION_MAX_SIZE
             command = TIMEOUT + " " + CUT_OFF + " time -p " + " " + command_body + " > " + output_file + " 2>&1"
             process = Process(target=SPAWN, args=(command,))
             process.start()

@@ -143,12 +143,71 @@
       }
     }
   },
-  "full_mapk_uncertain": {
-    "file": "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE]_uncertain.aeon",
+
+  "full_mapk_uncertain_DUSP1": {
+    "file": "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE]_uncertain_DUSP1_reg.aeon",
     "comment": "Former benchmarks",
     "vars": 56,
-    "inputs": ["$v_MEK1_2"],
-    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Growth_Arrest"],
+    "inputs": [],
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Growth_Arrest", "v_p38", "v_JNK"],
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      },
+      "proliferation": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": true
+      },
+      "no_decision": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": false
+      },
+      "growth_arrest": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      }
+    }
+  },
+  "full_mapk_uncertain_FRS2": {
+    "file": "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE]_uncertain_FRS2.aeon",
+    "comment": "Former benchmarks",
+    "vars": 56,
+    "inputs": [],
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Growth_Arrest", "v_FRS2"],
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      },
+      "proliferation": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": true
+      },
+      "no_decision": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": false
+      },
+      "growth_arrest": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      }
+    }
+  },
+  "full_mapk_uncertain_FRS2": {
+    "file": "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE]_uncertain_MEK1_2.aeon",
+    "comment": "Former benchmarks",
+    "vars": 56,
+    "inputs": [],
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Growth_Arrest", "MEK1_2"],
     "targets": {
       "apoptosis": {
         "v_Apoptosis": true,
