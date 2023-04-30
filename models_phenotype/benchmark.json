@@ -202,7 +202,7 @@
       }
     }
   },
-  "full_mapk_uncertain_FRS2": {
+  "full_mapk_uncertain_MEK1_2": {
     "file": "[id-070]__[var-49]__[in-4]__[MAPK-CANCER-CELL-FATE]_uncertain_MEK1_2.aeon",
     "comment": "Former benchmarks",
     "vars": 56,
