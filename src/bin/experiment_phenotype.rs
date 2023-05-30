@@ -14,7 +14,6 @@ use serde_json::Value;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
 use biodivine_pbn_control::experiment_utils::{parse_experiment, run_control_experiment};
 use biodivine_pbn_control::perturbation::PerturbationGraph;
-use biodivine_pbn_control::phenotype_control::_simplified_algorithm::bounded_phenotype_control;
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
@@ -110,7 +109,7 @@ fn main() {
             .unwrap()
     );
 
-    bounded_phenotype_control(&perturbation_graph, &phenotype, max_control_size);
+    perturbation_graph.ceiled_phenotype_permanent_control(phenotype, max_control_size, controllable_vars, false);
 
     /*
     let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone(), "complex");
