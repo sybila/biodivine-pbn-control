@@ -2,11 +2,8 @@ use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::symbolic_async_graph::GraphColoredVertices;
 
 pub mod _impl_phenotype_permanent_control;
-
-mod _impl_phenotype_control_map;
-
+pub mod _impl_phenotype_control_map;
 mod _symbolic_utils;
-pub mod _simplified_algorithm;
 
 /// A mapping between admissible perturbations and colors for which the perturbation controls
 /// the network.

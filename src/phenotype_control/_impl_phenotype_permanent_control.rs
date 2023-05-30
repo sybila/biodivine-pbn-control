@@ -10,171 +10,224 @@ use biodivine_lib_param_bn::{ParameterId, VariableId};
 use chrono::Local;
 use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
-use std::time::Instant;
-use crate::phenotype_control::_symbolic_utils::mk_bdd_up_to_bound;
+use std::time::{Instant, SystemTime};
+use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
+use crate::control::ControlMap;
+use crate::phenotype_control::_symbolic_utils::{mk_bdd_of_bound, mk_bdd_up_to_bound};
 
 impl PerturbationGraph {
-    pub fn ceiled_phenotype_permanent_control(
-        &self,
-        phenotype: GraphVertices,
-        max_size: usize,
-        perturbation_variables: Vec<VariableId>,
-        attractor_search_method: &str
-    ) -> PhenotypeControlMap {
-        assert!(!perturbation_variables.is_empty());
-
-        let now = Instant::now();
-        println!("Starting phenotype permanent control ceiled to size {} controlling {} different variables, started at: {}", max_size, perturbation_variables.len(), Local::now());
-        // A color set which will (eventually) hold the perturbations over
-        // `perturbation_variables` up to a certain size.
-        let mut admissible_perturbations = self.as_perturbed().mk_empty_colors();
-
-        // Then, make a map which gives us a BDD variable of the "perturbation parameter"
-        // for each network variable.
-        let symbolic_context = self.as_symbolic_context();
-        let mut perturbation_bdd_vars = Vec::new();
-        for var in perturbation_variables {
-            if let Some(p) = self.get_perturbation_parameter(var) {
-                let table = symbolic_context.get_explicit_function_table(p);
-                assert_eq!(0, table.arity);
-                perturbation_bdd_vars.push(table.symbolic_variables()[0]);
-            } else {
-                panic!("Variable does not have a perturbation parameter.")
-            }
-        }
-
-        let bdd_vars = self.as_symbolic_context().bdd_variable_set();
-        let admissible_bdd = mk_bdd_up_to_bound(bdd_vars, &perturbation_bdd_vars, max_size);
-
-        let colors = self.empty_colors().copy(admissible_bdd);
-        admissible_perturbations = admissible_perturbations.union(&colors);
-
-        let result = self.phenotype_permanent_control(phenotype, admissible_perturbations, attractor_search_method);
-        let duration = now.elapsed();
-        println!("Control map computation finished at {:?} ", Local::now());
-        println!("Time elapsed for computing control map: {:?}", duration);
-        result
-    }
-
     pub fn phenotype_permanent_control(
         &self,
         phenotype: GraphVertices,
         admissible_perturbations: GraphColors,
-        attractor_search_method: &str
     ) -> PhenotypeControlMap {
-        println!(
-            "all space {}",
-            self.as_perturbed()
-                .unit_colored_vertices()
-                .approx_cardinality()
-        );
-        println!(
-            "all vertices {}",
-            self.as_perturbed()
-                .unit_colored_vertices()
-                .vertices()
-                .approx_cardinality()
-        );
-        println!("phenotype vertices {}", phenotype.approx_cardinality());
+        let perturbation_bbd_vars_mapping = self.variables()
+            .filter_map(|var| self.get_perturbation_parameter(var).map(|it| (var, it)))
+            .map(|(var, param)| {
+                (var, self.as_symbolic_context()
+                    .get_explicit_function_table(param)
+                    .symbolic_variables()[0])
+            })
+            .collect::<HashMap<_, _>>();
 
 
-        let now = Instant::now();
-
-        let selected_attractor_search_method;
-        if attractor_search_method  == "heuristic" {
-            selected_attractor_search_method= self.get_attractor_type_in_unperturbed_network()
-        } else {
-            selected_attractor_search_method = attractor_search_method;
-        }
-
-        let mut phenotype_violating_attractors = self.mk_empty_colored_vertices();
-        if selected_attractor_search_method == "sinks" {
-            println!("------- Using fixed points implementation");
-            let phenotype_violating_space = self
-                .as_perturbed()
-                .unit_colored_vertices()
-                .minus_vertices(&phenotype)
-                .intersect_colors(&admissible_perturbations);
-            println!(
-                "space to explore attractors {}",
-                phenotype_violating_space.approx_cardinality()
-            );
-            phenotype_violating_attractors =
-                FixedPoints::symbolic(self.as_perturbed(), &phenotype_violating_space);
-        } else if selected_attractor_search_method == "complex" {
-            println!("------- Using all attractors implementation");
-            let complex_attractors = attractors::compute_restricted(self.as_perturbed(), self.mk_unit_colored_vertices().intersect_colors(&admissible_perturbations));
-            for ca in complex_attractors {
-                let states_in_ca_but_not_phenotype = ca.minus_vertices(&phenotype);
-                let colors_with_states_outside_phenotype = states_in_ca_but_not_phenotype.colors();
-                let relevant_atts = ca.intersect_colors(&colors_with_states_outside_phenotype);
-                let violating_attractors = ca.intersect(&relevant_atts);
-                phenotype_violating_attractors =
-                    phenotype_violating_attractors.union(&violating_attractors);
-            }
-        } else {
-            panic!("Unknown attractor search method {:?}", attractor_search_method);
-        }
-
-        print!("Attractor search computation took: {:?}", now.elapsed());
-
-        println!(
-            "violating atts cardinality {}",
-            phenotype_violating_attractors.approx_cardinality()
-        );
-
-        let now = Instant::now();
-
-        let phenotype_violating_space =
-            Reachability::reach_bwd(self.as_perturbed(), &phenotype_violating_attractors);
-        println!(
-            "violating space {}",
-            phenotype_violating_space.approx_cardinality()
-        );
-
-        let phenotype_respecting_space = self
-            .as_perturbed()
-            .unit_colored_vertices()
+        let mut trap = self.unit_colored_vertices()
             .intersect_colors(&admissible_perturbations)
-            .minus(&phenotype_violating_space);
-        println!(
-            "ok space {}",
-            phenotype_respecting_space.approx_cardinality()
-        );
+            .intersect_vertices(&phenotype);
 
-        print!("space computation took: {:?}", now.elapsed());
+        'trap: loop {
+            for var in self.variables().rev() {
+                let can_leave = self.as_perturbed().var_can_post_out(var, &trap);
+                if !can_leave.is_empty() {
+                    trap = trap.minus(&can_leave);
+                    if trap.symbolic_size() > 100_000 {
+                        println!(" Trap phenotype progress: {} / {}",  trap.symbolic_size(), trap.approx_cardinality());
+                    }
+                    continue 'trap;
+                }
+            }
+            break;
+        }
+
+        let mut trap = self.unit_colored_vertices()
+            .intersect_colors(&admissible_perturbations)
+            .minus(&trap);
+
+        'trap: loop {
+            for var in self.variables().rev() {
+                let can_leave = self.as_perturbed().var_can_post_out(var, &trap);
+                if !can_leave.is_empty() {
+                    trap = trap.minus(&can_leave);
+                    if trap.symbolic_size() > 100_000 {
+                        println!(" Trap non-phenotype progress: {} / {}", trap.symbolic_size(), trap.approx_cardinality());
+                    }
+                    continue 'trap;
+                }
+            }
+            break;
+        }
+
+        let mut inverse_control = trap.into_bdd();
+        for var in self.variables() {
+            let state_var = self.as_symbolic_context().get_state_variable(var);
+            if let Some(perturbation_var) = perturbation_bbd_vars_mapping.get(&var) {
+                // If the variable can be perturbed, we split into two cases and eliminate
+                // it in the unperturbed cases.
+
+                let is_perturbed = inverse_control
+                    .var_select(*perturbation_var, true);
+                let is_not_perturbed = inverse_control
+                    .var_select(*perturbation_var, false)
+                    .var_project(state_var);
+                inverse_control = is_perturbed.or(&is_not_perturbed);
+            } else {
+                // If the variable cannot be perturbed, we can eliminate it everywhere.
+                inverse_control = inverse_control.var_project(state_var);
+            }
+        }
+
+        let inverse_control_map = self.empty_colored_vertices().copy(inverse_control);
+
+        // Control map consists of admissible state-color pairs that are also admissible
+        // for our perturbation size and are not in the inverse map.
+        let control_map = self.unit_colored_vertices()
+            .intersect_colors(&admissible_perturbations)
+            .minus(&inverse_control_map);
 
         PhenotypeControlMap {
-            perturbation_set: phenotype_respecting_space,
-            context: self.clone(),
+            perturbation_set: control_map,
+            context: self.clone()
         }
     }
 
-    fn get_attractor_type_in_unperturbed_network(&self) -> &str{
-        let unperturbed_attractors = attractors::compute(self.as_original());
-        let mut unperturbed_attractors_all = self.as_original().mk_empty_vertices();
-        for ua in unperturbed_attractors {
-            unperturbed_attractors_all = unperturbed_attractors_all.union(&ua);
-        }
-        let unperturbed_attractors_fps = FixedPoints::symbolic(
-            self.as_original(),
-            self.as_original().unit_colored_vertices(),
-        );
+    pub fn ceiled_phenotype_permanent_control(
+        &self,
+        phenotype: GraphVertices,
+        size_bound: usize,
+        perturbation_variables: Vec<VariableId>,
+        stop_early: bool
+    ) -> PhenotypeControlMap {
+        // A map which gives us the symbolic variable of the perturbation parameter.
+        let perturbation_bbd_vars_mapping = perturbation_variables.iter()
+            .filter_map(|var| self.get_perturbation_parameter(var.clone()).map(|it| (var.clone(), it)))
+            .map(|(var, param)| {
+                (var, self.as_symbolic_context()
+                    .get_explicit_function_table(param)
+                    .symbolic_variables()[0])
+            })
+            .collect::<HashMap<_, _>>();
 
-        println!(
-            "FPs {:?}",
-            unperturbed_attractors_fps.vertices().approx_cardinality()
-        );
-        println!(
-            "ALL {:?}",
-            unperturbed_attractors_all.vertices().approx_cardinality()
-        );
-        if unperturbed_attractors_all
-            .vertices()
-            .is_subset(&unperturbed_attractors_fps.vertices()) {
-            "sinks"
-        } else {
-            "complex"
+        let bdd_vars = self.as_symbolic_context().bdd_variable_set();
+        // The list of symbolic variables of perturbation parameters.
+        let perturbation_bdd_vars = {
+            let mut values = perturbation_bbd_vars_mapping
+                .values()
+                .cloned()
+                .collect::<Vec<_>>();
+            values.sort();
+            values
+        };
+
+        let mut control_map_all = self.mk_empty_colored_vertices();
+
+            for perturbation_size in 0..(size_bound + 1) {
+            let start = SystemTime::now();
+            println!("Perturbation size: {}", perturbation_size);
+            let admissible_perturbations = mk_bdd_of_bound(bdd_vars, &perturbation_bdd_vars, perturbation_size);
+            {
+                let factor = 2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
+                println!("[{}] >> Admissible fixed(Q) sets: {}", perturbation_size, admissible_perturbations.cardinality() / factor);
+            }
+            let admissible_perturbations = self.empty_colors().copy(admissible_perturbations);
+            let control_map = self.phenotype_permanent_control(phenotype.clone(), admissible_perturbations).perturbation_set;
+
+            // Compute the number of valuations of the perturbation parameters.
+            let factor = 2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
+            let mut only_perturbation_parameters = control_map.clone().into_bdd();
+            for var in bdd_vars.variables() {
+                if !perturbation_bdd_vars.contains(&var) {
+                    only_perturbation_parameters = only_perturbation_parameters.var_project(var);
+                }
+            }
+            println!("[{}] >> fixed(Q) sets in control map: {}", perturbation_size, only_perturbation_parameters.cardinality() / factor);
+
+
+            let control_map_bdd = control_map.clone().into_bdd();
+            let perturbation_vars_projection = RawProjection::new(perturbation_bdd_vars.clone(), &control_map_bdd);
+
+            let all_colors_size = self.unit_colors().approx_cardinality() / 2.0f64.powi(perturbation_bdd_vars.len() as i32);
+            let mut best_robustness = 0.0;
+            let mut with_best_robustness = 0;
+
+            for is_perturbed_vector in perturbation_vars_projection.iter() {
+                let perturbed_variables = perturbation_bbd_vars_mapping
+                    .iter()
+                    .filter_map(|(var, p_var)| {
+                        if is_perturbed_vector.get_value(*p_var).unwrap() {
+                            Some(*var)
+                        } else {
+                            None
+                        }
+                    })
+                    .collect::<Vec<_>>();
+
+                // This should remove all perturbation symbolic variables from the set.
+                let control_subset = control_map_bdd.restrict(&is_perturbed_vector.to_values());
+
+                let mut perturbed_state_vars = perturbed_variables
+                    .iter()
+                    .map(|var| self.as_symbolic_context().get_state_variable(*var))
+                    .collect::<Vec<_>>();
+
+                let state_vars_projection = RawProjection::new(perturbed_state_vars, &control_subset);
+                for state_vector in state_vars_projection.iter() {
+                    // This should remove all remaining perturbed state variables. Unperturbed
+                    // variables should not appear in the control map add all.
+                    let control_colors = control_subset.restrict(&state_vector.to_values());
+                    let mut map = HashMap::new();
+                    for var in &perturbed_variables {
+                        let state_var = self.as_symbolic_context().get_state_variable(*var);
+                        map.insert(
+                            self.as_original().as_network().get_variable_name(*var).clone(),
+                            state_vector.get_value(state_var).unwrap(),
+                        );
+                    }
+                    let factor = 2.0f64.powi(
+                        (self.as_symbolic_context().state_variables().len() + self.num_perturbation_parameters()) as i32
+                    );
+
+                    let working_colors = control_colors.cardinality() / factor;
+                    let robustness = working_colors / all_colors_size;
+                    if robustness >= best_robustness {
+                        if robustness != best_robustness {
+                            with_best_robustness = 0;
+                        }
+                        best_robustness = robustness;
+                        with_best_robustness += 1;
+                        println!("[{}] >>>> {:?}: {}; rho = {:.2}", perturbation_size, map, working_colors, robustness);
+                    }
+                }
+            }
+
+            println!("[{}] Elapsed: {}ms", perturbation_size, start.elapsed().unwrap().as_millis());
+
+            println!("[{}] Best robustness {} for {} perturbations.", perturbation_size, best_robustness, with_best_robustness);
+
+            control_map_all = control_map_all.union(&control_map);
+            if best_robustness == 1.0 && stop_early {
+                println!("Sufficient robustness achieved for perturbation size {}.", perturbation_size);
+                return PhenotypeControlMap {
+                    perturbation_set: control_map_all,
+                    context: self.clone(),
+                }
+            }
+        }
+
+        println!("Sufficient robustness not achieved with perturbation size {}.", size_bound);
+
+        return PhenotypeControlMap {
+            perturbation_set: control_map_all,
+            context: self.clone(),
         }
     }
 }
@@ -203,8 +256,7 @@ mod tests {
         );
         let control = perturbations.phenotype_permanent_control(
             erythrocyte_phenotype,
-            perturbations.as_perturbed().mk_unit_colors(),
-            "sinks"
+            perturbations.mk_unit_colors()
         );
 
         // Trivial working control
@@ -260,7 +312,7 @@ mod tests {
             HashMap::from([("EKLF", true)]),
         );
         let control =
-            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, 3, all_vars, "sinks");
+            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, 3, model.variables().collect(), false);
 
         // Trivial working control
         let working_colors =

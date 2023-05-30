@@ -1,17 +1,17 @@
-use rstest::rstest;
-use std::collections::HashMap;
-use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
-use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use biodivine_lib_param_bn::FnUpdate::Var;
-use crate::aeon::config::{get_controllable_vars, get_trivial_phenotype};
-use biodivine_lib_param_bn::symbolic_async_graph::{GraphVertices, SymbolicAsyncGraph};
-use serde_json::{Map, Value};
-use crate::aeon::phentoype::build_phenotype;
-use crate::perturbation::PerturbationGraph;
-
-static MAPK_REDUCED_KEY: &str = "reduced_mapk";
-const MAX_CONTROL: usize = 3;
-
+// use rstest::rstest;
+// use std::collections::HashMap;
+// use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
+// use biodivine_lib_param_bn::biodivine_std::traits::Set;
+// use biodivine_lib_param_bn::FnUpdate::Var;
+// use crate::aeon::config::{get_controllable_vars, get_trivial_phenotype};
+// use biodivine_lib_param_bn::symbolic_async_graph::{GraphVertices, SymbolicAsyncGraph};
+// use serde_json::{Map, Value};
+// use crate::aeon::phentoype::build_phenotype;
+// use crate::perturbation::PerturbationGraph;
+//
+// static MAPK_REDUCED_KEY: &str = "reduced_mapk";
+// const MAX_CONTROL: usize = 3;
+//
 // Figure 4C, EGFR over-expression - hardcoded witness model
 // #[rstest]
 // #[case(false, "no_decision", "{}", "sinks")] // r3
@@ -51,8 +51,8 @@ const MAX_CONTROL: usize = 3;
 //     let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
 //     assert_eq!(working_colors, 1.0);
 // }
-
-
+//
+//
 // Figure 4C, FGFR3 gain-of-function - hardcoded witness model
 // #[rstest]
 // #[case(false, "apoptosis", "{\"v_p53\": false}", "sinks")] // r6
@@ -155,8 +155,8 @@ const MAX_CONTROL: usize = 3;
 //     let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
 //     assert_eq!(working_colors, 1.0);
 // }
-
-
+//
+//
 // witness model (all inputs 0)
 // #[rstest]
 // #[case(true, "apoptosis")]
@@ -191,8 +191,8 @@ const MAX_CONTROL: usize = 3;
 //     // let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
 //     assert_eq!(0.0, 1.0);
 // }
-
-
+//
+//
 // Figure 4C, EGFR over-expression - model with inputs, EGFR normal and needs to be perturbed, working just for colors with correct inputs
 // #[rstest]
 // #[case(false, "no_decision", "{\"v_EGFR\": true}", "{}")] // r3
@@ -235,8 +235,8 @@ const MAX_CONTROL: usize = 3;
 //     let tested_color = perturbation_graph.build_colors_with_values(&bn, parsed_color);
 //     assert_eq!(working_colors.intersect(&tested_color).approx_cardinality(), 1.0);
 // }
-
-
+//
+//
 // Figure 4C, FGFR3 gain of function - model with inputs, FGFR3 normal and needs to be perturbed, working just for colors with correct input values
 // #[rstest]
 // #[case(false, "apoptosis", "{\"v_p53\": false, \"v_FGFR3\": true}", "{}")] // r6
@@ -271,8 +271,8 @@ const MAX_CONTROL: usize = 3;
 //     let tested_color = perturbation_graph.build_colors_with_values(&bn, parsed_color);
 //     assert_eq!(working_colors.intersect(&tested_color).approx_cardinality(), 1.0);
 // }
-
-
+//
+//
 // #[rstest]
 // fn sandbox(#[case] var: i32) {
 //     let stay = true;
@@ -293,239 +293,239 @@ const MAX_CONTROL: usize = 3;
 //         }
 //         counter += 1
 //     }
-
-    // for p in bn.clone().parameters() {
-    //     // println!("{:?}", bn.get_parameter(p).get_name());
-    // }
-
-    // let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
-    // // let perturbation_graph = PerturbationGraph::new(&bn);
-    //
-    // println!("{:?}", perturbation_graph.as_perturbed().mk_unit_colored_vertices().to_dot_string(perturbation_graph.as_symbolic_context()));
-    //
-    //
-    // for v in perturbation_graph.as_perturbed().as_network().clone().variables() {
-    //     let pbn = perturbation_graph.as_perturbed().as_network().clone();
-    //     let function = pbn.get_update_function(v).clone().unwrap();
-    //     println!("{:?}", function.to_string(&perturbation_graph.as_perturbed().as_network()));
-    // }
-    //
-    //
-    // let mut phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
-    // if !stay {
-    //     // Don't stay -> avoid
-    //     phenotype_space = perturbation_graph.mk_unit_colored_vertices().minus_vertices(&phenotype_space).vertices();
-    // }
-    //
-    // let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
-    //
-    // // println!("{:?}" ,control_map.as_bdd().to_dot_string(perturbation_graph.as_symbolic_context().bdd_variable_set(), true));
-    //
-    // let perturbation = parse_simple_json_dict(perturbed_vals);
-    // let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
-    // assert_eq!(working_colors, 1.0);
-    // assert_eq!(0.0, 1.0);
+//
+//     for p in bn.clone().parameters() {
+//         // println!("{:?}", bn.get_parameter(p).get_name());
+//     }
+//
+//     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+//     // let perturbation_graph = PerturbationGraph::new(&bn);
+//
+//     println!("{:?}", perturbation_graph.as_perturbed().mk_unit_colored_vertices().to_dot_string(perturbation_graph.as_symbolic_context()));
+//
+//
+//     for v in perturbation_graph.as_perturbed().as_network().clone().variables() {
+//         let pbn = perturbation_graph.as_perturbed().as_network().clone();
+//         let function = pbn.get_update_function(v).clone().unwrap();
+//         println!("{:?}", function.to_string(&perturbation_graph.as_perturbed().as_network()));
+//     }
+//
+//
+//     let mut phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
+//     if !stay {
+//         // Don't stay -> avoid
+//         phenotype_space = perturbation_graph.mk_unit_colored_vertices().minus_vertices(&phenotype_space).vertices();
+//     }
+//
+//     let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
+//
+//     // println!("{:?}" ,control_map.as_bdd().to_dot_string(perturbation_graph.as_symbolic_context().bdd_variable_set(), true));
+//
+//     let perturbation = parse_simple_json_dict(perturbed_vals);
+//     let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+//     assert_eq!(working_colors, 1.0);
+//     assert_eq!(0.0, 1.0);
 // }
-
-#[rstest]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
-fn colors(#[case] model_file: &str) {
-    let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, vec![]);
-    let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
-    let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
-    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
-
-    let all_colors = perturbation_graph.unit_colors().approx_cardinality();
-    let perturbation_colors = 2.0f64.powi(mapk_reduced_controllable.len() as i32);
-    let model_colors = all_colors / perturbation_colors;
-    println!("Colors of model {:?}: {:?}", model_file, model_colors);
-
-    assert_eq!(0.0, 1.0);
-}
-
-
-// Verify previously working perturbations on the new models
-#[rstest]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
-fn mapk_working_apoptosis(#[case] model_file: &str) {
-    let working_perturbations_with_inputs = vec!["{\"v_DNA_damage\": true}",
-                                              "{\"v_TGFBR_stimulus\": true}",
-                                              "{\"v_DNA_damage\": true}", "{\"v_EGFR\": true}",
-                                              "{\"v_TGFBR_stimulus\": true}", "{\"v_EGFR\": true}",
-                                              "{\"v_DNA_damage\": true}", "{\"v_FGFR3\": true}",
-                                              "{\"v_TGFBR_stimulus\": true}, {\"v_FGFR3\": true}"];
-    let working_perturbations_without_inputs = vec!["{\"v_FRS2\": true}",
-                                                 "{\"v_ERK\": false, \"v_EGFR\": true}",
-                                                 "{\"v_FRS2\": true, \"v_EGFR\": true}",
-                                                 "{\"v_p53\": true, \"v_EGFR\": true}",
-                                                 "{\"v_ERK\": false, \"v_FGFR3\": true}",
-                                                 "{\"v_FRS2\": true, \"v_FGFR3\": true}",
-                                                 "{\"v_p53\": true, \"v_FGFR3\": true}"];
-
-    let phenotype = "apoptosis";
-
-    let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, vec![]);
-    let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
-    let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
-    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
-
-    let all_colors = perturbation_graph.unit_colors().approx_cardinality();
-    let perturbation_colors = 2.0f64.powi(mapk_reduced_controllable.len() as i32);
-    let model_colors = all_colors / perturbation_colors;
-
-    let phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
-
-    let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
-
-    for perturbed_vals in working_perturbations_without_inputs.iter().chain(working_perturbations_with_inputs.iter()) {
-        let perturbation = parse_simple_json_dict(perturbed_vals);
-        let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
-        println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
-        println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
-
-    }
-
-    // Models without inputs -> perturbations with inputs are admissible
-    if vec![
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon",
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon",
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon"]
-        .iter().any(|v| v.clone().to_string() == model_file.to_string())  {
-
-        for perturbed_vals in working_perturbations_without_inputs.clone() {
-            let perturbation = parse_simple_json_dict(perturbed_vals);
-            let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
-            println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
-            println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
-
-        }
-    }
-
-    assert_eq!(0.0, 1.0);
-}
-
-
-#[rstest]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
-fn mapk_working_proliferation(#[case] model_file: &str) {
-    let working_perturbations_without_inputs = vec!["{\"v_ERK\": true}",
-                                                    "{\"v_p14\": false, \"v_EGFR\": true}",
-                                                    "{\"v_p53\": false, \"v_EGFR\": true}",
-                                                    "{\"v_p14\": false, \"v_FRS2\": true, \"v_FGFR3\": true}",
-                                                    "{\"v_p53\": false, \"v_FRS2\": true, \"v_FGFR3\": true}",
-                                                    "{\"v_p14\": false, \"v_PI3K\": true, \"v_FGFR3\": true}",
-                                                    "{\"v_p53\": false, \"v_PI3K\": true, \"v_FGFR3\": true}",
-                                                    "{\"v_p14\": false, \"v_EGFR\": true, \"v_FGFR3\": true}",
-                                                    "{\"v_p53\": false, \"v_EGFR\": true, \"v_FGFR3\": true}"];
-
-    let phenotype = "proliferation";
-
-    let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, vec![]);
-    let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
-    let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
-    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
-
-    let all_colors = perturbation_graph.unit_colors().approx_cardinality();
-    let perturbation_colors = 2.0f64.powi(mapk_reduced_controllable.len() as i32);
-    let model_colors = all_colors / perturbation_colors;
-
-    let phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
-
-    let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
-
-    for perturbed_vals in working_perturbations_without_inputs.iter() {
-        let perturbation = parse_simple_json_dict(perturbed_vals);
-        let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
-        println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
-        println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
-
-    }
-
-    // Models without inputs -> perturbations with inputs are admissible
-    if vec![
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon",
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon",
-        "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon"]
-        .iter().any(|v| v.clone().to_string() == model_file.to_string())  {
-
-        for perturbed_vals in working_perturbations_without_inputs.clone() {
-            let perturbation = parse_simple_json_dict(perturbed_vals);
-            let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
-            println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
-            println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
-
-        }
-    }
-
-    assert_eq!(0.0, 1.0);
-}
-
-#[rstest]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
-#[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
-fn mapk_working_no_decision(#[case] model_file: &str) {
-    let inputs = vec!["v_DNA_damage","v_EGFR_stimulus","v_FGFR3_stimulus","v_TGFBR_stimulus"];
-
-    let working_perturbations_without_inputs = vec!["{}",
-                                                        "{\"v_MSK\": false, \"v_EGFR\": true}",
-                                                        "{\"v_MSK\": false, \"v_FGFR3\": true}"];
-
-    let phenotype = "no_decision";
-
-    // Models without inputs -> all perturbations
-    let extra_forbidden = inputs.clone();
-    let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, extra_forbidden);
-    let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
-    let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
-    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
-
-    let all_colors = perturbation_graph.unit_colors().approx_cardinality();
-    let perturbation_colors = 2.0f64.powi(mapk_reduced_controllable.len() as i32);
-    let model_colors = all_colors / perturbation_colors;
-
-    let phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
-
-    let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
-
-    for perturbed_vals in working_perturbations_without_inputs.iter() {
-        let perturbation = parse_simple_json_dict(perturbed_vals);
-        let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
-        println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
-        println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
-
-    }
-    assert_eq!(0.0, 1.0);
-}
-
-
-fn parse_simple_json_dict(perturbations: &str) -> HashMap<String, bool> {
-    let parsed: HashMap<String,serde_json::Value> = serde_json::from_str(perturbations).unwrap();
-    let mut perturbation_vals = HashMap::new();
-    for (k,v) in parsed.iter() {
-        perturbation_vals.insert(k.clone(), v.as_bool().unwrap());
-    }
-    perturbation_vals
-}
+//
+// #[rstest]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
+// fn colors(#[case] model_file: &str) {
+//     let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, vec![]);
+//     let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
+//     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+//     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+//
+//     let all_colors = perturbation_graph.unit_colors().approx_cardinality();
+//     let perturbation_colors = 2.0f64.powi(mapk_reduced_controllable.len() as i32);
+//     let model_colors = all_colors / perturbation_colors;
+//     println!("Colors of model {:?}: {:?}", model_file, model_colors);
+//
+//     assert_eq!(0.0, 1.0);
+// }
+//
+//
+// // Verify previously working perturbations on the new models
+// #[rstest]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
+// fn mapk_working_apoptosis(#[case] model_file: &str) {
+//     let working_perturbations_with_inputs = vec!["{\"v_DNA_damage\": true}",
+//                                               "{\"v_TGFBR_stimulus\": true}",
+//                                               "{\"v_DNA_damage\": true}", "{\"v_EGFR\": true}",
+//                                               "{\"v_TGFBR_stimulus\": true}", "{\"v_EGFR\": true}",
+//                                               "{\"v_DNA_damage\": true}", "{\"v_FGFR3\": true}",
+//                                               "{\"v_TGFBR_stimulus\": true}, {\"v_FGFR3\": true}"];
+//     let working_perturbations_without_inputs = vec!["{\"v_FRS2\": true}",
+//                                                  "{\"v_ERK\": false, \"v_EGFR\": true}",
+//                                                  "{\"v_FRS2\": true, \"v_EGFR\": true}",
+//                                                  "{\"v_p53\": true, \"v_EGFR\": true}",
+//                                                  "{\"v_ERK\": false, \"v_FGFR3\": true}",
+//                                                  "{\"v_FRS2\": true, \"v_FGFR3\": true}",
+//                                                  "{\"v_p53\": true, \"v_FGFR3\": true}"];
+//
+//     let phenotype = "apoptosis";
+//
+//     let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, vec![]);
+//     let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
+//     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+//     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+//
+//     let all_colors = perturbation_graph.unit_colors().approx_cardinality();
+//     let perturbation_colors = 2.0f64.powi(mapk_reduced_controllable.len() as i32);
+//     let model_colors = all_colors / perturbation_colors;
+//
+//     let phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
+//
+//     let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
+//
+//     for perturbed_vals in working_perturbations_without_inputs.iter().chain(working_perturbations_with_inputs.iter()) {
+//         let perturbation = parse_simple_json_dict(perturbed_vals);
+//         let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+//         println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
+//         println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
+//
+//     }
+//
+//     // Models without inputs -> perturbations with inputs are admissible
+//     if vec![
+//         "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon",
+//         "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon",
+//         "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon"]
+//         .iter().any(|v| v.clone().to_string() == model_file.to_string())  {
+//
+//         for perturbed_vals in working_perturbations_without_inputs.clone() {
+//             let perturbation = parse_simple_json_dict(perturbed_vals);
+//             let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+//             println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
+//             println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
+//
+//         }
+//     }
+//
+//     assert_eq!(0.0, 1.0);
+// }
+//
+//
+// #[rstest]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
+// fn mapk_working_proliferation(#[case] model_file: &str) {
+//     let working_perturbations_without_inputs = vec!["{\"v_ERK\": true}",
+//                                                     "{\"v_p14\": false, \"v_EGFR\": true}",
+//                                                     "{\"v_p53\": false, \"v_EGFR\": true}",
+//                                                     "{\"v_p14\": false, \"v_FRS2\": true, \"v_FGFR3\": true}",
+//                                                     "{\"v_p53\": false, \"v_FRS2\": true, \"v_FGFR3\": true}",
+//                                                     "{\"v_p14\": false, \"v_PI3K\": true, \"v_FGFR3\": true}",
+//                                                     "{\"v_p53\": false, \"v_PI3K\": true, \"v_FGFR3\": true}",
+//                                                     "{\"v_p14\": false, \"v_EGFR\": true, \"v_FGFR3\": true}",
+//                                                     "{\"v_p53\": false, \"v_EGFR\": true, \"v_FGFR3\": true}"];
+//
+//     let phenotype = "proliferation";
+//
+//     let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, vec![]);
+//     let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
+//     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+//     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+//
+//     let all_colors = perturbation_graph.unit_colors().approx_cardinality();
+//     let perturbation_colors = 2.0f64.powi(mapk_reduced_controllable.len() as i32);
+//     let model_colors = all_colors / perturbation_colors;
+//
+//     let phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
+//
+//     let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
+//
+//     for perturbed_vals in working_perturbations_without_inputs.iter() {
+//         let perturbation = parse_simple_json_dict(perturbed_vals);
+//         let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+//         println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
+//         println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
+//
+//     }
+//
+//     // Models without inputs -> perturbations with inputs are admissible
+//     if vec![
+//         "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon",
+//         "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon",
+//         "[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon"]
+//         .iter().any(|v| v.clone().to_string() == model_file.to_string())  {
+//
+//         for perturbed_vals in working_perturbations_without_inputs.clone() {
+//             let perturbation = parse_simple_json_dict(perturbed_vals);
+//             let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+//             println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
+//             println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
+//
+//         }
+//     }
+//
+//     assert_eq!(0.0, 1.0);
+// }
+//
+// #[rstest]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1].aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_0000.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_FRS2_0000.aeon")]
+// #[case("[id-089]__[var-13]__[in-4]__[MAPK-REDUCED-1]__unknown_AKT_FRS2_0000.aeon")]
+// fn mapk_working_no_decision(#[case] model_file: &str) {
+//     let inputs = vec!["v_DNA_damage","v_EGFR_stimulus","v_FGFR3_stimulus","v_TGFBR_stimulus"];
+//
+//     let working_perturbations_without_inputs = vec!["{}",
+//                                                         "{\"v_MSK\": false, \"v_EGFR\": true}",
+//                                                         "{\"v_MSK\": false, \"v_FGFR3\": true}"];
+//
+//     let phenotype = "no_decision";
+//
+//     // Models without inputs -> all perturbations
+//     let extra_forbidden = inputs.clone();
+//     let mapk_reduced_controllable = get_controllable_vars(model_file, MAPK_REDUCED_KEY, extra_forbidden);
+//     let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
+//     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
+//     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &mapk_reduced_controllable);
+//
+//     let all_colors = perturbation_graph.unit_colors().approx_cardinality();
+//     let perturbation_colors = 2.0f64.powi(mapk_reduced_controllable.len() as i32);
+//     let model_colors = all_colors / perturbation_colors;
+//
+//     let phenotype_space = get_trivial_phenotype(MAPK_REDUCED_KEY, phenotype, &perturbation_graph);
+//
+//     let control_map = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype_space, MAX_CONTROL, mapk_reduced_controllable, "complex");
+//
+//     for perturbed_vals in working_perturbations_without_inputs.iter() {
+//         let perturbation = parse_simple_json_dict(perturbed_vals);
+//         let working_colors = control_map.perturbation_working_colors(&perturbation).approx_cardinality();
+//         println!("Final results: model: {:?} phenotype: {:?} perturbation: {:?} robustness: {:?}", model_file, phenotype, perturbed_vals, working_colors/model_colors);
+//         println!("Perturbation {:?} works for {:?} colors out of {:?}", perturbed_vals, working_colors, model_colors)
+//
+//     }
+//     assert_eq!(0.0, 1.0);
+// }
+//
+//
+// fn parse_simple_json_dict(perturbations: &str) -> HashMap<String, bool> {
+//     let parsed: HashMap<String,serde_json::Value> = serde_json::from_str(perturbations).unwrap();
+//     let mut perturbation_vals = HashMap::new();
+//     for (k,v) in parsed.iter() {
+//         perturbation_vals.insert(k.clone(), v.as_bool().unwrap());
+//     }
+//     perturbation_vals
+// }
