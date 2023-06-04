@@ -12,6 +12,7 @@ use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
 use std::time::{Instant, SystemTime};
 use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
+use crate::aeon::reachability::backward_within;
 use crate::control::ControlMap;
 use crate::phenotype_control::_symbolic_utils::{mk_bdd_of_bound, mk_bdd_up_to_bound};
 
@@ -20,6 +21,7 @@ impl PerturbationGraph {
         &self,
         phenotype: GraphVertices,
         admissible_perturbations: GraphColors,
+        allow_oscillation: bool
     ) -> PhenotypeControlMap {
         let perturbation_bbd_vars_mapping = self.variables()
             .filter_map(|var| self.get_perturbation_parameter(var).map(|it| (var, it)))
@@ -30,10 +32,15 @@ impl PerturbationGraph {
             })
             .collect::<HashMap<_, _>>();
 
-
-        let mut trap = self.unit_colored_vertices()
-            .intersect_colors(&admissible_perturbations)
-            .intersect_vertices(&phenotype);
+        let mut trap;
+        let control_universe = self.unit_colored_vertices().intersect_colors(&admissible_perturbations);
+        let phenotype_coloured_vertices = control_universe.intersect_vertices(&phenotype);
+        if allow_oscillation {
+            let bwd_reach = backward_within(self.as_perturbed(), &phenotype_coloured_vertices, &control_universe);
+            trap = bwd_reach
+        } else {
+            trap = phenotype_coloured_vertices;
+        }
 
         'trap: loop {
             for var in self.variables().rev() {
@@ -105,7 +112,8 @@ impl PerturbationGraph {
         phenotype: GraphVertices,
         size_bound: usize,
         perturbation_variables: Vec<VariableId>,
-        stop_early: bool
+        stop_early: bool,
+        allow_oscillation: bool
     ) -> PhenotypeControlMap {
         // A map which gives us the symbolic variable of the perturbation parameter.
         let perturbation_bbd_vars_mapping = perturbation_variables.iter()
@@ -130,7 +138,7 @@ impl PerturbationGraph {
 
         let mut control_map_all = self.mk_empty_colored_vertices();
 
-            for perturbation_size in 0..(size_bound + 1) {
+        for perturbation_size in 0..(size_bound + 1) {
             let start = SystemTime::now();
             println!("Perturbation size: {}", perturbation_size);
             let admissible_perturbations = mk_bdd_of_bound(bdd_vars, &perturbation_bdd_vars, perturbation_size);
@@ -139,7 +147,7 @@ impl PerturbationGraph {
                 println!("[{}] >> Admissible fixed(Q) sets: {}", perturbation_size, admissible_perturbations.cardinality() / factor);
             }
             let admissible_perturbations = self.empty_colors().copy(admissible_perturbations);
-            let control_map = self.phenotype_permanent_control(phenotype.clone(), admissible_perturbations).perturbation_set;
+            let control_map = self.phenotype_permanent_control(phenotype.clone(), admissible_perturbations, allow_oscillation).perturbation_set;
 
             // Compute the number of valuations of the perturbation parameters.
             let factor = 2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
@@ -256,7 +264,8 @@ mod tests {
         );
         let control = perturbations.phenotype_permanent_control(
             erythrocyte_phenotype,
-            perturbations.mk_unit_colors()
+            perturbations.mk_unit_colors(),
+            false
         );
 
         // Trivial working control
@@ -312,7 +321,7 @@ mod tests {
             HashMap::from([("EKLF", true)]),
         );
         let control =
-            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, 3, model.variables().collect(), false);
+            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, 3, model.variables().collect(), false, false);
 
         // Trivial working control
         let working_colors =

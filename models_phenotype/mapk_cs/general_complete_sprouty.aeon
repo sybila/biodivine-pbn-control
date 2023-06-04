@@ -1,0 +1,215 @@
+#position:v_MAX:352.9989547270893,1065.1305490662362
+$v_MAX:v_p38
+v_p38 -> v_MAX
+#position:v_MYC:496.042123825881,1168.1534924703803
+$v_MYC:((v_MSK & v_AKT) | (v_MSK & v_MAX))
+v_MAX -> v_MYC
+v_AKT -> v_MYC
+v_MSK -> v_MYC
+#position:v_AKT:464.0306347847598,989.011886841387
+$v_AKT:(v_PDK1 & !v_PTEN)
+v_PTEN -| v_AKT
+v_PDK1 -> v_AKT
+#position:v_MSK:371.92898711843577,998.1948040029165
+$v_MSK:(v_p38 | v_ERK)
+v_ERK -> v_MSK
+v_p38 -> v_MSK
+#position:v_p14:647.1632263164931,1010.7168995248376
+$v_p14:v_MYC
+v_MYC -> v_p14
+#position:v_MAP3K1_3:272.45468361108465,690.6253794360459
+$v_MAP3K1_3:v_RAS
+v_RAS -> v_MAP3K1_3
+#position:v_JNK:105.91008467368097,773.1390924108969
+$v_JNK:((((((((((v_TAOK & v_MAP3K1_3) | (v_TAK1 & !v_DUSP1)) | (v_MAP3K1_3 & v_MTK1)) | (v_TAK1 & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_TAOK & v_MTK1)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & !v_DUSP1))
+v_MAP3K1_3 -> v_JNK
+v_MTK1 -> v_JNK
+v_TAOK -> v_JNK
+v_DUSP1 -| v_JNK
+v_TAK1 -> v_JNK
+#position:v_MTK1:980.3822162621829,644.2448481320173
+$v_MTK1:v_GADD45
+v_GADD45 -> v_MTK1
+#position:v_TAOK:-47.604006314833235,998.380851815596
+$v_TAOK:v_ATM
+v_ATM -> v_TAOK
+#position:v_DUSP1:136.62577643289939,1018.4100061411343
+$v_DUSP1:v_CREB
+v_CREB -> v_DUSP1
+#position:v_TAK1:1.4346045478428362,562.7605274076788
+$v_TAK1:v_TGFBR
+v_TGFBR -> v_TAK1
+#position:v_JUN:-53.61143865393439,837.2668322790921
+$v_JUN:v_JNK
+v_JNK -> v_JUN
+#position:v_p38:238.00392801106642,843.9779809032605
+$v_p38:((((((((((v_MAP3K1_3 & v_MTK1) | (v_TAK1 & !v_DUSP1)) | (v_TAOK & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MAP3K1_3)) | (v_TAOK & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & v_MTK1))
+v_MAP3K1_3 -> v_p38
+v_MTK1 -> v_p38
+v_DUSP1 -| v_p38
+v_TAOK -> v_p38
+v_TAK1 -> v_p38
+#position:v_PTEN:645.3311914580245,1091.456706124826
+$v_PTEN:v_p53
+v_p53 -> v_PTEN
+#position:v_PDK1:612.4167399293933,863.6761898002869
+$v_PDK1:v_PI3K
+v_PI3K -> v_PDK1
+#position:v_ERK:557.544052129496,812.6504489966525
+$v_ERK:v_MEK1_2
+v_MEK1_2 -> v_ERK
+#position:v_CREB:137.43235511165753,1199.1905883556146
+$v_CREB:v_MSK
+v_MSK -> v_CREB
+#position:v_TGFBR_stimulus:976.2289529760557,176.2133679663678
+$v_TGFBR_stimulus:false
+#position:v_TGFBR:1078.4077205996855,358.24004544876647
+$v_TGFBR:v_TGFBR_stimulus
+v_TGFBR_stimulus -> v_TGFBR
+#position:v_RAS:510.2512288490617,599.1592500474572
+$v_RAS:v_SOS
+v_PLCG ->? v_RAS
+v_SOS -> v_RAS
+#position:v_MEK1_2:310.7019395348504,773.6037901519321
+$v_MEK1_2:((v_RAF & !(v_PPP2CA | v_AP1)) | (v_MAP3K1_3 & !(v_PPP2CA | v_AP1)))
+v_MAP3K1_3 -> v_MEK1_2
+v_RAF -> v_MEK1_2
+v_PPP2CA -| v_MEK1_2
+v_AP1 -| v_MEK1_2
+#position:v_RAF:513.8597598983845,680.0494025894063
+$v_RAF:(v_RAS & !(v_ERK | v_AKT))
+v_ERK -| v_RAF
+v_RAS -> v_RAF
+v_AKT -| v_RAF
+v_PKC ->? v_RAF
+#position:v_PPP2CA:143.26310873057164,636.692185448202
+$v_PPP2CA:v_p38
+v_p38 -> v_PPP2CA
+#position:v_AP1:73.57562094379412,875.7475391021566
+$v_AP1:(v_JUN & (v_ATF2 | v_FOS))
+v_ATF2 -> v_AP1
+v_FOS -> v_AP1
+v_JUN -> v_AP1
+#position:v_PKC:86.69941409181793,490.32599656214245
+$v_PKC:v_PLCG
+v_PLCG -> v_PKC
+#position:v_ATF2:7.343644130554367,713.5388830470115
+$v_ATF2:(v_JNK | v_p38)
+v_JNK -> v_ATF2
+v_p38 -> v_ATF2
+#position:v_FOS:283.2111187495436,929.3144599872137
+$v_FOS:((v_ERK & v_RSK) & (v_CREB | v_ELK1))
+v_ERK -> v_FOS
+v_RSK -> v_FOS
+v_CREB -> v_FOS
+v_ELK1 -> v_FOS
+#position:v_ATM:220.27172858188766,1087.9906372214605
+$v_ATM:v_DNA_damage
+v_DNA_damage -> v_ATM
+#position:v_p53:754.8187041006985,1022.074072636226
+$v_p53:(((v_p38 & !v_MDM2) | (v_ATM & !v_MDM2)) | (v_ATM & v_p38))
+v_ATM -> v_p53
+v_p38 -> v_p53
+v_MDM2 -| v_p53
+#position:v_MDM2:702.9127910647452,924.5743171149707
+$v_MDM2:((v_AKT & !v_p14) | (v_p53 & !v_p14))
+v_p14 -| v_MDM2
+v_p53 -> v_MDM2
+v_AKT -> v_MDM2
+#position:v_p21:677.9871866636882,1192.0686594754545
+$v_p21:(v_p53 & !v_AKT)
+v_p53 -> v_p21
+v_AKT -| v_p21
+#position:v_EGFR:105.23616183798345,230.35010614174593
+$v_EGFR:(v_EGFR_stimulus & !(v_PKC | v_GRB2))
+v_SPRY ->? v_EGFR
+v_EGFR_stimulus -> v_EGFR
+v_GRB2 -| v_EGFR
+v_PKC -| v_EGFR
+#position:v_GRB2:373.4957598820043,411.25769508607686
+$v_GRB2:((v_EGFR | v_TGFBR) | v_FRS2)
+v_EGFR -> v_GRB2
+v_FRS2 -> v_GRB2
+v_TGFBR -> v_GRB2
+#position:v_FRS2:644.0606740366285,356.0092845759136
+$v_FRS2:(v_FGFR3 & f_FRS2byERKGRB2SPRY(v_ERK,v_GRB2,v_SPRY)) | (v_FGFR3 & f_FRS2bySHIP2(v_SHIP2))
+v_SPRY -|? v_FRS2
+v_GRB2 -|? v_FRS2
+v_FGFR3 -> v_FRS2
+v_ERK -|? v_FRS2
+v_SHIP2 ->? v_FRS2
+#position:v_GAB1:723.148644721325,528.3812943411814
+$v_GAB1:(v_PI3K | v_GRB2)
+v_GRB2 -> v_GAB1
+v_PI3K -> v_GAB1
+#position:v_PI3K:734.1751633241583,635.3807562610298
+$v_PI3K:(v_GAB1 | (v_RAS & v_SOS))
+v_RAS -> v_PI3K
+v_SOS -> v_PI3K
+v_GAB1 -> v_PI3K
+#position:v_SOS:497.0240194173699,509.2215117081686
+$v_SOS:(v_GRB2 & !v_RSK)
+v_RSK -| v_SOS
+v_GRB2 -> v_SOS
+#position:v_GADD45:1130.5070994879488,694.4413861247017
+$v_GADD45:(v_p53 | v_SMAD)
+v_SMAD -> v_GADD45
+v_p53 -> v_GADD45
+#position:v_PLCG:-4.056872078128548,383.3743144428843
+$v_PLCG:(v_EGFR | v_FGFR3)
+v_EGFR -> v_PLCG
+v_FGFR3 -> v_PLCG
+#position:v_FGFR3:455.0745997755388,307.50930073777863
+$v_FGFR3:f_FGFR3byFGFGRB2PKC(v_FGFR3_stimulus,v_GRB2,v_PKC)
+v_FGFR3_stimulus -> v_FGFR3
+v_GRB2 -|? v_FGFR3
+v_PKC -|? v_FGFR3
+#position:v_RSK:439.22603196074004,758.2254070042079
+$v_RSK:v_ERK
+v_ERK -> v_RSK
+#position:v_p70:557.4335088034037,1009.0015353513538
+$v_p70:(v_PDK1 & v_ERK)
+v_ERK -> v_p70
+v_PDK1 -> v_p70
+#position:v_ELK1:403.4279789901581,835.4001929404076
+$v_ELK1:((v_JNK | v_ERK) | v_p38)
+v_ERK -> v_ELK1
+v_JNK -> v_ELK1
+v_p38 -> v_ELK1
+#position:v_Proliferation:589.4039052499835,1296.8753533320769
+$v_Proliferation:((v_p70 & v_MYC) & !v_p21)
+v_p70 -> v_Proliferation
+v_p21 -| v_Proliferation
+v_MYC -> v_Proliferation
+#position:v_SMAD:1238.038095514121,488.0797128095918
+$v_SMAD:v_TGFBR
+v_TGFBR -> v_SMAD
+#position:v_FOXO3:318.4817017814112,1166.2963186613306
+$v_FOXO3:(v_JNK & !v_AKT)
+v_JNK -> v_FOXO3
+v_AKT -| v_FOXO3
+#position:v_SPRY:334.9762470791167,572.4383645562333
+$v_SPRY:v_ERK
+v_ERK -> v_SPRY
+#position:v_EGFR_stimulus:339.9129589849243,173.33209406755464
+$v_EGFR_stimulus:true
+#position:v_SHIP2:575.5859323657556,244.82533721077138
+$v_SHIP2:v_FGFR3
+v_FGFR3 ->? v_SHIP2
+#position:v_FGFR3_stimulus:465.16016188226865,74.5
+$v_FGFR3_stimulus:true
+#position:v_DNA_damage:-155.56067529362008,1096.4814683980908
+$v_DNA_damage:false
+#position:v_Apoptosis:270.0309158827242,1371.496511495942
+$v_Apoptosis:((v_FOXO3 & v_p53) & !(v_BCL2 | v_ERK))
+v_p53 -> v_Apoptosis
+v_ERK -| v_Apoptosis
+v_BCL2 -| v_Apoptosis
+v_FOXO3 -> v_Apoptosis
+#position:v_BCL2:411.49945429533875,1227.5105526028199
+$v_BCL2:(v_CREB & v_AKT)
+v_CREB -> v_BCL2
+v_AKT -> v_BCL2
+#position:v_Growth_Arrest:945.9955537063383,1141.418389795278
+$v_Growth_Arrest:v_p21
+v_p21 -> v_Growth_Arrest

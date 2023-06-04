@@ -109,7 +109,7 @@ fn main() {
             .unwrap()
     );
 
-    perturbation_graph.ceiled_phenotype_permanent_control(phenotype, max_control_size, controllable_vars, false);
+    perturbation_graph.ceiled_phenotype_permanent_control(phenotype, max_control_size, controllable_vars, false, false);
 
     /*
     let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone(), "complex");
