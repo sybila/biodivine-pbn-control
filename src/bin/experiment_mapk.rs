@@ -23,11 +23,12 @@ fn main() {
     let apoptosis =  HashMap::from([("v_Apoptosis", true), ("v_Growth_Arrest", true), ("v_Proliferation", false)]);
     let proliferation =  HashMap::from([("v_Apoptosis", false),  ("v_Growth_Arrest", false), ("v_Proliferation", true)]);
     let no_decision =  HashMap::from([("v_Growth_Arrest", false), ("v_Proliferation", false), ("v_Proliferation", false)]);
-    let apop_or_ga = HashMap::from([("v_Growth_Arrest", true), ("v_Proliferation", false)]);
-    let full_model_phenotypes = [growth_arrest, apoptosis, proliferation, no_decision, apop_or_ga];
+    let just_ga = HashMap::from([("v_Growth_Arrest", true)]);
+    let full_model_phenotypes = [growth_arrest, apoptosis, proliferation, no_decision, just_ga];
 
     let fgfr3_models = ["fgfr3_isolated.aeon", "fgfr3_isolated_with_plcg.aeon"];
     let general_models = ["general.aeon", "general_complete_sprouty.aeon"];
+    let general_models = [];
 
     let model_phenotype_pairs = iproduct!(fgfr3_models, fgfr3_model_phenotypes).chain(iproduct!(general_models, full_model_phenotypes));
 
@@ -47,9 +48,12 @@ fn main() {
         let phenotype = build_phenotype(perturbation_graph.as_perturbed(), phenotype_vals.clone());
 
         for oscillation in [true, false] {
-            println!(">>>>>>>>>>>>>> {:?} {:?} oscillation: {:?}", model, phenotype_vals.clone(), oscillation);
+            println!(">>>>>>>>>>>>>> Model: {:?}; Phenotype {:?}; is oscillation allowed: {:?}", model, phenotype_vals.clone(), oscillation);
             perturbation_graph.ceiled_phenotype_permanent_control(phenotype.clone(), max_control_size, controllable_vars.clone(), true, oscillation);
         }
+
+        println!(">>>>>>>>>>>>>> Model: {:?}; Phenotype {:?}; required oscillation", model, phenotype_vals.clone());
+        perturbation_graph.ceiled_phenotype_permanent_control_with_true_oscillation(phenotype.clone(), max_control_size, controllable_vars.clone(), true,);
     }
 
 

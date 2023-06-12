@@ -212,6 +212,149 @@ impl PerturbationGraph {
                         }
                         best_robustness = robustness;
                         with_best_robustness += 1;
+                    }
+                    println!("[{}] >>>> {:?}: {}; rho = {:.3}", perturbation_size, map, working_colors, robustness);
+                }
+            }
+
+            println!("[{}] Elapsed: {}ms", perturbation_size, start.elapsed().unwrap().as_millis());
+
+            println!("[{}] Best robustness {} for {} perturbations.", perturbation_size, best_robustness, with_best_robustness);
+
+            control_map_all = control_map_all.union(&control_map);
+            if best_robustness == 1.0 && stop_early {
+                println!("Sufficient robustness achieved for perturbation size {}.", perturbation_size);
+                return PhenotypeControlMap {
+                    perturbation_set: control_map_all,
+                    context: self.clone(),
+                }
+            }
+        }
+
+        println!("Sufficient robustness not achieved with perturbation size {}.", size_bound);
+
+        return PhenotypeControlMap {
+            perturbation_set: control_map_all,
+            context: self.clone(),
+        }
+    }
+
+
+
+    pub fn ceiled_phenotype_permanent_control_with_true_oscillation(
+        &self,
+        phenotype: GraphVertices,
+        size_bound: usize,
+        perturbation_variables: Vec<VariableId>,
+        stop_early: bool
+    ) -> PhenotypeControlMap {
+        // A map which gives us the symbolic variable of the perturbation parameter.
+        let perturbation_bbd_vars_mapping = perturbation_variables.iter()
+            .filter_map(|var| self.get_perturbation_parameter(var.clone()).map(|it| (var.clone(), it)))
+            .map(|(var, param)| {
+                (var, self.as_symbolic_context()
+                    .get_explicit_function_table(param)
+                    .symbolic_variables()[0])
+            })
+            .collect::<HashMap<_, _>>();
+
+        let bdd_vars = self.as_symbolic_context().bdd_variable_set();
+        // The list of symbolic variables of perturbation parameters.
+        let perturbation_bdd_vars = {
+            let mut values = perturbation_bbd_vars_mapping
+                .values()
+                .cloned()
+                .collect::<Vec<_>>();
+            values.sort();
+            values
+        };
+
+        let mut control_map_all = self.mk_empty_colored_vertices();
+
+        for perturbation_size in 0..(size_bound + 1) {
+            let start = SystemTime::now();
+            println!("Perturbation size: {}", perturbation_size);
+            let admissible_perturbations = mk_bdd_of_bound(bdd_vars, &perturbation_bdd_vars, perturbation_size);
+            {
+                let factor = 2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
+                println!("[{}] >> Admissible fixed(Q) sets: {}", perturbation_size, admissible_perturbations.cardinality() / factor);
+            }
+            let admissible_perturbations = self.empty_colors().copy(admissible_perturbations);
+
+
+            // oscillation with phenotype set to true
+            let control_map_in_phenotype = self.phenotype_permanent_control(phenotype.clone(), admissible_perturbations.clone(), true).perturbation_set;
+
+            // oscillation with outside of phenotype
+            let outside_phenotype = self.mk_unit_colored_vertices().minus_vertices(&phenotype).vertices();
+            let control_map_outside_phenotype = self.phenotype_permanent_control(outside_phenotype, admissible_perturbations, true).perturbation_set;
+
+            let control_map = control_map_in_phenotype.intersect(&control_map_outside_phenotype);
+
+
+            // Compute the number of valuations of the perturbation parameters.
+            let factor = 2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
+            let mut only_perturbation_parameters = control_map.clone().into_bdd();
+            for var in bdd_vars.variables() {
+                if !perturbation_bdd_vars.contains(&var) {
+                    only_perturbation_parameters = only_perturbation_parameters.var_project(var);
+                }
+            }
+            println!("[{}] >> fixed(Q) sets in control map: {}", perturbation_size, only_perturbation_parameters.cardinality() / factor);
+
+
+            let control_map_bdd = control_map.clone().into_bdd();
+            let perturbation_vars_projection = RawProjection::new(perturbation_bdd_vars.clone(), &control_map_bdd);
+
+            let all_colors_size = self.unit_colors().approx_cardinality() / 2.0f64.powi(perturbation_bdd_vars.len() as i32);
+            let mut best_robustness = 0.0;
+            let mut with_best_robustness = 0;
+
+            for is_perturbed_vector in perturbation_vars_projection.iter() {
+                let perturbed_variables = perturbation_bbd_vars_mapping
+                    .iter()
+                    .filter_map(|(var, p_var)| {
+                        if is_perturbed_vector.get_value(*p_var).unwrap() {
+                            Some(*var)
+                        } else {
+                            None
+                        }
+                    })
+                    .collect::<Vec<_>>();
+
+                // This should remove all perturbation symbolic variables from the set.
+                let control_subset = control_map_bdd.restrict(&is_perturbed_vector.to_values());
+
+                let mut perturbed_state_vars = perturbed_variables
+                    .iter()
+                    .map(|var| self.as_symbolic_context().get_state_variable(*var))
+                    .collect::<Vec<_>>();
+
+                let state_vars_projection = RawProjection::new(perturbed_state_vars, &control_subset);
+                for state_vector in state_vars_projection.iter() {
+                    // This should remove all remaining perturbed state variables. Unperturbed
+                    // variables should not appear in the control map add all.
+                    let control_colors = control_subset.restrict(&state_vector.to_values());
+                    let mut map = HashMap::new();
+                    for var in &perturbed_variables {
+                        let state_var = self.as_symbolic_context().get_state_variable(*var);
+                        map.insert(
+                            self.as_original().as_network().get_variable_name(*var).clone(),
+                            state_vector.get_value(state_var).unwrap(),
+                        );
+                    }
+                    let factor = 2.0f64.powi(
+                        (self.as_symbolic_context().state_variables().len() + self.num_perturbation_parameters()) as i32
+                    );
+
+                    let working_colors = control_colors.cardinality() / factor;
+                    let robustness = working_colors / all_colors_size;
+                    if robustness >= best_robustness {
+                        if robustness != best_robustness {
+                            with_best_robustness = 0;
+                        }
+                        best_robustness = robustness;
+                        with_best_robustness += 1;
                         println!("[{}] >>>> {:?}: {}; rho = {:.2}", perturbation_size, map, working_colors, robustness);
                     }
                 }
