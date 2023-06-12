@@ -1,4 +1,62 @@
 {
+   "mapk_p": {
+    "file": "../mapk_4.aeon",
+    "comment": "MAPK but with all loss/gain variables free",
+    "vars": 53,
+    "inputs": ["v_DNA_damage", "v_EGFR_stimulus", "v_FGFR3_stimulus", "v_TGFBR_stimulus"],
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Growth_Arrest"],
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      },
+      "proliferation": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": true
+      },
+      "no_decision": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": false
+      },
+      "growth_arrest": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      }
+    }
+  },
+  "mapk_loss": {
+    "file": "mapk_loss_of_function.aeon",
+    "comment": "MAPK but with all loss/gain variables free",
+    "vars": 53,
+    "inputs": ["v_DNA_damage", "v_EGFR_stimulus", "v_FGFR3_stimulus", "v_TGFBR_stimulus"],
+    "uncontrollable": ["v_Apoptosis", "v_Proliferation", "v_Growth_Arrest"],
+    "targets": {
+      "apoptosis": {
+        "v_Apoptosis": true,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      },
+      "proliferation": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": true
+      },
+      "no_decision": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": false,
+        "v_Proliferation": false
+      },
+      "growth_arrest": {
+        "v_Apoptosis": false,
+        "v_Growth_Arrest": true,
+        "v_Proliferation": false
+      }
+    }
+  },
   "emt": {
     "file": "[id-179]__[var-46]__[in-10]__[MICROENVIRONMENT-CONTROL].aeon",
     "comment": "From Fontanals control paper",

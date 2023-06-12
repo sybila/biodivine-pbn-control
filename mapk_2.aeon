@@ -1,0 +1,206 @@
+$v_EGFR_stimulus: false
+$v_FGFR3_stimulus: false
+#position:v_MYC:307.49889826164053,265.9229683414932
+$v_MYC:((v_MSK & v_AKT) | (v_MSK & v_MAX))
+v_MAX -> v_MYC
+v_AKT -> v_MYC
+v_MSK -> v_MYC
+#position:v_p14:334.4361015865022,78.67752769797738
+$v_p14:v_MYC
+v_MYC -> v_p14
+#position:v_JNK:442.5074928600912,602.6635001852543
+$v_JNK:((((((((((v_TAOK & v_MAP3K1_3) | (v_TAK1 & !v_DUSP1)) | (v_MAP3K1_3 & v_MTK1)) | (v_TAK1 & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_TAOK & v_MTK1)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & !v_DUSP1))
+v_MAP3K1_3 -> v_JNK
+v_MTK1 -> v_JNK
+v_TAOK -> v_JNK
+v_DUSP1 -| v_JNK
+v_TAK1 -> v_JNK
+#position:v_JUN:518.0726520464895,822.326523508272
+$v_JUN:v_JNK
+v_JNK -> v_JUN
+#position:v_MAX:466.42711140495294,318.9322553037056
+$v_MAX:v_p38
+v_p38 -> v_MAX
+#position:v_AKT:260.64345318136264,410.88341306025507
+$v_AKT:(v_PDK1 & !v_PTEN)
+v_PTEN -| v_AKT
+v_PDK1 -> v_AKT
+#position:v_MSK:350.034386641247,439.5297422941452
+$v_MSK:(v_p38 | v_ERK)
+v_ERK -> v_MSK
+v_p38 -> v_MSK
+#position:v_CREB:261.11970324601117,580.3881868303276
+$v_CREB:v_MSK
+v_MSK -> v_CREB
+#position:v_TGFBR:476.5550429539493,940.3507110698165
+$v_TGFBR:v_TGFBR_stimulus
+v_TGFBR_stimulus -> v_TGFBR
+#position:v_TAK1:517.7659349712105,743.1494621499494
+$v_TAK1:v_TGFBR
+v_TGFBR -> v_TAK1
+#position:v_MAP3K1_3:336.88782514078514,717.9104507851466
+$v_MAP3K1_3:v_RAS
+v_RAS -> v_MAP3K1_3
+#position:v_MEK1_2:322.52566084888736,811.2799720087062
+$v_MEK1_2:((v_RAF & !(v_PPP2CA | v_AP1)) | (v_MAP3K1_3 & !(v_PPP2CA | v_AP1)))
+v_MAP3K1_3 -> v_MEK1_2
+v_RAF -> v_MEK1_2
+v_PPP2CA -| v_MEK1_2
+v_AP1 -| v_MEK1_2
+#position:v_RAF:191.55138058761315,669.5094569167879
+$v_RAF:((v_PKC & !(v_ERK | v_AKT)) | (v_RAS & !(v_ERK | v_AKT)))
+v_ERK -| v_RAF
+v_RAS -> v_RAF
+v_AKT -| v_RAF
+v_PKC -> v_RAF
+#position:v_PPP2CA:426.32719059646234,765.6833348123022
+$v_PPP2CA:v_p38
+v_p38 -> v_PPP2CA
+#position:v_AP1:410.9479737479255,861.1588170269977
+$v_AP1:(v_JUN & (v_ATF2 | v_FOS))
+v_ATF2 -> v_AP1
+v_FOS -> v_AP1
+v_JUN -> v_AP1
+#position:v_p53:350.46078801077704,339.3619433890487
+$v_p53:(((v_p38 & !v_MDM2) | (v_ATM & !v_MDM2)) | (v_ATM & v_p38))
+v_ATM -> v_p53
+v_p38 -> v_p53
+v_MDM2 -| v_p53
+#position:v_p21:173.34696654360724,278.1779354325444
+$v_p21:(v_p53 & !v_AKT)
+v_p53 -> v_p21
+v_AKT -| v_p21
+#position:v_GRB2:264.74681183089166,978.4268164447049
+$v_GRB2:((v_EGFR | v_TGFBR) | v_FRS2)
+v_EGFR -> v_GRB2
+v_FRS2 -> v_GRB2
+v_TGFBR -> v_GRB2
+#position:v_GAB1:55.179338269404724,944.0094841563572
+$v_GAB1:(v_PI3K | v_GRB2)
+v_GRB2 -> v_GAB1
+v_PI3K -> v_GAB1
+#position:v_PI3K:22.5,782.3053349917823
+$v_PI3K:(v_GAB1 | (v_RAS & v_SOS))
+v_RAS -> v_PI3K
+v_SOS -> v_PI3K
+v_GAB1 -> v_PI3K
+#position:v_MTK1:599.0293792400134,571.9595908551868
+$v_MTK1:v_GADD45
+v_GADD45 -> v_MTK1
+#position:v_TAOK:262.3726673659919,501.54107178980746
+$v_TAOK:v_ATM
+v_ATM -> v_TAOK
+#position:v_DUSP1:350.64679967247497,609.9339732065664
+$v_DUSP1:v_CREB
+v_CREB -> v_DUSP1
+#position:v_p38:441.92626492451075,540.5222512995415
+$v_p38:((((((((((v_MAP3K1_3 & v_MTK1) | (v_TAK1 & !v_DUSP1)) | (v_TAOK & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MAP3K1_3)) | (v_TAOK & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & v_MTK1))
+v_MAP3K1_3 -> v_p38
+v_MTK1 -> v_p38
+v_DUSP1 -| v_p38
+v_TAOK -> v_p38
+v_TAK1 -> v_p38
+#position:v_PLCG:128.48286392621026,1026.7186180024116
+$v_PLCG:(v_EGFR | v_FGFR3)
+v_EGFR -> v_PLCG
+v_FGFR3 -> v_PLCG
+#position:v_RAS:161.36898186891813,811.6452520678592
+$v_RAS:(v_SOS | v_PLCG)
+v_PLCG -> v_RAS
+v_SOS -> v_RAS
+#position:v_SOS:123.27148643900543,879.9908489934576
+$v_SOS:(v_GRB2 & !v_RSK)
+v_RSK -| v_SOS
+v_GRB2 -> v_SOS
+#position:v_ERK:262.14706962978937,647.0876988709801
+$v_ERK:v_MEK1_2
+v_MEK1_2 -> v_ERK
+#position:v_p70:135.60161014070707,422.6615028081333
+$v_p70:(v_PDK1 & v_ERK)
+v_ERK -> v_p70
+v_PDK1 -> v_p70
+#position:v_PDK1:83.2933017523705,567.8656931569495
+$v_PDK1:v_PI3K
+v_PI3K -> v_PDK1
+#position:v_FOS:251.4573229279045,763.915396256692
+$v_FOS:((v_ERK & v_RSK) & (v_CREB | v_ELK1))
+v_ERK -> v_FOS
+v_RSK -> v_FOS
+v_CREB -> v_FOS
+v_ELK1 -> v_FOS
+#position:v_RSK:111.86394839880558,714.7713869548716
+$v_RSK:v_ERK
+v_ERK -> v_RSK
+#position:v_ELK1:426.75025851668454,686.9292391323563
+$v_ELK1:((v_JNK | v_ERK) | v_p38)
+v_ERK -> v_ELK1
+v_JNK -> v_ELK1
+v_p38 -> v_ELK1
+#position:v_Proliferation:173.83091447857856,147.49106390548334
+$v_Proliferation:((v_p70 & v_MYC) & !v_p21)
+v_p70 -> v_Proliferation
+v_p21 -| v_Proliferation
+v_MYC -> v_Proliferation
+#position:v_PTEN:264.803850759441,207.8016251602902
+$v_PTEN:v_p53
+v_p53 -> v_PTEN
+#position:v_SMAD:607.7654412637171,724.8789686833824
+$v_SMAD:v_TGFBR
+v_TGFBR -> v_SMAD
+#position:v_GADD45:530.8393426229161,474.6342922255525
+$v_GADD45:(v_p53 | v_SMAD)
+v_SMAD -> v_GADD45
+v_p53 -> v_GADD45
+#position:v_FOXO3:440.9050355367013,399.8145234839757
+$v_FOXO3:(v_JNK & !v_AKT)
+v_JNK -> v_FOXO3
+v_AKT -| v_FOXO3
+#position:v_SPRY:309.617109037278,899.1199899591797
+$v_SPRY:v_ERK
+v_ERK -> v_SPRY
+#position:v_EGFR:216.76921985693045,1064.891817181657
+v_SPRY ->? v_EGFR
+v_EGFR_stimulus ->? v_EGFR
+v_GRB2 -|? v_EGFR
+v_PKC -|? v_EGFR
+#position:v_EGFR_stimulus:126.95646370156884,1247.4610896247596
+#position:v_PKC:213.69023817244872,906.5257963462103
+$v_PKC:v_PLCG
+v_PLCG -> v_PKC
+#position:v_FRS2:355.2376589657599,1063.2180810572092
+$v_FRS2:(v_FGFR3 & !(v_GRB2 | v_SPRY))
+v_SPRY -| v_FRS2
+v_GRB2 -| v_FRS2
+v_FGFR3 -> v_FRS2
+#position:v_FGFR3:254.8772650626313,1139.989482917725
+v_FGFR3_stimulus ->? v_FGFR3
+v_GRB2 -|? v_FGFR3
+v_PKC -|? v_FGFR3
+#position:v_MDM2:396.81221329157916,210.7845376144526
+$v_MDM2:((v_AKT & !v_p14) | (v_p53 & !v_p14))
+v_p14 -| v_MDM2
+v_p53 -> v_MDM2
+v_AKT -> v_MDM2
+#position:v_ATM:195.96788353137222,358.58307556506867
+$v_ATM:v_DNA_damage
+v_DNA_damage -> v_ATM
+#position:v_DNA_damage:44.95117076221672,330.01202718366824
+#position:v_FGFR3_stimulus:296.5814501703843,1372.9688090656246
+#position:v_TGFBR_stimulus:578.8444669407452,1060.9220038578515
+#position:v_Apoptosis:350.6400708845715,500.0084044577197
+$v_Apoptosis:((v_FOXO3 & v_p53) & !(v_BCL2 | v_ERK))
+v_p53 -> v_Apoptosis
+v_ERK -| v_Apoptosis
+v_BCL2 -| v_Apoptosis
+v_FOXO3 -> v_Apoptosis
+#position:v_BCL2:172.4106998077043,510.62052339712966
+$v_BCL2:(v_CREB & v_AKT)
+v_CREB -> v_BCL2
+v_AKT -> v_BCL2
+#position:v_Growth_Arrest:84.5310454852308,70.5
+$v_Growth_Arrest:v_p21
+v_p21 -> v_Growth_Arrest
+#position:v_ATF2:517.9703353734195,668.5347609052176
+$v_ATF2:(v_JNK | v_p38)
+v_JNK -> v_ATF2
+v_p38 -> v_ATF2

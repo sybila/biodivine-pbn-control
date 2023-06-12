@@ -1,0 +1,910 @@
+Variables: 53
+Inputs: 1
+Controllable variables: 50
+Uncertainty colors: 168
+Perturbation colors: 1125899906842624
+All colors: 189151184349560830
+Unknown update functions: 1
+Lowest cardinality: 4
+Highest cardinality: 4
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 0
+[0] Elapsed: 1424ms
+[0] Best robustness 0 for 0 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 50
+[1] >> Trap phenotype progress: 117965 / 2885393326981251000
+[1] >> Trap phenotype progress: 109847 / 2884309428096467000
+[1] >> Trap phenotype progress: 160659 / 2880972574446059500
+[1] >> Trap phenotype progress: 150262 / 2880718901530853400
+[1] >> Trap phenotype progress: 149745 / 2880633351343964000
+[1] >> Trap phenotype progress: 150090 / 2880545906019533000
+[1] >> Trap phenotype progress: 150345 / 2880527383947903000
+[1] >> Trap phenotype progress: 149999 / 2880514916169548000
+[1] >> Trap phenotype progress: 149777 / 2880512418033697000
+[1] >> Trap phenotype progress: 149546 / 2880510108213707000
+[1] >> Trap phenotype progress: 149066 / 2880509467693154300
+[1] >> Trap phenotype progress: 149061 / 1534093638953336800
+[1] >> Trap phenotype progress: 142358 / 546198157554352100
+[1] >> Trap phenotype progress: 109256 / 381473411907452900
+[1] >> Trap phenotype progress: 120769 / 366561044937572350
+[1] >> Trap phenotype progress: 123113 / 361686944251379700
+[1] >> Trap phenotype progress: 123177 / 355618490469580800
+[1] >> Trap phenotype progress: 123201 / 352644693768536060
+[1] >> Trap phenotype progress: 117554 / 349731327257346050
+[1] >> Trap phenotype progress: 114407 / 341310425398247400
+[1] >> Trap phenotype progress: 117671 / 305342168879333400
+[1] >> Trap phenotype progress: 114222 / 286566981354651650
+[1] >> fixed(Q) sets in control map: 16
+[1] >>>> {"v_TGFBR_stimulus": true}: 84; rho = 0.50
+[1] >>>> {"v_TGFBR": true}: 84; rho = 0.50
+[1] >>>> {"v_TAOK": true}: 167; rho = 0.99
+[1] >>>> {"v_TAK1": true}: 167; rho = 0.99
+[1] >>>> {"v_DNA_damage": true}: 167; rho = 0.99
+[1] >>>> {"v_ATM": true}: 167; rho = 0.99
+[1] Elapsed: 19357ms
+[1] Best robustness 0.9940476190476191 for 4 perturbations.
+Perturbation size: 2
+[2] >> Admissible fixed(Q) sets: 1225
+[2] >> Trap phenotype progress: 104679 / 87648816308573700000
+[2] >> Trap phenotype progress: 111596 / 81182155876916530000
+[2] >> Trap phenotype progress: 110944 / 80854306527161350000
+[2] >> Trap phenotype progress: 109548 / 80369067669602700000
+[2] >> Trap phenotype progress: 109700 / 79949716218684900000
+[2] >> Trap phenotype progress: 109228 / 79749072770895450000
+[2] >> Trap phenotype progress: 105993 / 79631730657133070000
+[2] >> Trap phenotype progress: 109283 / 79423172041091580000
+[2] >> Trap phenotype progress: 109138 / 79263258179077670000
+[2] >> Trap phenotype progress: 108572 / 79110626363515600000
+[2] >> Trap phenotype progress: 105465 / 78957994547953530000
+[2] >> Trap phenotype progress: 111435 / 78878749517137580000
+[2] >> Trap phenotype progress: 111894 / 78864671140340560000
+[2] >> Trap phenotype progress: 111920 / 78860280206362410000
+[2] >> Trap phenotype progress: 111930 / 78858360689579260000
+[2] >> Trap phenotype progress: 110556 / 78856537222693260000
+[2] >> Trap phenotype progress: 109881 / 78850865233517350000
+[2] >> Trap phenotype progress: 196053 / 78185314068008530000
+[2] >> Trap phenotype progress: 196215 / 78184961866261860000
+[2] >> Trap phenotype progress: 196257 / 78184691307280070000
+[2] >> Trap phenotype progress: 196265 / 78184444074802540000
+[2] >> Trap phenotype progress: 196121 / 78184208239222060000
+[2] >> Trap phenotype progress: 200394 / 77928482216066680000
+[2] >> Trap phenotype progress: 263493 / 77839424616847640000
+[2] >> Trap phenotype progress: 253660 / 77817252954236780000
+[2] >> Trap phenotype progress: 388175 / 77747457734524010000
+[2] >> Trap phenotype progress: 375645 / 77742633449989080000
+[2] >> Trap phenotype progress: 375310 / 77740919560033270000
+[2] >> Trap phenotype progress: 375844 / 77739096516109270000
+[2] >> Trap phenotype progress: 376363 / 77738715152180580000
+[2] >> Trap phenotype progress: 376061 / 77738465330315920000
+[2] >> Trap phenotype progress: 375812 / 77738417464616680000
+[2] >> Trap phenotype progress: 375520 / 77738371407383890000
+[2] >> Trap phenotype progress: 374997 / 77738359626984850000
+[2] >> Trap phenotype progress: 374985 / 42228685050451330000
+[2] >> Trap phenotype progress: 351893 / 16735168753154654000
+[2] >> Trap phenotype progress: 249176 / 12515087026338398000
+[2] >> Trap phenotype progress: 264929 / 12143936525511426000
+[2] >> Trap phenotype progress: 267294 / 12025093792588628000
+[2] >> Trap phenotype progress: 267445 / 11877734729530737000
+[2] >> Trap phenotype progress: 267492 / 11807028994702836000
+[2] >> Trap phenotype progress: 257437 / 11739236626386125000
+[2] >> Trap phenotype progress: 249591 / 11536588088549573000
+[2] >> Trap phenotype progress: 247453 / 10629930451722043000
+[2] >> Trap phenotype progress: 243670 / 10144459063006593000
+[2] >> Trap phenotype progress: 204089 / 9815454921284125000
+[2] >> Trap phenotype progress: 203174 / 9769730265927647000
+[2] >> Trap phenotype progress: 203537 / 9761858359941660000
+[2] >> Trap phenotype progress: 203588 / 9759354963225477000
+[2] >> Trap phenotype progress: 203602 / 9758154169692193000
+[2] >> Trap phenotype progress: 200919 / 9757011557128077000
+[2] >> Trap phenotype progress: 197249 / 9753319867246707000
+[2] >> Trap phenotype progress: 188794 / 9742073637686477000
+[2] >> Trap phenotype progress: 189691 / 9740638925906510000
+[2] >> Trap phenotype progress: 189636 / 9740172295057440000
+[2] >> Trap phenotype progress: 189637 / 9739928659078152000
+[2] >> Trap phenotype progress: 179512 / 9739692563660538000
+[2] >> Trap phenotype progress: 167045 / 9738925082280985000
+[2] >> Trap phenotype progress: 165315 / 9526621791250809000
+[2] >> Trap phenotype progress: 138890 / 9474200467270533000
+[2] >> Trap phenotype progress: 122538 / 9438753663184011000
+[2] >> Trap phenotype progress: 115259 / 9437085834336535000
+[2] >> Trap phenotype progress: 106830 / 9317765129772728000
+[2] >> Trap phenotype progress: 105679 / 9316058452411286000
+[2] >> Trap phenotype progress: 105440 / 9316057162243375000
+[2] >> Trap phenotype progress: 105048 / 9316056697178948000
+[2] >> Trap phenotype progress: 105049 / 9316056686978400000
+[2] >> Trap phenotype progress: 104953 / 9316056681878127000
+[2] >> Trap phenotype progress: 105422 / 9316007779661513000
+[2] >> Trap phenotype progress: 111687 / 9315972650599710000
+[2] >> Trap phenotype progress: 108810 / 9315961289756901000
+[2] >> Trap phenotype progress: 114071 / 9315938240613580000
+[2] >> Trap phenotype progress: 114083 / 9315938232325636000
+[2] >> Trap phenotype progress: 115728 / 9315937163277238000
+[2] >> Trap phenotype progress: 115020 / 9315936529211720000
+[2] >> Trap phenotype progress: 115856 / 9315936424928740000
+[2] >> Trap phenotype progress: 119585 / 9315936208759554000
+[2] >> Trap phenotype progress: 119584 / 9315936177623138000
+[2] >> Trap phenotype progress: 116781 / 9315936148770521000
+[2] >> Trap phenotype progress: 117563 / 9315936148212679000
+[2] >> Trap phenotype progress: 116843 / 9315936081170924000
+[2] >> Trap phenotype progress: 114253 / 9315935958294856000
+[2] >> Trap phenotype progress: 113665 / 9315935957737013000
+[2] >> Trap phenotype progress: 113665 / 9315935957597553000
+[2] >> Trap phenotype progress: 121312 / 9315915979193778000
+[2] >> Trap phenotype progress: 120072 / 9315915929229590000
+[2] >> Trap phenotype progress: 117647 / 9315913143283680000
+[2] >> Trap phenotype progress: 114739 / 9315913135520088000
+[2] >> Trap phenotype progress: 114860 / 9315913070852571000
+[2] >> Trap phenotype progress: 114866 / 9315913061022695000
+[2] >> Trap phenotype progress: 114861 / 9315913060810359000
+[2] >> Trap phenotype progress: 114894 / 9315913049093570000
+[2] >> Trap phenotype progress: 112988 / 9315913043936150000
+[2] >> Trap phenotype progress: 114454 / 9315913035998233000
+[2] >> Trap phenotype progress: 111601 / 9315913028234641000
+[2] >> Trap phenotype progress: 112299 / 9315913022802756000
+[2] >> Trap phenotype progress: 112301 / 9315913022623450000
+[2] >> Trap phenotype progress: 112137 / 9315913022444143000
+[2] >> Trap phenotype progress: 111073 / 9315913016793104000
+[2] >> Trap phenotype progress: 111365 / 9315907221338718000
+[2] >> Trap phenotype progress: 112359 / 9315903560550187000
+[2] >> Trap phenotype progress: 110031 / 9315902608292184000
+[2] >> Trap phenotype progress: 122244 / 9200129869741326000
+[2] >> Trap phenotype progress: 126681 / 9195964993793098000
+[2] >> Trap phenotype progress: 119166 / 9195964942345110000
+[2] >> Trap phenotype progress: 101641 / 9174927882729423000
+[2] >> Trap phenotype progress: 103063 / 443493503490588700
+[2] >> Trap phenotype progress: 147871 / 427445335036526600
+[2] >> Trap phenotype progress: 215203 / 427361155556573200
+[2] >> Trap phenotype progress: 215251 / 427320063591186400
+[2] >> Trap phenotype progress: 196134 / 427279969400389600
+[2] >> Trap phenotype progress: 167662 / 427118594862612500
+[2] >> Trap phenotype progress: 152065 / 208963557551767550
+[2] >> Trap phenotype progress: 166757 / 187150243289104400
+[2] >> Trap phenotype progress: 166693 / 182800712728576000
+[2] >> Trap phenotype progress: 166866 / 174622253183402000
+[2] >> Trap phenotype progress: 166916 / 170623037335404540
+[2] >> Trap phenotype progress: 166064 / 166713835411996670
+[2] >> Trap phenotype progress: 164219 / 155115117315358720
+[2] >> Trap phenotype progress: 178661 / 142276633286410240
+[2] >> Trap phenotype progress: 179795 / 139138446175240200
+[2] >> Trap phenotype progress: 197179 / 136838381263912960
+[2] >> Trap phenotype progress: 199975 / 135510070587817980
+[2] >> Trap phenotype progress: 265479 / 135370196119453700
+[2] >> Trap phenotype progress: 265523 / 135301933117210620
+[2] >> Trap phenotype progress: 247800 / 135235344346906620
+[2] >> Trap phenotype progress: 187012 / 134967315033751550
+[2] >> Trap phenotype progress: 177076 / 133477319072284670
+[2] >> Trap phenotype progress: 165546 / 133268066856337400
+[2] >> Trap phenotype progress: 165783 / 133264227960881150
+[2] >> Trap phenotype progress: 165795 / 133263588144971780
+[2] >> Trap phenotype progress: 165809 / 133263268237017090
+[2] >> Trap phenotype progress: 160859 / 133262948329062400
+[2] >> Trap phenotype progress: 144035 / 68518306983706620
+[2] >> Trap phenotype progress: 206788 / 35940059384381440
+[2] >> Trap phenotype progress: 197732 / 28581205343469570
+[2] >> Trap phenotype progress: 198281 / 26971962773340160
+[2] >> Trap phenotype progress: 232484 / 26841914729824256
+[2] >> Trap phenotype progress: 217736 / 26715865550422016
+[2] >> Trap phenotype progress: 214345 / 25255931528871936
+[2] >> Trap phenotype progress: 218228 / 25202574143520770
+[2] >> Trap phenotype progress: 218169 / 25190575883943936
+[2] >> Trap phenotype progress: 218225 / 25170609671503870
+[2] >> Trap phenotype progress: 218243 / 25160626565283840
+[2] >> Trap phenotype progress: 216236 / 25150643459063810
+[2] >> Trap phenotype progress: 263395 / 24946450523750400
+[2] >> Trap phenotype progress: 263042 / 24914006491791360
+[2] >> Trap phenotype progress: 261797 / 24890013307109376
+[2] >> Trap phenotype progress: 261504 / 24862767011856384
+[2] >> Trap phenotype progress: 307326 / 20768634567655424
+[2] >> Trap phenotype progress: 307547 / 20765605005099010
+[2] >> Trap phenotype progress: 307541 / 20764870565691390
+[2] >> Trap phenotype progress: 307586 / 20762988564709376
+[2] >> Trap phenotype progress: 307604 / 20762047564218370
+[2] >> Trap phenotype progress: 307120 / 20761106563727360
+[2] >> Trap phenotype progress: 308351 / 17785065360588800
+[2] >> Trap phenotype progress: 331744 / 17542805656174592
+[2] >> Trap phenotype progress: 312769 / 17310379984027648
+[2] >> Trap phenotype progress: 312689 / 17310239634227200
+[2] >> Trap phenotype progress: 315280 / 16931817980428288
+[2] >> Trap phenotype progress: 314577 / 16926275258023936
+[2] >> Trap phenotype progress: 315396 / 16916255132876800
+[2] >> Trap phenotype progress: 315578 / 16913992523972608
+[2] >> Trap phenotype progress: 312896 / 16912376374755328
+[2] >> Trap phenotype progress: 312843 / 16911891529990144
+[2] >> Trap phenotype progress: 364671 / 16761240023728128
+[2] >> Trap phenotype progress: 364837 / 16739660582748160
+[2] >> Trap phenotype progress: 362223 / 16739568611098624
+[2] >> Trap phenotype progress: 361379 / 16739285784985600
+[2] >> Trap phenotype progress: 362949 / 16739245381255168
+[2] >> Trap phenotype progress: 360217 / 16738490444152832
+[2] >> Trap phenotype progress: 332215 / 16738149107367936
+[2] >> Trap phenotype progress: 400916 / 16721904519872512
+[2] >> Trap phenotype progress: 400916 / 16721884318007296
+[2] >> Trap phenotype progress: 357204 / 16715906288648192
+[2] >> Trap phenotype progress: 354027 / 16715886086782976
+[2] >> Trap phenotype progress: 389924 / 16714369617428480
+[2] >> Trap phenotype progress: 390004 / 16713612786794496
+[2] >> Trap phenotype progress: 368140 / 16712867461136384
+[2] >> Trap phenotype progress: 368276 / 16709854451662848
+[2] >> Trap phenotype progress: 364759 / 16709814047932416
+[2] >> Trap phenotype progress: 368379 / 16709793846067200
+[2] >> Trap phenotype progress: 368397 / 16709773644201984
+[2] >> Trap phenotype progress: 364863 / 16709753442336768
+[2] >> Trap phenotype progress: 361494 / 16709692836741120
+[2] >> Trap phenotype progress: 467715 / 16359650085076992
+[2] >> Trap phenotype progress: 443130 / 16337233322737664
+[2] >> Trap phenotype progress: 443232 / 16337218171338752
+[2] >> Trap phenotype progress: 347019 / 16287673348669440
+[2] >> Trap phenotype progress: 343698 / 16287658197270528
+[2] >> Trap phenotype progress: 407961 / 16285756511993856
+[2] >> Trap phenotype progress: 408041 / 16285180260286464
+[2] >> Trap phenotype progress: 357353 / 16284612637310976
+[2] >> Trap phenotype progress: 353791 / 16284602536378368
+[2] >> Trap phenotype progress: 324086 / 16282338567143424
+[2] >> Trap phenotype progress: 321701 / 16282247658749952
+[2] >> Trap phenotype progress: 255702 / 14731679933644800
+[2] >> Trap phenotype progress: 253366 / 13962919833255936
+[2] >> Trap phenotype progress: 219346 / 13381289181216768
+[2] >> Trap phenotype progress: 186472 / 13216301079216128
+[2] >> Trap phenotype progress: 186474 / 13208380274524160
+[2] >> Trap phenotype progress: 186493 / 13204419872178176
+[2] >> Trap phenotype progress: 185443 / 13200459469832192
+[2] >> Trap phenotype progress: 185477 / 6967830739623936
+[2] >> Trap phenotype progress: 137532 / 263510655245312
+[2] >> Trap phenotype progress: 149950 / 261662866021376
+[2] >> Trap phenotype progress: 146272 / 259831526333440
+[2] >> Trap phenotype progress: 146451 / 251626011106304
+[2] >> Trap phenotype progress: 146511 / 250810848451584
+[2] >> Trap phenotype progress: 135142 / 250003384179712
+[2] >> Trap phenotype progress: 136800 / 243956179704832
+[2] >> Trap phenotype progress: 136529 / 243553302502400
+[2] >> Trap phenotype progress: 130388 / 243309338336256
+[2] >> Trap phenotype progress: 121899 / 243095713922048
+[2] >> Trap phenotype progress: 121827 / 243080762569728
+[2] >> Trap phenotype progress: 133501 / 242974630474752
+[2] >> Trap phenotype progress: 121396 / 242869468902400
+[2] >> Trap phenotype progress: 134101 / 242817905935360
+[2] >> Trap phenotype progress: 134295 / 242792752620544
+[2] >> Trap phenotype progress: 128407 / 242767837824000
+[2] >> Trap phenotype progress: 133279 / 242726448855040
+[2] >> Trap phenotype progress: 133093 / 242706242203648
+[2] >> Trap phenotype progress: 121123 / 242686810736640
+[2] >> Trap phenotype progress: 116280 / 242686214440960
+[2] >> Trap non-phenotype progress: 120179 / 1853681153430030000000
+[2] >> Trap non-phenotype progress: 113742 / 1853680727249975500000
+[2] >> Trap non-phenotype progress: 113754 / 1853680269091469000000
+[2] >> Trap non-phenotype progress: 214236 / 1853679958725342800000
+[2] >> Trap non-phenotype progress: 113727 / 1853679856154659000000
+[2] >> Trap non-phenotype progress: 113123 / 1853679538451192000000
+[2] >> Trap non-phenotype progress: 113083 / 1853679537478872000000
+[2] >> Trap non-phenotype progress: 113119 / 1853679497232931000000
+[2] >> Trap non-phenotype progress: 111026 / 1853679496266093400000
+[2] >> Trap non-phenotype progress: 107001 / 1853678322590446000000
+[2] >> Trap non-phenotype progress: 107048 / 1853678201546873000000
+[2] >> Trap non-phenotype progress: 104503 / 1853678161389917800000
+[2] >> Trap non-phenotype progress: 115725 / 1853673883822191300000
+[2] >> Trap non-phenotype progress: 132086 / 1853667434106865000000
+[2] >> Trap non-phenotype progress: 106572 / 1853560428902872000000
+[2] >> Trap non-phenotype progress: 130577 / 1853560119422929900000
+[2] >> Trap non-phenotype progress: 130647 / 1853560003417609300000
+[2] >> Trap non-phenotype progress: 112811 / 1853559952879244300000
+[2] >> Trap non-phenotype progress: 122017 / 1853559897560760200000
+[2] >> Trap non-phenotype progress: 122042 / 1853559775519404700000
+[2] >> Trap non-phenotype progress: 118376 / 1851783719572291500000
+[2] >> Trap non-phenotype progress: 118443 / 1851781394296073000000
+[2] >> Trap non-phenotype progress: 113597 / 1851780382684499400000
+[2] >> Trap non-phenotype progress: 100856 / 1846355570015385700000
+[2] >> Trap non-phenotype progress: 111148 / 1846338149573406500000
+[2] >> Trap non-phenotype progress: 101383 / 1846326824345506200000
+[2] >> Trap non-phenotype progress: 136688 / 1846326051693011100000
+[2] >> Trap non-phenotype progress: 117414 / 1846325296242866800000
+[2] >> Trap non-phenotype progress: 110070 / 1846324340496276700000
+[2] >> Trap non-phenotype progress: 102644 / 1846324151806560600000
+[2] >> Trap non-phenotype progress: 111092 / 1846320167413402300000
+[2] >> Trap non-phenotype progress: 111092 / 1846320058836260000000
+[2] >> Trap non-phenotype progress: 102014 / 1845216957685980700000
+[2] >> Trap non-phenotype progress: 118584 / 1838389487414495700000
+[2] >> Trap non-phenotype progress: 100924 / 1837987783818278300000
+[2] >> Trap non-phenotype progress: 101470 / 1837685352149942300000
+[2] >> Trap non-phenotype progress: 109861 / 1837419787944004200000
+[2] >> Trap non-phenotype progress: 116785 / 1837407435661010500000
+[2] >> Trap non-phenotype progress: 116834 / 1837400748111315300000
+[2] >> Trap non-phenotype progress: 115729 / 1837397718027994100000
+[2] >> Trap non-phenotype progress: 110605 / 1837395118673521300000
+[2] >> Trap non-phenotype progress: 135441 / 1837322514200622300000
+[2] >> Trap non-phenotype progress: 122112 / 1837322392132320800000
+[2] >> Trap non-phenotype progress: 120554 / 1837322372205383800000
+[2] >> Trap non-phenotype progress: 120559 / 1837322367090077700000
+[2] >> Trap non-phenotype progress: 120120 / 1837322365384975700000
+[2] >> Trap non-phenotype progress: 114867 / 1837304766849157700000
+[2] >> Trap non-phenotype progress: 145366 / 1837292539543521600000
+[2] >> Trap non-phenotype progress: 136553 / 1837288752486710000000
+[2] >> Trap non-phenotype progress: 145380 / 1837272464788039000000
+[2] >> Trap non-phenotype progress: 150028 / 1837272366191159000000
+[2] >> Trap non-phenotype progress: 146242 / 1837272301756046400000
+[2] >> Trap non-phenotype progress: 150352 / 1837272294293238700000
+[2] >> Trap non-phenotype progress: 153839 / 1837272241232671700000
+[2] >> Trap non-phenotype progress: 152609 / 1837272219553547400000
+[2] >> Trap non-phenotype progress: 145541 / 1837272198779059000000
+[2] >> Trap non-phenotype progress: 148095 / 1837272198674772000000
+[2] >> Trap non-phenotype progress: 148104 / 1837272198654907600000
+[2] >> Trap non-phenotype progress: 147874 / 1837272198644975500000
+[2] >> Trap non-phenotype progress: 139223 / 1837271705874967000000
+[2] >> Trap non-phenotype progress: 139184 / 1837271696861495800000
+[2] >> Trap non-phenotype progress: 139209 / 1837271674013595200000
+[2] >> Trap non-phenotype progress: 131876 / 1837271664360379400000
+[2] >> Trap non-phenotype progress: 106758 / 1837271655933037000000
+[2] >> Trap non-phenotype progress: 109974 / 1837257757231658000000
+[2] >> Trap non-phenotype progress: 106126 / 1837257756612996400000
+[2] >> Trap non-phenotype progress: 159678 / 1829448629682733300000
+[2] >> Trap non-phenotype progress: 162416 / 1829254405901229500000
+[2] >> Trap non-phenotype progress: 124635 / 1829254392275816000000
+[2] >> Trap non-phenotype progress: 120783 / 1828795594232816500000
+[2] >> Trap non-phenotype progress: 109466 / 1828337392457184400000
+[2] >> Trap non-phenotype progress: 101813 / 1787134401161006700000
+[2] >> Trap non-phenotype progress: 112818 / 1786945807016735500000
+[2] >> Trap non-phenotype progress: 112915 / 1786835799194749400000
+[2] >> Trap non-phenotype progress: 112067 / 1786784775790726700000
+[2] >> Trap non-phenotype progress: 121894 / 1786733963544476300000
+[2] >> Trap non-phenotype progress: 133026 / 1786705962500895000000
+[2] >> Trap non-phenotype progress: 129646 / 1786686803288516500000
+[2] >> Trap non-phenotype progress: 161581 / 1786685390457682300000
+[2] >> Trap non-phenotype progress: 145508 / 1786684013229979500000
+[2] >> Trap non-phenotype progress: 163924 / 1786681948777310300000
+[2] >> Trap non-phenotype progress: 157564 / 1786681555326832000000
+[2] >> Trap non-phenotype progress: 157213 / 1786681521977618900000
+[2] >> Trap non-phenotype progress: 158095 / 1786675635343040000000
+[2] >> Trap non-phenotype progress: 179294 / 1786675077607348800000
+[2] >> Trap non-phenotype progress: 179298 / 1786674907747297800000
+[2] >> Trap non-phenotype progress: 169201 / 1786674834255038600000
+[2] >> Trap non-phenotype progress: 105936 / 1786674435129545300000
+[2] >> Trap non-phenotype progress: 105990 / 1786674434719510200000
+[2] >> Trap non-phenotype progress: 133007 / 1786674415824682400000
+[2] >> Trap non-phenotype progress: 106806 / 1786674397790928400000
+[2] >> Trap non-phenotype progress: 106786 / 1786674396437812300000
+[2] >> Trap non-phenotype progress: 106675 / 1786674395084696300000
+[2] >> Trap non-phenotype progress: 111020 / 1779940324245770300000
+[2] >> Trap non-phenotype progress: 178311 / 1776095938605769300000
+[2] >> Trap non-phenotype progress: 157019 / 1775177104848479800000
+[2] >> Trap non-phenotype progress: 157870 / 1774636128610403000000
+[2] >> Trap non-phenotype progress: 168386 / 1774167274432590000000
+[2] >> Trap non-phenotype progress: 173242 / 1774143169667375600000
+[2] >> Trap non-phenotype progress: 173312 / 1774130943570521000000
+[2] >> Trap non-phenotype progress: 172549 / 1774125218357640700000
+[2] >> Trap non-phenotype progress: 166947 / 1774119913061565300000
+[2] >> Trap non-phenotype progress: 226667 / 1773842823147789700000
+[2] >> Trap non-phenotype progress: 214491 / 1773842211145828500000
+[2] >> Trap non-phenotype progress: 212649 / 1773842115507845600000
+[2] >> Trap non-phenotype progress: 212674 / 1773842064513699000000
+[2] >> Trap non-phenotype progress: 211967 / 1773842040923591000000
+[2] >> Trap non-phenotype progress: 210144 / 1773772166296594500000
+[2] >> Trap non-phenotype progress: 253919 / 1773722147348823400000
+[2] >> Trap non-phenotype progress: 244513 / 1773706549771747000000
+[2] >> Trap non-phenotype progress: 269840 / 1773672808787760600000
+[2] >> Trap non-phenotype progress: 257733 / 1773672765861651300000
+[2] >> Trap non-phenotype progress: 267323 / 1773672281602864000000
+[2] >> Trap non-phenotype progress: 259371 / 1773671995782961600000
+[2] >> Trap non-phenotype progress: 267133 / 1773671950778952000000
+[2] >> Trap non-phenotype progress: 267339 / 1773671943067321500000
+[2] >> Trap non-phenotype progress: 260498 / 1773671939238517500000
+[2] >> Trap non-phenotype progress: 260547 / 1773671938595497200000
+[2] >> Trap non-phenotype progress: 258462 / 1773671938122543300000
+[2] >> Trap non-phenotype progress: 270887 / 1773671796831901700000
+[2] >> Trap non-phenotype progress: 270626 / 1773671748632570800000
+[2] >> Trap non-phenotype progress: 263028 / 1773671702943883000000
+[2] >> Trap non-phenotype progress: 257877 / 1773671702806242800000
+[2] >> Trap non-phenotype progress: 263903 / 1773671702468551000000
+[2] >> Trap non-phenotype progress: 263929 / 1773671702389094000000
+[2] >> Trap non-phenotype progress: 263139 / 1773671702349365600000
+[2] >> Trap non-phenotype progress: 234124 / 1773670469225543600000
+[2] >> Trap non-phenotype progress: 233339 / 1773670432863734500000
+[2] >> Trap non-phenotype progress: 233373 / 1773670363365727800000
+[2] >> Trap non-phenotype progress: 224392 / 1773670331170686500000
+[2] >> Trap non-phenotype progress: 187762 / 1773670298796268000000
+[2] >> Trap non-phenotype progress: 181601 / 1773670115503790600000
+[2] >> Trap non-phenotype progress: 177723 / 1773670115444198000000
+[2] >> Trap non-phenotype progress: 177723 / 1773670115429299800000
+[2] >> Trap non-phenotype progress: 217801 / 1773641529788182000000
+[2] >> Trap non-phenotype progress: 208120 / 1773641525343113200000
+[2] >> Trap non-phenotype progress: 195901 / 1773637502968826700000
+[2] >> Trap non-phenotype progress: 183379 / 1773637502266528200000
+[2] >> Trap non-phenotype progress: 184277 / 1773637410283721900000
+[2] >> Trap non-phenotype progress: 184281 / 1773637395057811000000
+[2] >> Trap non-phenotype progress: 182992 / 1773637395044674600000
+[2] >> Trap non-phenotype progress: 182987 / 1773637395043215000000
+[2] >> Trap non-phenotype progress: 182050 / 1773637395041755300000
+[2] >> Trap non-phenotype progress: 178010 / 1773637386748349600000
+[2] >> Trap non-phenotype progress: 172695 / 1773637379107418300000
+[2] >> Trap non-phenotype progress: 179874 / 1773637378386497000000
+[2] >> Trap non-phenotype progress: 166765 / 1773637377684198700000
+[2] >> Trap non-phenotype progress: 168827 / 1773637377145700400000
+[2] >> Trap non-phenotype progress: 168833 / 1773637377134526700000
+[2] >> Trap non-phenotype progress: 167893 / 1773637377123353000000
+[2] >> Trap non-phenotype progress: 167888 / 1773637377122111600000
+[2] >> Trap non-phenotype progress: 167186 / 1773637377120870000000
+[2] >> Trap non-phenotype progress: 159834 / 1773637376572439700000
+[2] >> Trap non-phenotype progress: 297459 / 1773584925429495000000
+[2] >> Trap non-phenotype progress: 291935 / 1773584920633552100000
+[2] >> Trap non-phenotype progress: 258809 / 1773584918659641400000
+[2] >> Trap non-phenotype progress: 190945 / 1773572944343483800000
+[2] >> Trap non-phenotype progress: 177302 / 1773572942579007200000
+[2] >> Trap non-phenotype progress: 171807 / 1773572574136219200000
+[2] >> Trap non-phenotype progress: 171813 / 1773572574123082600000
+[2] >> Trap non-phenotype progress: 169228 / 1773572574109946000000
+[2] >> Trap non-phenotype progress: 169223 / 1773572574108486500000
+[2] >> Trap non-phenotype progress: 167356 / 1773572574107026800000
+[2] >> Trap non-phenotype progress: 148411 / 1773572571128978700000
+[2] >> Trap non-phenotype progress: 147884 / 1773572566385769300000
+[2] >> Trap non-phenotype progress: 142025 / 1773572566287026000000
+[2] >> Trap non-phenotype progress: 161983 / 1773572564893899000000
+[2] >> Trap non-phenotype progress: 162548 / 1773572564496086700000
+[2] >> Trap non-phenotype progress: 155697 / 1773572563804902400000
+[2] >> Trap non-phenotype progress: 153697 / 1773572563656214000000
+[2] >> Trap non-phenotype progress: 156304 / 1773572563651518800000
+[2] >> Trap non-phenotype progress: 152382 / 1773572563647060800000
+[2] >> Trap non-phenotype progress: 168722 / 1773572563178007600000
+[2] >> Trap non-phenotype progress: 162050 / 1773572563020415000000
+[2] >> Trap non-phenotype progress: 141957 / 1773572562408667300000
+[2] >> Trap non-phenotype progress: 145565 / 1773572561844097300000
+[2] >> Trap non-phenotype progress: 145571 / 1773572561832923600000
+[2] >> Trap non-phenotype progress: 143505 / 1773572561821750000000
+[2] >> Trap non-phenotype progress: 143500 / 1773572561820508500000
+[2] >> Trap non-phenotype progress: 142030 / 1773572561819267000000
+[2] >> Trap non-phenotype progress: 131182 / 1773572561244764800000
+[2] >> Trap non-phenotype progress: 128143 / 1773572561197276900000
+[2] >> Trap non-phenotype progress: 128327 / 1773572561149789000000
+[2] >> Trap non-phenotype progress: 125712 / 1773572561122034200000
+[2] >> Trap non-phenotype progress: 125080 / 1773572561116251800000
+[2] >> Trap non-phenotype progress: 125279 / 1773572561116059100000
+[2] >> Trap non-phenotype progress: 124457 / 1773572561115866500000
+[2] >> Trap non-phenotype progress: 104864 / 1727009706208567200000
+[2] >> Trap non-phenotype progress: 114474 / 1726966076659464100000
+[2] >> Trap non-phenotype progress: 109117 / 1726938096897445900000
+[2] >> Trap non-phenotype progress: 147180 / 1726936209493395000000
+[2] >> Trap non-phenotype progress: 155764 / 1726935293184671000000
+[2] >> Trap non-phenotype progress: 168119 / 1726932190988580400000
+[2] >> Trap non-phenotype progress: 170543 / 1726924872639186000000
+[2] >> Trap non-phenotype progress: 170980 / 1726924309689232500000
+[2] >> Trap non-phenotype progress: 171012 / 1726923887476767500000
+[2] >> Trap non-phenotype progress: 171016 / 1726923676370535000000
+[2] >> Trap non-phenotype progress: 170683 / 1726923465264302400000
+[2] >> Trap non-phenotype progress: 170954 / 1726923342119000000000
+[2] >> Trap non-phenotype progress: 170988 / 1726923249760023300000
+[2] >> Trap non-phenotype progress: 173234 / 1726923242063442000000
+[2] >> Trap non-phenotype progress: 172802 / 1726923238215151300000
+[2] >> Trap non-phenotype progress: 169398 / 1726923223784061100000
+[2] >> Trap non-phenotype progress: 179821 / 1726922914323748600000
+[2] >> Trap non-phenotype progress: 173266 / 1726922891115758600000
+[2] >> Trap non-phenotype progress: 173006 / 1726913456443710500000
+[2] >> Trap non-phenotype progress: 172869 / 1726913402413374200000
+[2] >> Trap non-phenotype progress: 172897 / 1726913085216349200000
+[2] >> Trap non-phenotype progress: 158300 / 1726912948090525700000
+[2] >> Trap non-phenotype progress: 133034 / 1726912895412298800000
+[2] >> Trap non-phenotype progress: 136751 / 1726912895251640200000
+[2] >> Trap non-phenotype progress: 132795 / 1726912895144534500000
+[2] >> Trap non-phenotype progress: 180191 / 1726912885103026800000
+[2] >> Trap non-phenotype progress: 155635 / 1726912875272710700000
+[2] >> Trap non-phenotype progress: 161189 / 1726912872471368600000
+[2] >> Trap non-phenotype progress: 161195 / 1726912872428016200000
+[2] >> Trap non-phenotype progress: 159569 / 1726912872384664000000
+[2] >> Trap non-phenotype progress: 159564 / 1726912872379563600000
+[2] >> Trap non-phenotype progress: 158407 / 1726912872374463400000
+[2] >> Trap non-phenotype progress: 158171 / 1726912869529769000000
+[2] >> Trap non-phenotype progress: 141060 / 1726912838370360000000
+[2] >> Trap non-phenotype progress: 135548 / 1726912811524455100000
+[2] >> Trap non-phenotype progress: 121051 / 1726912808811854000000
+[2] >> Trap non-phenotype progress: 162530 / 1726912805076391700000
+[2] >> Trap non-phenotype progress: 159442 / 1726912804492268300000
+[2] >> Trap non-phenotype progress: 121206 / 1726912800269671600000
+[2] >> Trap non-phenotype progress: 123740 / 1726912799862618600000
+[2] >> Trap non-phenotype progress: 123746 / 1726912799859766500000
+[2] >> Trap non-phenotype progress: 122251 / 1726912799856914300000
+[2] >> Trap non-phenotype progress: 122246 / 1726912799856578800000
+[2] >> Trap non-phenotype progress: 121291 / 1726912799856243200000
+[2] >> Trap non-phenotype progress: 107582 / 1726912799446338000000
+[2] >> Trap non-phenotype progress: 102025 / 1726912798865750000000
+[2] >> Trap non-phenotype progress: 101279 / 1726912798864869200000
+[2] >> Trap non-phenotype progress: 105229 / 1726912798695657300000
+[2] >> Trap non-phenotype progress: 105470 / 1726912798648247500000
+[2] >> Trap non-phenotype progress: 100125 / 1726912798542667000000
+[2] >> Trap non-phenotype progress: 106439 / 1704856104006504200000
+[2] >> Trap non-phenotype progress: 106621 / 1704616647278965800000
+[2] >> Trap non-phenotype progress: 105449 / 1704509887105090500000
+[2] >> Trap non-phenotype progress: 112990 / 1704400042491861500000
+[2] >> Trap non-phenotype progress: 122703 / 1704332325271513900000
+[2] >> Trap non-phenotype progress: 117876 / 1704288866460245700000
+[2] >> Trap non-phenotype progress: 159749 / 1704285933705178400000
+[2] >> Trap non-phenotype progress: 168788 / 1704284508417596900000
+[2] >> Trap non-phenotype progress: 180717 / 1704279688102383500000
+[2] >> Trap non-phenotype progress: 189632 / 1704279212095654300000
+[2] >> Trap non-phenotype progress: 182834 / 1704279176395416400000
+[2] >> Trap non-phenotype progress: 184635 / 1704264645928382000000
+[2] >> Trap non-phenotype progress: 269133 / 1704263347164816000000
+[2] >> Trap non-phenotype progress: 269189 / 1704262989870412600000
+[2] >> Trap non-phenotype progress: 243887 / 1704262835418640700000
+[2] >> Trap non-phenotype progress: 143428 / 1704261819336626800000
+[2] >> Trap non-phenotype progress: 147119 / 1704261819124328000000
+[2] >> Trap non-phenotype progress: 143149 / 1704261818982795300000
+[2] >> Trap non-phenotype progress: 239707 / 1702930402022655300000
+[2] >> Trap non-phenotype progress: 187026 / 1701626936386346000000
+[2] >> Trap non-phenotype progress: 204423 / 1701626918276479600000
+[2] >> Trap non-phenotype progress: 194405 / 1701626910343312400000
+[2] >> Trap non-phenotype progress: 193543 / 1701626910051120400000
+[2] >> Trap non-phenotype progress: 193683 / 1701626910036028300000
+[2] >> Trap non-phenotype progress: 260629 / 1701626893609362500000
+[2] >> Trap non-phenotype progress: 228889 / 1701626877518987700000
+[2] >> Trap non-phenotype progress: 240886 / 1701626872941850700000
+[2] >> Trap non-phenotype progress: 240892 / 1701626872865506000000
+[2] >> Trap non-phenotype progress: 237718 / 1701626872789161200000
+[2] >> Trap non-phenotype progress: 237713 / 1701626872784539000000
+[2] >> Trap non-phenotype progress: 235442 / 1701626872779917000000
+[2] >> Trap non-phenotype progress: 235134 / 1701626868126594600000
+[2] >> Trap non-phenotype progress: 235692 / 1700309369957870700000
+[2] >> Trap non-phenotype progress: 237004 / 1700309369946469000000
+[2] >> Trap non-phenotype progress: 240000 / 1700309359175643000000
+[2] >> Trap non-phenotype progress: 238512 / 1700309354387451700000
+[2] >> Trap non-phenotype progress: 295231 / 1699335730238164600000
+[2] >> Trap non-phenotype progress: 282997 / 1699194351984027400000
+[2] >> Trap non-phenotype progress: 282691 / 1699162433482068900000
+[2] >> Trap non-phenotype progress: 299564 / 1699160304877566200000
+[2] >> Trap non-phenotype progress: 291363 / 1699158176273063500000
+[2] >> Trap non-phenotype progress: 291058 / 1699110583728655800000
+[2] >> Trap non-phenotype progress: 305956 / 1699096140840620500000
+[2] >> Trap non-phenotype progress: 325204 / 1699096136071297400000
+[2] >> Trap non-phenotype progress: 336290 / 1699091940370955400000
+[2] >> Trap non-phenotype progress: 336422 / 1699087532514303800000
+[2] >> Trap non-phenotype progress: 336436 / 1699085635785561200000
+[2] >> Trap non-phenotype progress: 334092 / 1699083802355233000000
+[2] >> Trap non-phenotype progress: 334094 / 1699083802241791700000
+[2] >> Trap non-phenotype progress: 336159 / 1699081547721109400000
+[2] >> Trap non-phenotype progress: 349022 / 1699075992548784200000
+[2] >> Trap non-phenotype progress: 329472 / 1699075987922082900000
+[2] >> Trap non-phenotype progress: 334975 / 1699029308031841300000
+[2] >> Trap non-phenotype progress: 333496 / 1698999351672991600000
+[2] >> Trap non-phenotype progress: 353185 / 1698997344424874500000
+[2] >> Trap non-phenotype progress: 330441 / 1698995337901533000000
+[2] >> Trap non-phenotype progress: 315760 / 1698992841241129000000
+[2] >> Trap non-phenotype progress: 315200 / 1698992841232855900000
+[2] >> Trap non-phenotype progress: 290484 / 1698991948532061300000
+[2] >> Trap non-phenotype progress: 272646 / 1698991873094886600000
+[2] >> Trap non-phenotype progress: 271949 / 1698991873072237400000
+[2] >> Trap non-phenotype progress: 273259 / 1698991872963974000000
+[2] >> Trap non-phenotype progress: 275906 / 1698991872937524700000
+[2] >> Trap non-phenotype progress: 273348 / 1698991872802812000000
+[2] >> Trap non-phenotype progress: 273357 / 1698991872776362800000
+[2] >> Trap non-phenotype progress: 273339 / 1698991872763138100000
+[2] >> Trap non-phenotype progress: 273325 / 1698991872753219700000
+[2] >> Trap non-phenotype progress: 272985 / 1698991872662622700000
+[2] >> Trap non-phenotype progress: 245341 / 1698991854307256800000
+[2] >> Trap non-phenotype progress: 241245 / 1698991854296020300000
+[2] >> Trap non-phenotype progress: 246411 / 1698991849294212000000
+[2] >> Trap non-phenotype progress: 239613 / 1698991847730489600000
+[2] >> Trap non-phenotype progress: 277930 / 1697440119439173400000
+[2] >> Trap non-phenotype progress: 296531 / 1697262077676430600000
+[2] >> Trap non-phenotype progress: 300432 / 1697262077672470600000
+[2] >> Trap non-phenotype progress: 313502 / 1697250111303494700000
+[2] >> Trap non-phenotype progress: 313632 / 1697240841905076400000
+[2] >> Trap non-phenotype progress: 312618 / 1697236707724176000000
+[2] >> Trap non-phenotype progress: 303349 / 1697236707623874600000
+[2] >> Trap non-phenotype progress: 316560 / 1697232390752832600000
+[2] >> Trap non-phenotype progress: 327107 / 1697229738425843700000
+[2] >> Trap non-phenotype progress: 313787 / 1697228030758658000000
+[2] >> Trap non-phenotype progress: 351193 / 1697227916422065200000
+[2] >> Trap non-phenotype progress: 326569 / 1697227802085472300000
+[2] >> Trap non-phenotype progress: 336750 / 1697227653976343700000
+[2] >> Trap non-phenotype progress: 339545 / 1697227196579506600000
+[2] >> Trap non-phenotype progress: 339951 / 1697227161395134500000
+[2] >> Trap non-phenotype progress: 339983 / 1697227135006855400000
+[2] >> Trap non-phenotype progress: 339963 / 1697227121812715900000
+[2] >> Trap non-phenotype progress: 338239 / 1697227108618576300000
+[2] >> Trap non-phenotype progress: 338572 / 1697227100921995000000
+[2] >> Trap non-phenotype progress: 337714 / 1697227095149559000000
+[2] >> Trap non-phenotype progress: 340176 / 1697227094668522600000
+[2] >> Trap non-phenotype progress: 337378 / 1697227094187486200000
+[2] >> Trap non-phenotype progress: 335594 / 1697227093465931700000
+[2] >> Trap non-phenotype progress: 325239 / 1697227067228043600000
+[2] >> Trap non-phenotype progress: 319038 / 1697227065213032900000
+[2] >> Trap non-phenotype progress: 294877 / 1697226491155828400000
+[2] >> Trap non-phenotype progress: 294803 / 1697226487884003000000
+[2] >> Trap non-phenotype progress: 294842 / 1697226468920648500000
+[2] >> Trap non-phenotype progress: 281963 / 1697226460630288000000
+[2] >> Trap non-phenotype progress: 263632 / 1697226457362925000000
+[2] >> Trap non-phenotype progress: 263668 / 1697226457343799000000
+[2] >> Trap non-phenotype progress: 257862 / 1697226457324673000000
+[2] >> Trap non-phenotype progress: 278715 / 1697226456914466000000
+[2] >> Trap non-phenotype progress: 255619 / 1697226456513821800000
+[2] >> Trap non-phenotype progress: 255609 / 1697226456485132800000
+[2] >> Trap non-phenotype progress: 253396 / 1697226456456443700000
+[2] >> Trap non-phenotype progress: 247250 / 1697226416513687700000
+[2] >> Trap non-phenotype progress: 247284 / 1697226416513680000000
+[2] >> Trap non-phenotype progress: 246609 / 1697226416512250700000
+[2] >> Trap non-phenotype progress: 252184 / 1697226386686345200000
+[2] >> Trap non-phenotype progress: 246970 / 1697226382499938000000
+[2] >> Trap non-phenotype progress: 244503 / 1697226381575597300000
+[2] >> Trap non-phenotype progress: 248120 / 1697226381519095900000
+[2] >> Trap non-phenotype progress: 246375 / 1697226381462594400000
+[2] >> Trap non-phenotype progress: 236230 / 1697226378630346600000
+[2] >> Trap non-phenotype progress: 235672 / 1697226378581619200000
+[2] >> Trap non-phenotype progress: 237777 / 1697226377427883700000
+[2] >> Trap non-phenotype progress: 234565 / 1697226376720019400000
+[2] >> Trap non-phenotype progress: 235884 / 1697226376676751000000
+[2] >> Trap non-phenotype progress: 234328 / 1697226376633482500000
+[2] >> Trap non-phenotype progress: 233035 / 1697226376583243000000
+[2] >> Trap non-phenotype progress: 231243 / 1697226376572379900000
+[2] >> Trap non-phenotype progress: 230948 / 1697226376572031700000
+[2] >> Trap non-phenotype progress: 230355 / 1697226376571931000000
+[2] >> Trap non-phenotype progress: 312697 / 1697226364453462000000
+[2] >> Trap non-phenotype progress: 300419 / 1697226362987923000000
+[2] >> Trap non-phenotype progress: 214945 / 1697226352884076000000
+[2] >> Trap non-phenotype progress: 224886 / 1697226350655357000000
+[2] >> Trap non-phenotype progress: 224892 / 1697226350613279800000
+[2] >> Trap non-phenotype progress: 219434 / 1697226350571202500000
+[2] >> Trap non-phenotype progress: 219429 / 1697226350568652400000
+[2] >> Trap non-phenotype progress: 216114 / 1697226350566102300000
+[2] >> Trap non-phenotype progress: 183035 / 1697226348295306000000
+[2] >> Trap non-phenotype progress: 178393 / 1697226347278277500000
+[2] >> Trap non-phenotype progress: 175291 / 1697226347266451700000
+[2] >> Trap non-phenotype progress: 155144 / 1697226346242630500000
+[2] >> Trap non-phenotype progress: 155128 / 1697226346241791600000
+[2] >> Trap non-phenotype progress: 153008 / 1697226346237597300000
+[2] >> Trap non-phenotype progress: 125093 / 1697224982558125600000
+[2] >> Trap non-phenotype progress: 125873 / 1697198549733415600000
+[2] >> Trap non-phenotype progress: 128776 / 1697178873679776300000
+[2] >> Trap non-phenotype progress: 125763 / 1697173483842495800000
+[2] >> Trap non-phenotype progress: 127705 / 1697173483718617000000
+[2] >> Trap non-phenotype progress: 128067 / 1697173107685640400000
+[2] >> Trap non-phenotype progress: 128080 / 1697172814116035800000
+[2] >> Trap non-phenotype progress: 128059 / 1697172680525373000000
+[2] >> Trap non-phenotype progress: 128350 / 1697172558582661500000
+[2] >> Trap non-phenotype progress: 125000 / 1697172558458782700000
+[2] >> Trap non-phenotype progress: 125299 / 1697172482867358300000
+[2] >> Trap non-phenotype progress: 124907 / 1697172433870371400000
+[2] >> Trap non-phenotype progress: 126156 / 1697172430589016400000
+[2] >> Trap non-phenotype progress: 124929 / 1697172427307661400000
+[2] >> Trap non-phenotype progress: 124899 / 1697172423347701500000
+[2] >> Trap non-phenotype progress: 124404 / 1697172422764659700000
+[2] >> Trap non-phenotype progress: 124182 / 1697172422720099500000
+[2] >> Trap non-phenotype progress: 123757 / 1697172409005732000000
+[2] >> Trap non-phenotype progress: 123759 / 1697172409003181900000
+[2] >> Trap non-phenotype progress: 123519 / 1697172409000631700000
+[2] >> Trap non-phenotype progress: 123992 / 1697172408425643000000
+[2] >> Trap non-phenotype progress: 123324 / 1697172407855712600000
+[2] >> Trap non-phenotype progress: 123145 / 1697172407855486000000
+[2] >> Trap non-phenotype progress: 123573 / 1697172407851661000000
+[2] >> Trap non-phenotype progress: 123148 / 1697172407847835700000
+[2] >> Trap non-phenotype progress: 113051 / 1697172263661530500000
+[2] >> Trap non-phenotype progress: 112948 / 1697172263661304000000
+[2] >> Trap non-phenotype progress: 112948 / 1697172263091147000000
+[2] >> Trap non-phenotype progress: 115572 / 1697172222027921000000
+[2] >> Trap non-phenotype progress: 112798 / 1697172201265730400000
+[2] >> Trap non-phenotype progress: 112408 / 1697172201188555200000
+[2] >> Trap non-phenotype progress: 112899 / 1697172201183731800000
+[2] >> Trap non-phenotype progress: 112573 / 1697172201178908300000
+[2] >> Trap non-phenotype progress: 112087 / 1697172200944874600000
+[2] >> Trap non-phenotype progress: 112107 / 1697172200940883700000
+[2] >> Trap non-phenotype progress: 118399 / 1697172191187658900000
+[2] >> Trap non-phenotype progress: 118703 / 1697172189523870700000
+[2] >> Trap non-phenotype progress: 123847 / 1697172188433846600000
+[2] >> Trap non-phenotype progress: 119779 / 1697172187947827500000
+[2] >> Trap non-phenotype progress: 121508 / 1697172187553118300000
+[2] >> Trap non-phenotype progress: 121268 / 1697172187551677500000
+[2] >> Trap non-phenotype progress: 121277 / 1697172187551029500000
+[2] >> Trap non-phenotype progress: 121213 / 1697172187551023200000
+[2] >> Trap non-phenotype progress: 121924 / 1697172187112752000000
+[2] >> Trap non-phenotype progress: 120648 / 1697172186674480800000
+[2] >> Trap non-phenotype progress: 123667 / 1697172186319787400000
+[2] >> Trap non-phenotype progress: 122164 / 1697172186296335000000
+[2] >> Trap non-phenotype progress: 121294 / 1697172186295479300000
+[2] >> Trap non-phenotype progress: 121460 / 1697172186295101800000
+[2] >> Trap non-phenotype progress: 123192 / 1697172185620341000000
+[2] >> Trap non-phenotype progress: 120367 / 1697172185551695000000
+[2] >> Trap non-phenotype progress: 118063 / 1697172185547995600000
+[2] >> Trap non-phenotype progress: 117231 / 1697172180672771500000
+[2] >> Trap non-phenotype progress: 100617 / 1696852030553336000000
+[2] >> Trap non-phenotype progress: 101252 / 1696851359812588400000
+[2] >> Trap non-phenotype progress: 101436 / 1696851345830322400000
+[2] >> Trap non-phenotype progress: 102138 / 1582188812386039200000
+[2] >> Trap non-phenotype progress: 102721 / 1563183481505144400000
+[2] >> Trap non-phenotype progress: 150583 / 1553499862719733000000
+[2] >> Trap non-phenotype progress: 172807 / 1549661153166841300000
+[2] >> Trap non-phenotype progress: 181713 / 1549420761442102500000
+[2] >> Trap non-phenotype progress: 181814 / 1549254270092889800000
+[2] >> Trap non-phenotype progress: 181051 / 1549177938422276800000
+[2] >> Trap non-phenotype progress: 181171 / 1546716024240102200000
+[2] >> Trap non-phenotype progress: 244038 / 1545840680829881200000
+[2] >> Trap non-phenotype progress: 288784 / 1545621250711454000000
+[2] >> Trap non-phenotype progress: 294706 / 1545584880476579000000
+[2] >> Trap non-phenotype progress: 310451 / 1545561476639289800000
+[2] >> Trap non-phenotype progress: 374818 / 1544957512376850600000
+[2] >> Trap non-phenotype progress: 373310 / 1544660251607875700000
+[2] >> Trap non-phenotype progress: 349448 / 1544514166823615200000
+[2] >> Trap non-phenotype progress: 295747 / 1544407967804899700000
+[2] >> Trap non-phenotype progress: 297879 / 1544376212707572400000
+[2] >> Trap non-phenotype progress: 297928 / 1544374340068545400000
+[2] >> Trap non-phenotype progress: 252753 / 1544373483173177700000
+[2] >> Trap non-phenotype progress: 229171 / 1544372354157003700000
+[2] >> Trap non-phenotype progress: 220409 / 1544349362611207800000
+[2] >> Trap non-phenotype progress: 216781 / 1544335480803118500000
+[2] >> Trap non-phenotype progress: 254554 / 1544334477158247800000
+[2] >> Trap non-phenotype progress: 249598 / 1544333975199380100000
+[2] >> Trap non-phenotype progress: 261005 / 1544332194802157700000
+[2] >> Trap non-phenotype progress: 272329 / 1544331159550396700000
+[2] >> Trap non-phenotype progress: 271761 / 1544330741400853300000
+[2] >> Trap non-phenotype progress: 264032 / 1544330343869283600000
+[2] >> Trap non-phenotype progress: 263831 / 1544330343824454800000
+[2] >> Trap non-phenotype progress: 260950 / 1544326577810315400000
+[2] >> Trap non-phenotype progress: 260165 / 1544326138362213700000
+[2] >> Trap non-phenotype progress: 249075 / 1544325943715671600000
+[2] >> Trap non-phenotype progress: 251079 / 1544324343594065300000
+[2] >> Trap non-phenotype progress: 243174 / 1544324343295674200000
+[2] >> Trap non-phenotype progress: 306088 / 1544324326888848800000
+[2] >> Trap non-phenotype progress: 268993 / 1544324310877944700000
+[2] >> Trap non-phenotype progress: 276903 / 1544324304831138200000
+[2] >> Trap non-phenotype progress: 276905 / 1544324304730273600000
+[2] >> Trap non-phenotype progress: 274530 / 1544324304629409000000
+[2] >> Trap non-phenotype progress: 274525 / 1544324304606994600000
+[2] >> Trap non-phenotype progress: 272066 / 1544324304584580300000
+[2] >> Trap non-phenotype progress: 271718 / 1544324298436909200000
+[2] >> Trap non-phenotype progress: 250416 / 1544322665605901600000
+[2] >> Trap non-phenotype progress: 250121 / 1544322665605868600000
+[2] >> Trap non-phenotype progress: 243314 / 1544322665335730700000
+[2] >> Trap non-phenotype progress: 331173 / 1544321863190099500000
+[2] >> Trap non-phenotype progress: 291443 / 1544321860241025100000
+[2] >> Trap non-phenotype progress: 277930 / 1544321723880511600000
+[2] >> Trap non-phenotype progress: 284204 / 1544321707062023700000
+[2] >> Trap non-phenotype progress: 287722 / 1544321701948194000000
+[2] >> Trap non-phenotype progress: 287747 / 1544321694710939300000
+[2] >> Trap non-phenotype progress: 287757 / 1544321691092311900000
+[2] >> Trap non-phenotype progress: 284573 / 1544321687473684500000
+[2] >> Trap non-phenotype progress: 286698 / 1544321675368721800000
+[2] >> Trap non-phenotype progress: 281647 / 1544321464535345500000
+[2] >> Trap non-phenotype progress: 284694 / 1544321460113592800000
+[2] >> Trap non-phenotype progress: 285319 / 1544321458706907100000
+[2] >> Trap non-phenotype progress: 285344 / 1544321456182456200000
+[2] >> Trap non-phenotype progress: 285354 / 1544321454920230800000
+[2] >> Trap non-phenotype progress: 280760 / 1544321453658005300000
+[2] >> Trap non-phenotype progress: 280855 / 1544321453612153200000
+[2] >> Trap non-phenotype progress: 282519 / 1544321453609066200000
+[2] >> Trap non-phenotype progress: 281621 / 1544321453605979200000
+[2] >> Trap non-phenotype progress: 281043 / 1544321453602229500000
+[2] >> Trap non-phenotype progress: 279669 / 1544321449150026000000
+[2] >> Trap non-phenotype progress: 278650 / 1544321449149584600000
+[2] >> Trap non-phenotype progress: 280340 / 1544321445865746600000
+[2] >> Trap non-phenotype progress: 281947 / 1544321445052924000000
+[2] >> Trap non-phenotype progress: 282031 / 1544321443004593700000
+[2] >> Trap non-phenotype progress: 282043 / 1544321441980428600000
+[2] >> Trap non-phenotype progress: 279720 / 1544321440956263400000
+[2] >> Trap non-phenotype progress: 279727 / 1544321440143441000000
+[2] >> Trap non-phenotype progress: 279707 / 1544321439737029600000
+[2] >> Trap non-phenotype progress: 279687 / 1544321439533824000000
+[2] >> Trap non-phenotype progress: 279680 / 1544321439533768400000
+[2] >> Trap non-phenotype progress: 279619 / 1544321439533713300000
+[2] >> Trap non-phenotype progress: 341355 / 1544321027060658000000
+[2] >> Trap non-phenotype progress: 330168 / 1544321025451007400000
+[2] >> Trap non-phenotype progress: 250942 / 1544321014490694400000
+[2] >> Trap non-phenotype progress: 262122 / 1544321013252115400000
+[2] >> Trap non-phenotype progress: 262124 / 1544321013242980200000
+[2] >> Trap non-phenotype progress: 256304 / 1544321013233845000000
+[2] >> Trap non-phenotype progress: 256299 / 1544321013231815000000
+[2] >> Trap non-phenotype progress: 252120 / 1544321013229785000000
+[2] >> Trap non-phenotype progress: 217292 / 1544321011982070700000
+[2] >> Trap non-phenotype progress: 215174 / 1544321010392752500000
+[2] >> Trap non-phenotype progress: 210593 / 1544321010389453600000
+[2] >> Trap non-phenotype progress: 230850 / 1544321009854844500000
+[2] >> Trap non-phenotype progress: 219539 / 1544321009607786400000
+[2] >> Trap non-phenotype progress: 188508 / 1544319243849058700000
+[2] >> Trap non-phenotype progress: 172006 / 1544318620640505500000
+[2] >> Trap non-phenotype progress: 162583 / 1544318307413872600000
+[2] >> Trap non-phenotype progress: 156450 / 1544318154912477200000
+[2] >> Trap non-phenotype progress: 154957 / 1544318154905011400000
+[2] >> Trap non-phenotype progress: 182267 / 1544318071875268800000
+[2] >> Trap non-phenotype progress: 155374 / 1544318052672263400000
+[2] >> Trap non-phenotype progress: 170376 / 1544318046309170300000
+[2] >> Trap non-phenotype progress: 171176 / 1544318045086591000000
+[2] >> Trap non-phenotype progress: 179780 / 1544318044235608000000
+[2] >> Trap non-phenotype progress: 172914 / 1544318043900032300000
+[2] >> Trap non-phenotype progress: 180238 / 1544318043490688200000
+[2] >> Trap non-phenotype progress: 180330 / 1544318043489008400000
+[2] >> Trap non-phenotype progress: 179002 / 1544318043487328500000
+[2] >> Trap non-phenotype progress: 189660 / 1544318043128881700000
+[2] >> Trap non-phenotype progress: 185902 / 1544318043091053800000
+[2] >> Trap non-phenotype progress: 183080 / 1544318043090259000000
+[2] >> Trap non-phenotype progress: 181980 / 1544318043088986000000
+[2] >> Trap non-phenotype progress: 180798 / 1544318043088764800000
+[2] >> Trap non-phenotype progress: 187043 / 1544318042417210000000
+[2] >> Trap non-phenotype progress: 177473 / 1544318042305316000000
+[2] >> Trap non-phenotype progress: 165788 / 1544318042300218900000
+[2] >> Trap non-phenotype progress: 105451 / 1544312412991331500000
+[2] >> Trap non-phenotype progress: 106403 / 1544312409613964700000
+[2] >> Trap non-phenotype progress: 105364 / 1544312407951428300000
+[2] >> Trap non-phenotype progress: 102350 / 1544312407946951400000
+[2] >> fixed(Q) sets in control map: 661
+[2] >>>> {"v_p53": true, "v_p38": false}: 148; rho = 0.88
+[2] >>>> {"v_p70": false, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_p70": true}: 167; rho = 0.99
+[2] >>>> {"v_p53": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_p38": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_p21": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_p14": true}: 167; rho = 0.99
+[2] >>>> {"v_TGFBR_stimulus": false, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_TGFBR": false}: 167; rho = 0.99
+[2] >>>> {"v_TAK1": true, "v_p70": false}: 167; rho = 0.99
+[2] >>>> {"v_p70": true, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_TAK1": true, "v_p53": true}: 167; rho = 0.99
+[2] >>>> {"v_p38": true, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_p21": true, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_p14": true, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_TAK1": true, "v_TGFBR_stimulus": false}: 167; rho = 0.99
+[2] >>>> {"v_TGFBR": false, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_TAK1": false}: 167; rho = 0.99
+[2] >>>> {"v_TAK1": true, "v_TAOK": false}: 167; rho = 0.99
+[2] >>>> {"v_TAK1": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_TGFBR_stimulus": true, "v_SOS": false}: 167; rho = 0.99
+[2] >>>> {"v_SOS": false, "v_TGFBR": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_SOS": false}: 167; rho = 0.99
+[2] >>>> {"v_TAK1": true, "v_SOS": false}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_SMAD": false}: 167; rho = 0.99
+[2] >>>> {"v_SMAD": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_SMAD": false, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_SMAD": true, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_TGFBR_stimulus": true, "v_RSK": true}: 167; rho = 0.99
+[2] >>>> {"v_TGFBR": true, "v_RSK": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_RSK": false}: 167; rho = 0.99
+[2] >>>> {"v_RSK": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_RSK": false, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_RSK": true, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_TGFBR_stimulus": true, "v_RAS": false}: 167; rho = 0.99
+[2] >>>> {"v_TGFBR": true, "v_RAS": false}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_RAF": false}: 167; rho = 0.99
+[2] >>>> {"v_RAF": false, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_PTEN": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_PTEN": true, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_PPP2CA": true}: 167; rho = 0.99
+[2] >>>> {"v_PPP2CA": true, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_PKC": false, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_PKC": false, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_PI3K": false}: 167; rho = 0.99
+[2] >>>> {"v_PI3K": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_PI3K": false, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_TAK1": true, "v_PI3K": true}: 167; rho = 0.99
+[2] >>>> {"v_TAOK": true, "v_PDK1": false}: 167; rho = 0.99
+[2] >>>> {"v_PDK1": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_PDK1": false, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_TAK1": true, "v_PDK1": true}: 167; rho = 0.99
+[2] >>>> {"v_MYC": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_MYC": true, "v_TAK1": true}: 167; rho = 0.99
+[2] >>>> {"v_MTK1": true, "v_TAOK": true}: 167; rho = 0.99
+[2] >>>> {"v_TAK1": true, "v_MTK1": true}: 167; rho = 0.99
+[2] >>>> {"v_p53": true, "v_MSK": false}: 167; rho = 0.99
+[2] >>>> {"v_MEK1_2": false, "v_TGFBR_stimulus": true}: 168; rho = 1.00
+[2] >>>> {"v_TGFBR": true, "v_MEK1_2": false}: 168; rho = 1.00
+[2] >>>> {"v_TAOK": true, "v_MEK1_2": false}: 168; rho = 1.00
+[2] >>>> {"v_MEK1_2": false, "v_TAK1": true}: 168; rho = 1.00
+[2] >>>> {"v_SOS": true, "v_MEK1_2": false}: 168; rho = 1.00
+[2] >>>> {"v_RAS": true, "v_MEK1_2": false}: 168; rho = 1.00
+[2] >>>> {"v_MEK1_2": false, "v_PLCG": true}: 168; rho = 1.00
+[2] >>>> {"v_MEK1_2": false, "v_MAP3K1_3": true}: 168; rho = 1.00
+[2] >>>> {"v_GRB2": true, "v_MEK1_2": false}: 168; rho = 1.00
+[2] >>>> {"v_FRS2": true, "v_MEK1_2": false}: 168; rho = 1.00
+[2] >>>> {"v_FGFR3": true, "v_MEK1_2": false}: 168; rho = 1.00
+[2] >>>> {"v_TGFBR_stimulus": true, "v_ERK": false}: 168; rho = 1.00
+[2] >>>> {"v_ERK": false, "v_TGFBR": true}: 168; rho = 1.00
+[2] >>>> {"v_TAOK": true, "v_ERK": false}: 168; rho = 1.00
+[2] >>>> {"v_ERK": false, "v_TAK1": true}: 168; rho = 1.00
+[2] >>>> {"v_SOS": true, "v_ERK": false}: 168; rho = 1.00
+[2] >>>> {"v_RAS": true, "v_ERK": false}: 168; rho = 1.00
+[2] >>>> {"v_PLCG": true, "v_ERK": false}: 168; rho = 1.00
+[2] >>>> {"v_ERK": false, "v_MAP3K1_3": true}: 168; rho = 1.00
+[2] >>>> {"v_GRB2": true, "v_ERK": false}: 168; rho = 1.00
+[2] >>>> {"v_ERK": false, "v_FRS2": true}: 168; rho = 1.00
+[2] >>>> {"v_ERK": false, "v_FGFR3": true}: 168; rho = 1.00
+[2] >>>> {"v_EGFR": true, "v_MEK1_2": false}: 168; rho = 1.00
+[2] >>>> {"v_ERK": false, "v_EGFR": true}: 168; rho = 1.00
+[2] >>>> {"v_MEK1_2": false, "v_DNA_damage": true}: 168; rho = 1.00
+[2] >>>> {"v_DNA_damage": true, "v_ERK": false}: 168; rho = 1.00
+[2] >>>> {"v_MEK1_2": false, "v_ATM": true}: 168; rho = 1.00
+[2] >>>> {"v_ATM": true, "v_ERK": false}: 168; rho = 1.00
+[2] Elapsed: 332392ms
+[2] Best robustness 1 for 28 perturbations.
+Sufficient robustness achieved for perturbation size 2.
