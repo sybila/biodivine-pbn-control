@@ -17,8 +17,8 @@ clap = "4.0.26"
 serde_json = "1.0.59"
 itertools = "0.10.1"
 chrono = "0.4.19"
-biodivine-lib-bdd = "0.4.*"
-biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git", branch =  "dev-faster-reach" }
+biodivine-lib-bdd = "0.5.1"
+biodivine-lib-param-bn = "0.4.5"
 rstest = "0.17.0"
 
 [dev-dependencies]

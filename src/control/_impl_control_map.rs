@@ -19,7 +19,7 @@ impl ControlMap {
         self.perturbation_set = self.perturbation_set.minus(&exclude);
     }
 
-    pub fn as_bdd(&self) -> &Bdd {
+    pub fn as_bdd(&self) -> &biodivine_lib_bdd::Bdd {
         self.perturbation_set.as_bdd()
     }
 
@@ -27,7 +27,7 @@ impl ControlMap {
         &self.perturbation_set
     }
 
-    pub fn controllable_colors(&self) -> Bdd {
+    pub fn controllable_colors(&self) -> biodivine_lib_bdd::Bdd {
         let bdd_context = self.context.as_symbolic_context();
         let mut bdd = self.perturbation_set.colors().into_bdd();
         for v in self.context.variables() {

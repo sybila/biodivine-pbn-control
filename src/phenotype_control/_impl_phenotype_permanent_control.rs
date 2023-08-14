@@ -1,20 +1,14 @@
-use crate::aeon::attractors;
 use crate::perturbation::PerturbationGraph;
 use crate::phenotype_control::PhenotypeControlMap;
-use biodivine_lib_bdd::{Bdd, bdd, BddPartialValuation, BddVariable};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use biodivine_lib_param_bn::fixed_points::FixedPoints;
-use biodivine_lib_param_bn::symbolic_async_graph::reachability::Reachability;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, GraphVertices};
-use biodivine_lib_param_bn::{ParameterId, VariableId};
-use chrono::Local;
+use biodivine_lib_param_bn::VariableId;
 use itertools::Itertools;
-use std::collections::{HashMap, HashSet};
-use std::time::{Instant, SystemTime};
+use std::collections::HashMap;
+use std::time::SystemTime;
 use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
 use crate::aeon::reachability::backward_within;
-use crate::control::ControlMap;
-use crate::phenotype_control::_symbolic_utils::{mk_bdd_of_bound, mk_bdd_up_to_bound};
+use crate::phenotype_control::_symbolic_utils::mk_bdd_of_bound;
 
 impl PerturbationGraph {
     pub fn phenotype_permanent_control(
