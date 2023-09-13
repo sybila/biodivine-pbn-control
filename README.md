@@ -24,7 +24,11 @@ Base models for testing the library. Contains witness models from CellCollective
 
 ### Results
 
-The raw unprocessed outputs of experiments for both performance comparison and robustness metric.
+The raw unprocessed outputs of experiments for both performance comparison and robustness metric of one-step/temporary/permantent source-traget control.
+
+### Results
+
+The raw unprocessed outputs of experiments for phenotype control.
 
 ### src
 
@@ -38,8 +42,10 @@ Operations to perform base state-transition graph manipulations.
 
 Implementations of control algorithm on the perturbable graph.
 
+### phenotype_control
+
+Implementations of phenotype control algorithm on the perturbable graph.
+
 ### perturbation
 
 Data structure representing state transition graph of Boolean network which is viable for perturbations.  
-
-To run the basic experiments, execute `cargo run --release`
