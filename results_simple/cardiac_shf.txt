@@ -1,0 +1,23 @@
+Variables: 15
+Inputs: 2
+Controllable variables: 11
+Uncertainty colors: 4
+Perturbation colors: 2048
+All colors: 8192
+Unknown update functions: 2
+Lowest cardinality: 0
+Highest cardinality: 0
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 1
+[0] >>>> {}: 2; rho = 0.50
+[0] Elapsed: 0ms
+[0] Best robustness 0.5 for 1 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 11
+[1] >> fixed(Q) sets in control map: 11
+[1] >>>> {"v_exogen_canWnt_II": true}: 4; rho = 1.00
+[1] >>>> {"v_Foxc1_2": true}: 4; rho = 1.00
+[1] Elapsed: 0ms
+[1] Best robustness 1 for 2 perturbations.
+Sufficient robustness achieved for perturbation size 1.

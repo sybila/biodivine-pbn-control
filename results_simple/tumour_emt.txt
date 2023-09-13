@@ -1,0 +1,75 @@
+Variables: 32
+Inputs: 2
+Controllable variables: 24
+Uncertainty colors: 4
+Perturbation colors: 16777216
+All colors: 67108864
+Unknown update functions: 2
+Lowest cardinality: 0
+Highest cardinality: 0
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 0
+[0] Elapsed: 44ms
+[0] Best robustness 0 for 0 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 24
+[1] >> fixed(Q) sets in control map: 9
+[1] >>>> {"v_ZEB2": true}: 1; rho = 0.25
+[1] >>>> {"v_ZEB1": true}: 1; rho = 0.25
+[1] >>>> {"v_TWIST1": true}: 2; rho = 0.50
+[1] >>>> {"v_SNAI1": true}: 2; rho = 0.50
+[1] >>>> {"v_AKT2": true}: 2; rho = 0.50
+[1] Elapsed: 435ms
+[1] Best robustness 0.5 for 3 perturbations.
+Perturbation size: 2
+[2] >> Admissible fixed(Q) sets: 276
+[2] >> fixed(Q) sets in control map: 166
+[2] >>>> {"v_p53": false, "v_miR203": true}: 1; rho = 0.25
+[2] >>>> {"v_ZEB2": true, "v_p73": false}: 1; rho = 0.25
+[2] >>>> {"v_p73": true, "v_ZEB2": true}: 1; rho = 0.25
+[2] >>>> {"v_p63": false, "v_ZEB2": true}: 1; rho = 0.25
+[2] >>>> {"v_p53": false, "v_ZEB2": true}: 1; rho = 0.25
+[2] >>>> {"v_p21": false, "v_ZEB2": true}: 1; rho = 0.25
+[2] >>>> {"v_ZEB2": true, "v_p21": true}: 1; rho = 0.25
+[2] >>>> {"v_miR34": false, "v_ZEB2": true}: 1; rho = 0.25
+[2] >>>> {"v_ZEB2": true, "v_miR203": false}: 1; rho = 0.25
+[2] >>>> {"v_miR200": false, "v_ZEB2": true}: 1; rho = 0.25
+[2] >>>> {"v_ZEB1": true, "v_p73": false}: 1; rho = 0.25
+[2] >>>> {"v_p73": true, "v_ZEB1": true}: 1; rho = 0.25
+[2] >>>> {"v_p63": false, "v_ZEB1": true}: 1; rho = 0.25
+[2] >>>> {"v_p53": false, "v_ZEB1": true}: 1; rho = 0.25
+[2] >>>> {"v_ZEB1": true, "v_p21": false}: 1; rho = 0.25
+[2] >>>> {"v_p21": true, "v_ZEB1": true}: 1; rho = 0.25
+[2] >>>> {"v_miR34": false, "v_ZEB1": true}: 1; rho = 0.25
+[2] >>>> {"v_miR203": false, "v_ZEB1": true}: 1; rho = 0.25
+[2] >>>> {"v_ZEB1": true, "v_miR200": false}: 1; rho = 0.25
+[2] >>>> {"v_ZEB1": false, "v_ZEB2": true}: 1; rho = 0.25
+[2] >>>> {"v_ZEB1": true, "v_ZEB2": true}: 1; rho = 0.25
+[2] >>>> {"v_VIM": false, "v_ZEB2": true}: 1; rho = 0.25
+[2] >>>> {"v_ZEB2": true, "v_VIM": true}: 1; rho = 0.25
+[2] >>>> {"v_ZEB1": true, "v_VIM": false}: 1; rho = 0.25
+[2] >>>> {"v_ZEB1": true, "v_VIM": true}: 1; rho = 0.25
+[2] >>>> {"v_p73": false, "v_TWIST1": true}: 2; rho = 0.50
+[2] >>>> {"v_p73": true, "v_TWIST1": true}: 2; rho = 0.50
+[2] >>>> {"v_p63": false, "v_TWIST1": true}: 2; rho = 0.50
+[2] >>>> {"v_TWIST1": true, "v_p63": true}: 2; rho = 0.50
+[2] >>>> {"v_TWIST1": true, "v_p53": false}: 2; rho = 0.50
+[2] >>>> {"v_TWIST1": true, "v_p53": true}: 4; rho = 1.00
+[2] >>>> {"v_miR203": true, "v_TWIST1": true}: 4; rho = 1.00
+[2] >>>> {"v_TWIST1": true, "v_miR200": true}: 4; rho = 1.00
+[2] >>>> {"v_TWIST1": true, "v_TGFbeta": false}: 4; rho = 1.00
+[2] >>>> {"v_SNAI1": true, "v_miR203": true}: 4; rho = 1.00
+[2] >>>> {"v_SNAI1": true, "v_miR200": true}: 4; rho = 1.00
+[2] >>>> {"v_TGFbeta": false, "v_SNAI1": true}: 4; rho = 1.00
+[2] >>>> {"v_TWIST1": true, "v_SMAD": false}: 4; rho = 1.00
+[2] >>>> {"v_SNAI1": true, "v_SMAD": false}: 4; rho = 1.00
+[2] >>>> {"v_NICD": true, "v_miR203": true}: 4; rho = 1.00
+[2] >>>> {"v_NICD": true, "v_miR200": true}: 4; rho = 1.00
+[2] >>>> {"v_NICD": true, "v_TGFbeta": false}: 4; rho = 1.00
+[2] >>>> {"v_NICD": true, "v_SMAD": false}: 4; rho = 1.00
+[2] >>>> {"v_AKT2": true, "v_TGFbeta": false}: 4; rho = 1.00
+[2] >>>> {"v_AKT2": true, "v_SMAD": false}: 4; rho = 1.00
+[2] Elapsed: 2115ms
+[2] Best robustness 1 for 15 perturbations.
+Sufficient robustness achieved for perturbation size 2.

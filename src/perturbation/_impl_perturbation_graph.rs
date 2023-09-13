@@ -3,7 +3,7 @@ use crate::perturbation::_algo_network_transformations::{
     make_original_network, make_perturbed_network, normalize_network,
 };
 use biodivine_lib_param_bn::biodivine_std::bitvector::{ArrayBitVector, BitVector};
-use biodivine_lib_param_bn::biodivine_std::traits::Set;
+use biodivine_lib_param_bn::biodivine_std::traits::{Graph, Set};
 use biodivine_lib_param_bn::symbolic_async_graph::{
     GraphColoredVertices, GraphColors, SymbolicAsyncGraph, SymbolicContext,
 };
@@ -58,6 +58,10 @@ impl PerturbationGraph {
 
     pub fn get_perturbation_parameter(&self, variable: VariableId) -> Option<ParameterId> {
         self.perturbation_parameters.get(&variable).cloned()
+    }
+
+    pub fn num_perturbation_parameters(&self) -> usize {
+        self.perturbation_parameters.len()
     }
 
     /*
@@ -140,6 +144,40 @@ impl PerturbationGraph {
         } else {
             self.mk_empty_colored_vertices()
         }
+    }
+
+    pub fn build_colors_with_values(&self, bn: &BooleanNetwork, values: HashMap<String, bool>) -> GraphColors {
+        let mut colors = self.as_original().mk_empty_colors();
+        for v in bn.variables() {
+            let function = bn.get_update_function(v);
+            if !function.is_none() {
+                continue
+            }
+            println!("{:?}", bn.get_variable_name(v));
+
+            let v_name = bn.get_variable_name(v);
+            let value;
+            if values.contains_key(v_name) {
+                value = values.get(v_name).unwrap().clone();
+            } else {
+                value = false;
+            }
+
+            // let variable_parameter = bn.find_parameter((param_prefix + v_name).as_str()).unwrap();
+            // assert_eq!(bn.get_parameter(variable_parameter).get_name().as_str(), format!("param_{}", v.as_str()));
+
+            let colors_v_set;
+            if value {
+                let bdd = self.as_symbolic_context().mk_implicit_function_is_true(v, &[]);
+                colors_v_set = self.unit_colors().copy(bdd);
+            } else {
+                let bdd = self.as_symbolic_context().mk_implicit_function_is_true(v, &[]);
+                colors_v_set = self.as_original().mk_unit_colors().minus(&self.unit_colors().copy(bdd));
+            }
+
+            colors = colors.minus(&colors_v_set);
+        }
+        colors
     }
 
     /// Return a subset of colors for which the given `variable` is not perturbed.

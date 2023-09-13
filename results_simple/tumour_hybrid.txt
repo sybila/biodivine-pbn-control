@@ -1,0 +1,39 @@
+Variables: 32
+Inputs: 2
+Controllable variables: 24
+Uncertainty colors: 4
+Perturbation colors: 16777216
+All colors: 67108864
+Unknown update functions: 2
+Lowest cardinality: 0
+Highest cardinality: 0
+Perturbation size: 0
+[0] >> Admissible fixed(Q) sets: 1
+[0] >> fixed(Q) sets in control map: 0
+[0] Elapsed: 54ms
+[0] Best robustness 0 for 0 perturbations.
+Perturbation size: 1
+[1] >> Admissible fixed(Q) sets: 24
+[1] >> fixed(Q) sets in control map: 3
+[1] >>>> {"v_TWIST1": false}: 1; rho = 0.25
+[1] >>>> {"v_SNAI1": false}: 1; rho = 0.25
+[1] >>>> {"v_CDH2": false}: 1; rho = 0.25
+[1] Elapsed: 526ms
+[1] Best robustness 0.25 for 3 perturbations.
+Perturbation size: 2
+[2] >> Admissible fixed(Q) sets: 276
+[2] >> fixed(Q) sets in control map: 70
+[2] >>>> {"v_ZEB1": true, "v_p53": true}: 2; rho = 0.50
+[2] >>>> {"v_ZEB2": false, "v_TWIST1": false}: 2; rho = 0.50
+[2] >>>> {"v_p53": true, "v_SNAI2": true}: 2; rho = 0.50
+[2] >>>> {"v_NICD": false, "v_TWIST1": false}: 2; rho = 0.50
+[2] >>>> {"v_NICD": false, "v_SNAI1": false}: 2; rho = 0.50
+[2] >>>> {"v_ZEB2": false, "v_CDH2": false}: 2; rho = 0.50
+[2] >>>> {"v_NICD": false, "v_CDH2": false}: 2; rho = 0.50
+[2] >>>> {"v_p53": true, "v_AKT1": true}: 4; rho = 1.00
+[2] >>>> {"v_miR34": true, "v_AKT1": true}: 4; rho = 1.00
+[2] >>>> {"v_TWIST1": false, "v_AKT1": true}: 4; rho = 1.00
+[2] >>>> {"v_CDH2": false, "v_AKT1": true}: 4; rho = 1.00
+[2] Elapsed: 3245ms
+[2] Best robustness 1 for 4 perturbations.
+Sufficient robustness achieved for perturbation size 2.
