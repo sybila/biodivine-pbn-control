@@ -8,6 +8,7 @@ The directory structure:
     ├── auxiliary_scripts    # Scripts to do & process experiments
     ├── models               # Base experimental models
     ├── results              # Raw measured results from experiments
+    ├── results_simple       # Raw measured results from experiments for simplified phenotype control procedure
     └── src                  # Library source code
 
 ### Auxiliary scripts
