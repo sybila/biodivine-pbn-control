@@ -14,6 +14,7 @@ use serde_json::Value;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
 use biodivine_pbn_control::experiment_utils::{parse_experiment, run_control_experiment};
 use biodivine_pbn_control::perturbation::PerturbationGraph;
+use biodivine_pbn_control::phenotype_control::_impl_phenotype_permanent_control::PhenotypeOscillationType::{Allowed, Required};
 
 fn main() {
     let erk_true = HashMap::from([("v_ERK", true)]);
@@ -49,11 +50,11 @@ fn main() {
 
         for oscillation in [true, false] {
             println!(">>>>>>>>>>>>>> Model: {:?}; Phenotype {:?}; is oscillation allowed: {:?}", model, phenotype_vals.clone(), oscillation);
-            perturbation_graph.ceiled_phenotype_permanent_control(phenotype.clone(), max_control_size, controllable_vars.clone(), true, oscillation);
+            perturbation_graph.ceiled_phenotype_permanent_control(phenotype.clone(), max_control_size, bn.variables(), Allowed, 1.0, true);
         }
 
         println!(">>>>>>>>>>>>>> Model: {:?}; Phenotype {:?}; required oscillation", model, phenotype_vals.clone());
-        perturbation_graph.ceiled_phenotype_permanent_control_with_true_oscillation(phenotype.clone(), max_control_size, controllable_vars.clone(), true,);
+        perturbation_graph.ceiled_phenotype_permanent_control(phenotype.clone(), max_control_size, bn.variables(), Required, 1.0, true);
     }
 
 

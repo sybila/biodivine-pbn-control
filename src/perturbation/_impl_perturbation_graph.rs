@@ -14,28 +14,29 @@ impl PerturbationGraph {
     pub fn new(network: &BooleanNetwork) -> PerturbationGraph {
         PerturbationGraph::with_restricted_variables(
             network,
-            &network.variables().collect::<Vec<_>>(),
+            network.variables().collect::<Vec<_>>(),
         )
     }
 
     /// Create a new perturbation graph for a given Boolean network.
     pub fn with_restricted_variables(
         network: &BooleanNetwork,
-        perturb: &[VariableId],
+        perturb: Vec<VariableId>,
     ) -> PerturbationGraph {
         let normalized = normalize_network(network);
 
         let mut original_parameters = HashMap::new();
         let mut perturbed_parameters = HashMap::new();
 
-        let original = make_original_network(&normalized, &mut original_parameters, perturb);
-        let perturbed = make_perturbed_network(&normalized, &mut perturbed_parameters, perturb);
+        let original = make_original_network(&normalized, &mut original_parameters, perturb.clone());
+        let perturbed = make_perturbed_network(&normalized, &mut perturbed_parameters, perturb.clone());
 
         assert_eq!(original_parameters, perturbed_parameters);
 
         PerturbationGraph {
             original_graph: SymbolicAsyncGraph::new(original).unwrap(),
             perturbed_graph: SymbolicAsyncGraph::new(perturbed).unwrap(),
+            perturbable_vars: perturb.clone(),
             perturbation_parameters: original_parameters,
         }
     }
@@ -55,6 +56,8 @@ impl PerturbationGraph {
     pub fn variables(&self) -> VariableIdIterator {
         self.original_graph.as_network().variables()
     }
+
+    pub fn perturbable_variables(&self) -> &Vec<VariableId> { &self.perturbable_vars }
 
     pub fn get_perturbation_parameter(&self, variable: VariableId) -> Option<ParameterId> {
         self.perturbation_parameters.get(&variable).cloned()

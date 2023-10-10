@@ -1,5 +1,6 @@
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::symbolic_async_graph::GraphColoredVertices;
+use biodivine_lib_param_bn::{VariableId, VariableIdIterator};
 
 pub mod _impl_phenotype_permanent_control;
 pub mod _impl_phenotype_control_map;
@@ -12,6 +13,7 @@ mod _symbolic_utils;
 /// cannot outlive the graph.
 #[derive(Clone)]
 pub struct PhenotypeControlMap {
+    perturbation_variables: Vec<VariableId>,
     context: PerturbationGraph,
     perturbation_set: GraphColoredVertices,
 }

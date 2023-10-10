@@ -26,6 +26,8 @@ pub struct PerturbationGraph {
     original_graph: SymbolicAsyncGraph,
     /// Perturbed graph where each edge is also labelled with perturbations that enable it.
     perturbed_graph: SymbolicAsyncGraph,
+    /// Variables which
+    perturbable_vars: Vec<VariableId>,
     /// Obtain parameters that decide whether a specific variable is perturbed.
     perturbation_parameters: HashMap<VariableId, ParameterId>,
 }

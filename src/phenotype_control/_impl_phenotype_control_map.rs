@@ -1,12 +1,9 @@
 use std::collections::HashMap;
-use std::fs::File;
 use std::hash::Hash;
-use std::io::Write;
-use std::time::Instant;
 use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
-use biodivine_lib_param_bn::VariableId;
-use itertools::{max, min};
+use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
+use crate::perturbation::PerturbationGraph;
 use crate::phenotype_control::PhenotypeControlMap;
 
 impl PhenotypeControlMap {
@@ -16,6 +13,83 @@ impl PhenotypeControlMap {
 
     pub fn as_colored_vertices(&self) -> &GraphColoredVertices {
         &self.perturbation_set
+    }
+
+    pub fn working_perturbations(&self, min_robustness: f64, verbose: bool) -> Vec<(HashMap<String, bool>, GraphColors)> {
+        if min_robustness < 0.0 || min_robustness > 1.0 {
+            panic!("Min robustness must be in range between 0.0 and 1.0")
+        }
+
+        let perturbation_bbd_vars_mapping = self.context.get_perturbation_bdd_mapping(&self.perturbation_variables);
+        let perturbation_bdd_vars = PerturbationGraph::get_perturbation_bdd_vars(&perturbation_bbd_vars_mapping);
+
+        let control_map_bdd = self.as_bdd();
+        let perturbation_vars_projection = RawProjection::new(perturbation_bdd_vars.clone(), &control_map_bdd);
+
+        let all_colors_size = self.context.unit_colors().approx_cardinality() / 2.0f64.powi(perturbation_bdd_vars.len() as i32);
+        let mut best_robustness = 0.0;
+        let mut with_best_robustness = 0;
+
+        let mut result = vec!();
+
+        for is_perturbed_vector in perturbation_vars_projection.iter() {
+            let perturbed_variables = perturbation_bbd_vars_mapping
+                .iter()
+                .filter_map(|(var, p_var)| {
+                    if is_perturbed_vector.get_value(*p_var).unwrap() {
+                        Some(*var)
+                    } else {
+                        None
+                    }
+                })
+                .collect::<Vec<_>>();
+
+            // This should remove all perturbation symbolic variables from the set.
+            let control_subset = control_map_bdd.restrict(&is_perturbed_vector.to_values());
+
+            let mut perturbed_state_vars = perturbed_variables
+                .iter()
+                .map(|var| self.context.as_symbolic_context().get_state_variable(*var))
+                .collect::<Vec<_>>();
+
+            let state_vars_projection = RawProjection::new(perturbed_state_vars, &control_subset);
+            for state_vector in state_vars_projection.iter() {
+                // This should remove all remaining perturbed state variables. Unperturbed
+                // variables should not appear in the control map add all.
+                let control_colors = control_subset.restrict(&state_vector.to_values());
+                let mut map = HashMap::new();
+                for var in &perturbed_variables {
+                    let state_var = self.context.as_symbolic_context().get_state_variable(*var);
+                    map.insert(
+                        self.context.as_original().as_network().get_variable_name(*var).clone(),
+                        state_vector.get_value(state_var).unwrap(),
+                    );
+                }
+                let factor = 2.0f64.powi(
+                    (self.context.as_symbolic_context().state_variables().len() + self.context.num_perturbation_parameters()) as i32
+                );
+
+                let working_colors = control_colors.cardinality() / factor;
+                let robustness = working_colors / all_colors_size;
+                if robustness >= best_robustness {
+                    if robustness != best_robustness {
+                        with_best_robustness = 0;
+                    }
+                    best_robustness = robustness;
+                    with_best_robustness += 1;
+                }
+                if robustness >= min_robustness {
+                    let converted_colors = self.context.empty_colors().copy(control_colors);
+                    result.push((map.clone(), converted_colors))
+                }
+
+                if verbose {
+                    println!(">>> {:?}: {}; rho = {:.3}", map, working_colors, robustness);
+                }
+            }
+        }
+        println!("Best robustness {} for {} perturbations.", best_robustness, with_best_robustness);
+        result
     }
 
     pub fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors {

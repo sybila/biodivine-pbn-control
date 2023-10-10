@@ -83,7 +83,7 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
 pub fn make_original_network(
     network: &BooleanNetwork,
     perturbation_parameters: &mut HashMap<VariableId, ParameterId>,
-    perturb: &[VariableId],
+    perturb: Vec<VariableId>,
 ) -> BooleanNetwork {
     let mut result = BooleanNetwork::new(network.as_graph().clone());
 
@@ -135,7 +135,7 @@ pub fn make_original_network(
 pub fn make_perturbed_network(
     network: &BooleanNetwork,
     perturbation_parameters: &mut HashMap<VariableId, ParameterId>,
-    perturb: &[VariableId],
+    perturb: Vec<VariableId>,
 ) -> BooleanNetwork {
     let mut result = BooleanNetwork::new(network.as_graph().clone());
 

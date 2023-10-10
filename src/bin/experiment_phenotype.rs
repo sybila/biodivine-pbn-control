@@ -14,6 +14,7 @@ use serde_json::Value;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
 use biodivine_pbn_control::experiment_utils::{parse_experiment, run_control_experiment};
 use biodivine_pbn_control::perturbation::PerturbationGraph;
+use biodivine_pbn_control::phenotype_control::_impl_phenotype_permanent_control::PhenotypeOscillationType;
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
@@ -56,7 +57,6 @@ fn main() {
     // let perturbation_graph = PerturbationGraph::with_restricted_variables(&w, &controllable_vars);
 
     let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &controllable_vars);
-
 
     let phenotype_map  = config[model]["targets"][phenotype].as_object().unwrap();
     let mut phenotype_vals = HashMap::new();
@@ -109,7 +109,7 @@ fn main() {
             .unwrap()
     );
 
-    perturbation_graph.ceiled_phenotype_permanent_control(phenotype, max_control_size, controllable_vars, false, false);
+    perturbation_graph.ceiled_phenotype_permanent_control(phenotype, max_control_size, bn.variables(), PhenotypeOscillationType::Forbidden, 1.0, true);
 
     /*
     let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone(), "complex");
