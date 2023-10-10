@@ -1,22 +1,14 @@
 use crate::perturbation::PerturbationGraph;
-use crate::phenotype_control::PhenotypeControlMap;
+use crate::phenotype_control::{PhenotypeControlMap, PhenotypeOscillationType};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors, GraphVertices};
-use biodivine_lib_param_bn::{VariableId, VariableIdIterator};
+use biodivine_lib_param_bn::{VariableId};
 use itertools::Itertools;
 use std::collections::HashMap;
 use std::time::SystemTime;
 use biodivine_lib_bdd::BddVariable;
 use crate::aeon::reachability::backward_within;
 use crate::phenotype_control::_symbolic_utils::mk_bdd_of_bound;
-
-
-#[derive(Clone)]
-pub enum PhenotypeOscillationType {
-    Forbidden,
-    Allowed,
-    Required
-}
 
 impl PerturbationGraph {
     pub fn phenotype_permanent_control(
@@ -190,7 +182,7 @@ impl PerturbationGraph {
         allow_oscillation: PhenotypeOscillationType,
         verbose: bool
     ) -> PhenotypeControlMap {
-        let admissible_perturbations = self.create_perturbation_colors(perturbation_size, self.perturbable_variables(), verbose);
+        let admissible_perturbations = self.create_perturbation_colors(perturbation_size, verbose);
         let control_map = self.phenotype_permanent_control(phenotype.clone(), admissible_perturbations, allow_oscillation, verbose).perturbation_set;
 
         let map = PhenotypeControlMap {
@@ -202,7 +194,7 @@ impl PerturbationGraph {
         return map
     }
 
-    pub fn create_perturbation_colors(&self, perturbation_size: usize, perturbation_variables: &Vec<VariableId>, verbose: bool) -> GraphColors {
+    pub fn create_perturbation_colors(&self, perturbation_size: usize, verbose: bool) -> GraphColors {
         // A map which gives us the symbolic variable of the perturbation parameter.
         let perturbation_bbd_vars_mapping = self.get_perturbation_bdd_mapping(self.perturbable_variables());
         let bdd_vars = self.as_symbolic_context().bdd_variable_set();
@@ -234,7 +226,7 @@ impl PerturbationGraph {
 
         for perturbation_size in 0..(size_bound + 1) {
             let start = SystemTime::now();
-            let admissible_perturbations = self.create_perturbation_colors(perturbation_size, self.perturbable_variables(), verbose);
+            let admissible_perturbations = self.create_perturbation_colors(perturbation_size, verbose);
 
             let control_map = self.phenotype_permanent_control(phenotype.clone(), admissible_perturbations, allow_oscillation.clone(), verbose).perturbation_set;
 
