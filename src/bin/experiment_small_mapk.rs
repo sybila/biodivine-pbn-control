@@ -109,7 +109,7 @@ fn main() {
     map2 = perturbation_graph.ceiled_phenotype_permanent_control(phenotype, &relevant_colors, 1, PhenotypeOscillationType::Allowed, true, false);
     perturbations2 = map2.working_perturbations(normal_graph.unit_colors().clone(), 0.1, false);
 
-    // All OK, I was just expecting, that maybe less colors will work, wondering, what I have computed here :D
+    // TODO: All OK, I was just expecting, that maybe less colors will work, wondering, what I have computed here :D
     println!("Set working perturbations of EMPTY: {:?}", perturbations2[0].1.approx_cardinality());
     println!("Set working perturbations of {:?}: {:?}",perturbations2[2].0, perturbations2[2].1.approx_cardinality());
     println!("Single working perturbations: {:?}", map2.perturbation_working_colors(relevant_colors.clone(), &HashMap::new()).approx_cardinality());
