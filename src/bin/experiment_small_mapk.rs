@@ -51,31 +51,53 @@ fn main() {
 
     let mut relevant_colors = perturbation_graph.as_perturbed().transfer_colors_from(normal_graph.unit_colors(), &normal_graph).unwrap();
 
-    println!(">>>>>>>>>>>>> All colors");
+    println!(">>>>>>>>>>>>> All colors, do not restrict control call in any way");
     println!("All colors: {}", all_colors);
 
     let map = perturbation_graph.ceiled_phenotype_permanent_control(phenotype.clone(), perturbation_graph.unit_colors(),1, PhenotypeOscillationType::Allowed, true, false);
-    let perturbations = map.working_perturbations(normal_graph.mk_unit_colors(), 0.1,  false);
+
+    let perturbations = map.working_perturbations(normal_graph.mk_unit_colors(), 0.1,  true);
+
+    // Kinda OK
     println!("Set working perturbations of EMPTY: {:?}", perturbations[0].1.approx_cardinality());
-    println!("Set working perturbations of EMPTY: {:?}", perturbations[0].1.clone().to_dot_string(perturbation_graph.as_symbolic_context()));
+
+    // TODO: Why the below doesn't work? shouldn't be BDD vars removed thanks to projections in the previous step? (We copied colors INTO normal_grah unit colors
+    // println!("Set working perturbations of EMPTY: {:?}", perturbations[0].1.intersect(normal_graph.unit_colors()));
+
+    // OK
     println!("Set working perturbations of EMPTY (translated): {:?}", normal_graph.transfer_colors_from(&perturbations[0].1, &perturbation_graph.as_original()).unwrap().intersect(&normal_graph.unit_colors()).approx_cardinality());
+
+    // Kinda OK
     println!("Set working perturbations of {:?}: {:?}",perturbations[2].0, perturbations[2].1.approx_cardinality());
+
+    // OK
     println!("Set working perturbations of {:?} (translated): {:?}",perturbations[2].0, normal_graph.transfer_colors_from(&perturbations[2].1, &perturbation_graph.as_original()).unwrap().intersect(&normal_graph.unit_colors()).approx_cardinality());
+
+    // Kinda OK
     println!("Single working perturbations of EMPTY: {:?}", map.perturbation_working_colors(relevant_colors.clone(), &HashMap::new()).approx_cardinality());
-    println!("Single working perturbations of EMPTY: {:?}", map.perturbation_working_colors(relevant_colors.clone(), &HashMap::new()).to_dot_string(perturbation_graph.as_symbolic_context()));
-    println!("Single working perturbations of EMPTY (translated): {:?}", normal_graph.transfer_colors_from(&map.perturbation_working_colors(relevant_colors.clone(), &HashMap::new()), &perturbation_graph.as_original()).unwrap().intersect(&normal_graph.unit_colors()).approx_cardinality());
+
+    // println!("Single working perturbations of EMPTY: {:?}", map.perturbation_working_colors(relevant_colors.clone(), &HashMap::new()).to_dot_string(perturbation_graph.as_symbolic_context()));
+    // TODO: Following doesn't work, because params of unperturbed variables were not removed using universal projection (see BDD above)
+    // println!("Single working perturbations of EMPTY (translated): {:?}", normal_graph.transfer_colors_from(&map.perturbation_working_colors(relevant_colors.clone(), &HashMap::new()), &perturbation_graph.as_original()).unwrap().intersect(&normal_graph.unit_colors()).approx_cardinality());
+
+    // Kinda OK
     println!("Single working perturbations: {:?}", map.perturbation_working_colors(relevant_colors.clone(), &HashMap::from([("v_SPRY".to_string(), true)])).approx_cardinality());
+
+    // Same as above
     // println!("Single working perturbations: {:?}", normal_graph.transfer_colors_from(&map.perturbation_working_colors(&HashMap::from([("v_SPRY".to_string(), true)])), &perturbation_graph.as_original()).unwrap().intersect(&normal_graph.unit_colors()).approx_cardinality());
 
-    println!(">>>>>>>>>>>>> Just original model colors");
+    println!(">>>>>>>>>>>>> Original model colors translated into perturbed ones");
+    // 888 * 2024 -> OK
     println!("Relevant colors: {}", relevant_colors.approx_cardinality());
 
     let mut map2 = perturbation_graph.ceiled_phenotype_permanent_control(phenotype.clone(), &relevant_colors, 1, PhenotypeOscillationType::Allowed, true, false);
     let mut perturbations2 = map2.working_perturbations(normal_graph.unit_colors().clone(), 0.1, false);
+
+    // All OK
     println!("Set working perturbations of EMPTY: {:?}", perturbations2[0].1.approx_cardinality());
     println!("Set working perturbations of {:?}: {:?}",perturbations2[2].0, perturbations2[2].1.approx_cardinality());
-    println!("Single working perturbations: {:?}", map2.perturbation_working_colors(normal_graph.unit_colors().clone(), &HashMap::new()).approx_cardinality());
-    println!("Single working perturbations: {:?}", map2.perturbation_working_colors(normal_graph.unit_colors().clone(), &HashMap::from([("v_SPRY".to_string(), true)])).approx_cardinality());
+    println!("Single working perturbations: {:?}", map2.perturbation_working_colors(relevant_colors.clone(), &HashMap::new()).approx_cardinality());
+    println!("Single working perturbations: {:?}", map2.perturbation_working_colors(relevant_colors.clone(), &HashMap::from([("v_SPRY".to_string(), true)])).approx_cardinality());
 
     println!(">>>>>>>>>>>>> Original model colors with crossjoin");
 
@@ -86,9 +108,11 @@ fn main() {
 
     map2 = perturbation_graph.ceiled_phenotype_permanent_control(phenotype, &relevant_colors, 1, PhenotypeOscillationType::Allowed, true, false);
     perturbations2 = map2.working_perturbations(normal_graph.unit_colors().clone(), 0.1, false);
+
+    // All OK, I was just expecting, that maybe less colors will work, wondering, what I have computed here :D
     println!("Set working perturbations of EMPTY: {:?}", perturbations2[0].1.approx_cardinality());
     println!("Set working perturbations of {:?}: {:?}",perturbations2[2].0, perturbations2[2].1.approx_cardinality());
-    println!("Single working perturbations: {:?}", map2.perturbation_working_colors(normal_graph.unit_colors().clone(), &HashMap::new()).approx_cardinality());
-    println!("Single working perturbations: {:?}", map2.perturbation_working_colors(normal_graph.unit_colors().clone(), &HashMap::from([("v_SPRY".to_string(), true)])).approx_cardinality());
+    println!("Single working perturbations: {:?}", map2.perturbation_working_colors(relevant_colors.clone(), &HashMap::new()).approx_cardinality());
+    println!("Single working perturbations: {:?}", map2.perturbation_working_colors(relevant_colors, &HashMap::from([("v_SPRY".to_string(), true)])).approx_cardinality());
 
 }
