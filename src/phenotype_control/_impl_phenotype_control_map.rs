@@ -1,8 +1,10 @@
 use std::collections::HashMap;
 use std::hash::Hash;
+use std::thread::yield_now;
 use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
 use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
+use crate::perturbation;
 use crate::perturbation::PerturbationGraph;
 use crate::phenotype_control::PhenotypeControlMap;
 
@@ -15,7 +17,7 @@ impl PhenotypeControlMap {
         &self.perturbation_set
     }
 
-    pub fn working_perturbations(&self, min_robustness: f64, verbose: bool) -> Vec<(HashMap<String, bool>, GraphColors)> {
+    pub fn working_perturbations(&self, max_colors: GraphColors, min_robustness: f64, verbose: bool) -> Vec<(HashMap<String, bool>, GraphColors)> {
         if min_robustness < 0.0 || min_robustness > 1.0 {
             panic!("Min robustness must be in range between 0.0 and 1.0")
         }
@@ -52,6 +54,7 @@ impl PhenotypeControlMap {
                 .map(|var| self.context.as_symbolic_context().get_state_variable(*var))
                 .collect::<Vec<_>>();
 
+
             let state_vars_projection = RawProjection::new(perturbed_state_vars, &control_subset);
             for state_vector in state_vars_projection.iter() {
                 // This should remove all remaining perturbed state variables. Unperturbed
@@ -79,7 +82,7 @@ impl PhenotypeControlMap {
                     with_best_robustness += 1;
                 }
                 if robustness >= min_robustness {
-                    let converted_colors = self.context.empty_colors().copy(control_colors);
+                    let converted_colors = max_colors.copy(control_colors);
                     result.push((map.clone(), converted_colors))
                 }
 
@@ -88,45 +91,33 @@ impl PhenotypeControlMap {
                 }
             }
         }
-        println!("Best robustness {} for {} perturbations.", best_robustness, with_best_robustness);
+        if verbose {
+            println!("Best robustness {} for {} perturbations.", best_robustness, with_best_robustness);
+        }
         result
     }
 
-    pub fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors {
+    pub fn perturbation_working_colors(&self, max_colors: GraphColors, perturbation: &HashMap<String, bool>) -> GraphColors {
         let mut perturbation_bdd = self.perturbation_set.as_bdd().clone();
         // Obtain BDD having given variables perturbed to the specified value and remaining variables having unperturbed
         for v in self.context.as_perturbed().as_network().variables() {
             // println!("{:?}", GraphColoredVertices::new(perturbation_bdd.clone(), &self.context.as_perturbed().symbolic_context()).colors().approx_cardinality());
             let var_name = self.context.as_perturbed().as_network().get_variable_name(v);
+            let bdd_var = self.context.as_perturbed().symbolic_context().get_state_variable(v);
             if perturbation.contains_key(var_name) {
                 // println!("{:?}", var_name);
                 let perturbation_value = perturbation.get(var_name).unwrap();
-                let bdd_var = self.context.as_perturbed().symbolic_context().get_state_variable(v);
                 // Fix states & params to the perturbation value
                 perturbation_bdd = perturbation_bdd.and(&self.context.fix_perturbation(v, Some(perturbation_value.clone())).into_bdd());
-                perturbation_bdd = perturbation_bdd.var_project(bdd_var);
+                perturbation_bdd = perturbation_bdd.var_exists(bdd_var);
             } else {
                 // Require the variable to NOT be perturbed
                 perturbation_bdd = perturbation_bdd.and(&self.context.not_perturbed(v).into_bdd());
+                perturbation_bdd = perturbation_bdd.var_for_all(bdd_var);
             }
         }
 
-        // Do universal projection across all non-perturbed variables
-        for v in self.context.variables() {
-            // println!("{:?}", GraphColoredVertices::new(perturbation_bdd.clone(), &self.context.as_perturbed().symbolic_context()).colors().approx_cardinality());
-            let var_name = self.context.as_perturbed().as_network().get_variable_name(v);
-            if !perturbation.contains_key(var_name) {
-                let var = self.context.as_symbolic_context().get_state_variable(v);
-                perturbation_bdd = Bdd::fused_binary_flip_op(
-                    (&perturbation_bdd, None),
-                    (&perturbation_bdd, Some(var)),
-                    None,
-                    biodivine_lib_bdd::op_function::and
-                )
-            }
-        }
-
-        let colors = GraphColoredVertices::new(perturbation_bdd, &self.context.as_perturbed().symbolic_context()).colors();
+        let colors = max_colors.copy(perturbation_bdd);
         colors
     }
 }

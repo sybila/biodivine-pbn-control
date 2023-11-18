@@ -54,7 +54,9 @@ impl PerturbationGraph {
             break;
         }
 
-        println!("Trap cardinality {}", trap.approx_cardinality());
+        if verbose {
+            println!("Trap cardinality {}", trap.approx_cardinality());
+        }
 
         if verbose {
             println!("Cardinality of phenotype trap set: {}", trap.approx_cardinality())
@@ -78,7 +80,9 @@ impl PerturbationGraph {
             break;
         }
 
-        println!("Inverse trap cardinality {}", trap.approx_cardinality());
+        if verbose {
+            println!("Inverse trap cardinality {}", trap.approx_cardinality());
+        }
 
         if verbose {
             println!("Cardinality of inversed trap set: {}", trap.approx_cardinality())
@@ -104,7 +108,9 @@ impl PerturbationGraph {
         }
 
         let inverse_control_map = self.empty_colored_vertices().copy(inverse_control);
-        println!("Inverse control cardinality {}", inverse_control_map.approx_cardinality());
+        if verbose{
+            println!("Inverse control cardinality {}", inverse_control_map.approx_cardinality());
+        }
 
 
         if verbose {
@@ -117,7 +123,9 @@ impl PerturbationGraph {
             .intersect_colors(&admissible_colors_perturbations)
             .minus(&inverse_control_map);
 
-        println!("Control map cardinality {}", control_map.approx_cardinality());
+        if verbose {
+            println!("Control map cardinality {}", control_map.approx_cardinality());
+        }
 
         if verbose {
             println!("Cardinality of control map: {}", control_map.approx_cardinality())
@@ -139,9 +147,11 @@ impl PerturbationGraph {
                 }
             }
 
-            println!(">>>>> fixed(Q) sets in control map: {}", only_perturbation_parameters.cardinality() / factor);
+            if verbose {
+                println!(">>>>> fixed(Q) sets in control map: {}", only_perturbation_parameters.cardinality() / factor);
+            }
 
-            result.working_perturbations(0.0, true);
+            result.working_perturbations(admissible_colors_perturbations, 0.0, true);
             println!(">>>>>> Elapsed: {}ms", start.elapsed().unwrap().as_millis());
 
         }
@@ -215,9 +225,9 @@ impl PerturbationGraph {
     pub fn ceiled_phenotype_permanent_control(
         &self,
         phenotype: GraphVertices,
+        allowed_colors: &GraphColors,
         size_bound: usize,
         allow_oscillation: PhenotypeOscillationType,
-        required_robustness: f64,
         stop_early: bool,
         verbose: bool
     ) -> PhenotypeControlMap {
@@ -228,7 +238,7 @@ impl PerturbationGraph {
             let start = SystemTime::now();
             let admissible_perturbations = self.create_perturbation_colors(perturbation_size, verbose);
 
-            let control_map = self.phenotype_permanent_control(phenotype.clone(), admissible_perturbations, allow_oscillation.clone(), verbose).perturbation_set;
+            let control_map = self.phenotype_permanent_control(phenotype.clone(), admissible_perturbations.intersect(allowed_colors), allow_oscillation.clone(), verbose).perturbation_set;
 
             control_map_all = control_map_all.union(&control_map);
 
@@ -236,7 +246,7 @@ impl PerturbationGraph {
                 perturbation_variables: self.perturbable_variables().clone(),
                 perturbation_set: control_map,
                 context: self.clone(),
-            }.working_perturbations(required_robustness, verbose);
+            }.working_perturbations(admissible_perturbations, 1.0, verbose);
 
             let mut best_robustness = 0.0;
             for (_perturbation, working_colors) in working_perturbations {
@@ -246,8 +256,10 @@ impl PerturbationGraph {
                 }
             }
 
-            if best_robustness >= required_robustness && stop_early {
-                println!("Robustness {} achieved for perturbation size {}.", best_robustness, perturbation_size);
+            if best_robustness >= 1.0 && stop_early {
+                if verbose {
+                    println!("Robustness {} achieved for perturbation size {}.", best_robustness, perturbation_size);
+                }
                 return PhenotypeControlMap {
                     perturbation_variables: self.perturbable_variables().clone(),
                     perturbation_set: control_map_all,
@@ -344,24 +356,24 @@ mod tests {
             false
         );
 
-        let working_perturbations = control.working_perturbations(1.0, false);
+        let working_perturbations = control.working_perturbations(perturbations.mk_unit_colors(), 1.0,  false);
 
         // println!("{:?}", control.working_perturbations(1.0, true));
 
         // Trivial working control
         let working_colors =
-            control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), true)]));
+            control.perturbation_working_colors( perturbations.mk_unit_colors(),&HashMap::from([(String::from("EKLF"), true)]));
 
         assert_eq!(1.0, working_colors.approx_cardinality());
 
         // Trivial not-working control
         let not_working_colors =
-            control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), false)]));
+            control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([(String::from("EKLF"), false)]));
 
         assert_eq!(0.0, not_working_colors.approx_cardinality());
 
         // Non-trivial working control
-        let working_colors = control.perturbation_working_colors(&HashMap::from([
+        let working_colors = control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([
             (String::from("Fli1"), false),
             (String::from("GATA1"), true),
             (String::from("GATA2"), true),
@@ -369,14 +381,14 @@ mod tests {
 
         assert_eq!(1.0, working_colors.approx_cardinality());
 
-        let not_working_colors = control.perturbation_working_colors(&HashMap::from([
+        let not_working_colors = control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([
             (String::from("CEBPa"), true),
             (String::from("PU1"), false),
         ]));
 
         assert_eq!(0.0, not_working_colors.approx_cardinality());
 
-        let not_working_colors = control.perturbation_working_colors(&HashMap::from([]));
+        let not_working_colors = control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([]));
 
         assert_eq!(0.0, not_working_colors.approx_cardinality());
     }
@@ -397,24 +409,24 @@ mod tests {
             HashMap::from([("EKLF", true)]),
         );
         let control =
-            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, 3, PhenotypeOscillationType::Forbidden,
-                                                             1.0, false, true);
+            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, perturbations.unit_colors(), 3, PhenotypeOscillationType::Forbidden,
+                                                              false, true);
 
-        println!("{:?}", control.working_perturbations(1.0, true));
+        let working_perturbations = control.working_perturbations(perturbations.mk_unit_colors(), 1.0, false);
         // Trivial working control
         let working_colors =
-            control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), true)]));
+            control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([(String::from("EKLF"), true)]));
 
         assert_eq!(1.0, working_colors.approx_cardinality());
 
         // Trivial not-working control
         let not_working_colors =
-            control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), false)]));
+            control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([(String::from("EKLF"), false)]));
 
         assert_eq!(0.0, not_working_colors.approx_cardinality());
 
         // Non-trivial working control
-        let working_colors = control.perturbation_working_colors(&HashMap::from([
+        let working_colors = control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([
             (String::from("Fli1"), false),
             (String::from("GATA1"), true),
             (String::from("GATA2"), true),
@@ -422,14 +434,14 @@ mod tests {
 
         assert_eq!(1.0, working_colors.approx_cardinality());
 
-        let not_working_colors = control.perturbation_working_colors(&HashMap::from([
+        let not_working_colors = control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([
             (String::from("CEBPa"), true),
             (String::from("PU1"), false),
         ]));
 
         assert_eq!(0.0, not_working_colors.approx_cardinality());
 
-        let not_working_colors = control.perturbation_working_colors(&HashMap::from([]));
+        let not_working_colors = control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([]));
 
         assert_eq!(0.0, not_working_colors.approx_cardinality());
     }
@@ -458,15 +470,16 @@ mod tests {
             HashMap::from([("EKLF", true)]),
         );
         let control =
-            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, 1, PhenotypeOscillationType::Forbidden,
-                                                             1.0, false, true);
+            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, perturbations.unit_colors(),1, PhenotypeOscillationType::Forbidden,
+                                                             false, true);
 
-        println!("{:?}", control.working_perturbations(1.0, true));
+        println!("{:?}", control.working_perturbations(perturbations.mk_unit_colors(), 1.0,  false).len());
         // Trivial working control
         let working_colors =
-            control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), true)]));
+            control.perturbation_working_colors(perturbations.mk_unit_colors(),&HashMap::from([(String::from("EKLF"), true)]));
 
         assert_eq!(0.0, working_colors.approx_cardinality());
-        assert_eq!(0, control.working_perturbations(1.0, false).len());
+        assert_eq!(0, control.working_perturbations(perturbations.mk_unit_colors(), 1.0,  false).len());
+
     }
 }
