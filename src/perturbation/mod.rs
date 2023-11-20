@@ -1,5 +1,5 @@
 use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
-use biodivine_lib_param_bn::{ParameterId, VariableId};
+use biodivine_lib_param_bn::{BooleanNetwork, ParameterId, VariableId};
 use std::collections::HashMap;
 
 /// Procedures for transforming Boolean networks so that they conform to our encoding.
@@ -22,6 +22,8 @@ mod _impl_perturbation_graph;
 /// for computing pre/post.
 #[derive(Clone)]
 pub struct PerturbationGraph {
+    /// Graph before adding any perturbation params
+    non_perturbable_graph: SymbolicAsyncGraph,
     /// "Normal" unperturbed graph, but with the same encoding as the perturbed graph.
     original_graph: SymbolicAsyncGraph,
     /// Perturbed graph where each edge is also labelled with perturbations that enable it.

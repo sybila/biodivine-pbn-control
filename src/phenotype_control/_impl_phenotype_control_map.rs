@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::thread::yield_now;
 use biodivine_lib_bdd::Bdd;
+use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
 use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
 use crate::perturbation;
@@ -17,7 +18,7 @@ impl PhenotypeControlMap {
         &self.perturbation_set
     }
 
-    pub fn working_perturbations(&self, max_colors: GraphColors, min_robustness: f64, verbose: bool) -> Vec<(HashMap<String, bool>, GraphColors)> {
+    pub fn working_perturbations(&self, min_robustness: f64, verbose: bool) -> Vec<(HashMap<String, bool>, GraphColors)> {
         if min_robustness < 0.0 || min_robustness > 1.0 {
             panic!("Min robustness must be in range between 0.0 and 1.0")
         }
@@ -82,7 +83,7 @@ impl PhenotypeControlMap {
                     with_best_robustness += 1;
                 }
                 if robustness >= min_robustness {
-                    let converted_colors = max_colors.copy(control_colors);
+                    let converted_colors = self.context.as_non_perturbable().transfer_colors_from(&self.context.as_original().empty_colors().copy(control_colors), self.context.as_original()).unwrap();
                     result.push((map.clone(), converted_colors))
                 }
 
@@ -97,7 +98,7 @@ impl PhenotypeControlMap {
         result
     }
 
-    pub fn perturbation_working_colors(&self, max_colors: GraphColors, perturbation: &HashMap<String, bool>) -> GraphColors {
+    pub fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors {
         let mut perturbation_bdd = self.perturbation_set.as_bdd().clone();
         // Obtain BDD having given variables perturbed to the specified value and remaining variables having unperturbed
         for v in self.context.as_perturbed().as_network().variables() {
@@ -111,13 +112,15 @@ impl PhenotypeControlMap {
                 perturbation_bdd = perturbation_bdd.and(&self.context.fix_perturbation(v, Some(perturbation_value.clone())).into_bdd());
                 perturbation_bdd = perturbation_bdd.var_exists(bdd_var);
             } else {
-                // Require the variable to NOT be perturbed
+                // Discard non-perturbed var
                 perturbation_bdd = perturbation_bdd.and(&self.context.not_perturbed(v).into_bdd());
                 perturbation_bdd = perturbation_bdd.var_for_all(bdd_var);
             }
         }
 
-        let colors = max_colors.copy(perturbation_bdd);
+        // TODO switch to following, when projection works
+        // let colors = self.context.as_non_perturbable().transfer_colors_from(&self.context.as_original().empty_colors().copy(perturbation_bdd), self.context.as_original()).unwrap();
+        let colors = self.context.as_original().empty_colors().copy(perturbation_bdd);
         colors
     }
 }

@@ -34,12 +34,15 @@ impl PerturbationGraph {
         assert_eq!(original_parameters, perturbed_parameters);
 
         PerturbationGraph {
+            non_perturbable_graph: SymbolicAsyncGraph::new(network.clone()).unwrap(),
             original_graph: SymbolicAsyncGraph::new(original).unwrap(),
             perturbed_graph: SymbolicAsyncGraph::new(perturbed).unwrap(),
             perturbable_vars: perturb.clone(),
             perturbation_parameters: original_parameters,
         }
     }
+
+    pub fn as_non_perturbable(&self) -> &SymbolicAsyncGraph { &self.non_perturbable_graph }
 
     pub fn as_original(&self) -> &SymbolicAsyncGraph {
         &self.original_graph
