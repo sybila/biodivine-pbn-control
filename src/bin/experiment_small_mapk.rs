@@ -51,12 +51,10 @@ fn main() {
     println!("Uncertainty colors: {}", model_colors);
     println!("Perturbation colors: {}", perturbation_colors);
 
-    let mut relevant_colors = perturbation_graph.as_perturbed().transfer_colors_from(normal_graph.unit_colors(), &normal_graph).unwrap();
-
     println!(">>>>>>>>>>>>> All colors, do not restrict control call in any way");
     println!("All colors: {}", all_colors);
 
-    let map = perturbation_graph.ceiled_phenotype_permanent_control(phenotype.clone(), 1, PhenotypeOscillationType::Allowed, false, false);
+    let map = perturbation_graph.ceiled_phenotype_permanent_control(phenotype.clone(), 1, PhenotypeOscillationType::Required, false, false);
     let perturbations = map.working_perturbations(0.1,  false);
 
     // Kinda OK

@@ -43,7 +43,7 @@ impl PerturbationGraph {
         let control_universe = self.unit_colored_vertices().intersect_colors(&allowed_colors);
         let phenotype_coloured_vertices = control_universe.intersect_vertices(&phenotype);
         match oscillation {
-            PhenotypeOscillationType::Required => {return self.phenotype_permanent_control_with_true_oscillation(phenotype, verbose)}
+            PhenotypeOscillationType::Required => {return self.phenotype_permanent_control_with_true_oscillation_internal(phenotype, allowed_colors, verbose)}
             PhenotypeOscillationType::Allowed => {
                 let bwd_reach = backward_within(self.as_perturbed(), &phenotype_coloured_vertices, &control_universe);
                 trap = bwd_reach
@@ -265,18 +265,19 @@ impl PerturbationGraph {
     }
 
 
-    fn phenotype_permanent_control_with_true_oscillation(
+    fn phenotype_permanent_control_with_true_oscillation_internal(
         &self,
         phenotype: GraphVertices,
+        admissible_colors: GraphColors,
         verbose: bool
     ) -> PhenotypeControlMap {
 
         // oscillation with phenotype set to true
-        let control_map_in_phenotype = self.phenotype_permanent_control(phenotype.clone(), PhenotypeOscillationType::Allowed, verbose).perturbation_set;
+        let control_map_in_phenotype = self.phenotype_permanent_control_internal(phenotype.clone(), admissible_colors.clone(), PhenotypeOscillationType::Allowed, verbose).perturbation_set;
 
         // oscillation with outside of phenotype
         let outside_phenotype = self.mk_unit_colored_vertices().minus_vertices(&phenotype).vertices();
-        let control_map_outside_phenotype = self.phenotype_permanent_control(outside_phenotype, PhenotypeOscillationType::Allowed, verbose).perturbation_set;
+        let control_map_outside_phenotype = self.phenotype_permanent_control_internal(outside_phenotype, admissible_colors, PhenotypeOscillationType::Allowed, verbose).perturbation_set;
 
         let control_map = control_map_in_phenotype.intersect(&control_map_outside_phenotype);
 
