@@ -135,10 +135,6 @@ impl PerturbationGraph {
             .minus(&inverse_control_map);
 
         if verbose {
-            println!("Control map cardinality {}", control_map.approx_cardinality());
-        }
-
-        if verbose {
             println!("Cardinality of control map: {}", control_map.approx_cardinality())
         }
 
@@ -156,10 +152,6 @@ impl PerturbationGraph {
                 if !perturbation_bdd_vars.contains(&var) {
                     only_perturbation_parameters = only_perturbation_parameters.var_project(var);
                 }
-            }
-
-            if verbose {
-                println!(">>>>> fixed(Q) sets in control map: {}", only_perturbation_parameters.cardinality() / factor);
             }
 
             result.working_perturbations(0.0, true);
@@ -235,27 +227,32 @@ impl PerturbationGraph {
                 context: self.clone(),
             }.working_perturbations( 1.0, verbose);
 
-            let mut best_robustness = 0.0;
-            for (_perturbation, working_colors) in working_perturbations {
-                let robustness = working_colors.approx_cardinality();
-                if robustness > best_robustness {
-                    best_robustness = robustness
+            if verbose || stop_early {
+                let mut best_robustness = 0.0;
+                for (_perturbation, working_colors) in working_perturbations {
+                    let robustness = working_colors.approx_cardinality() / self.as_non_perturbable().unit_colors().approx_cardinality();
+                    if robustness > best_robustness {
+                        best_robustness = robustness
+                    }
                 }
-            }
 
-            if best_robustness >= 1.0 && stop_early {
                 if verbose {
                     println!("Robustness {} achieved for perturbation size {}.", best_robustness, perturbation_size);
                 }
-                return PhenotypeControlMap {
-                    perturbation_variables: self.perturbable_variables().clone(),
-                    perturbation_set: control_map_all,
-                    context: self.clone(),
+
+                if best_robustness >= 1.0 && stop_early {
+                    if verbose {
+                        println!("Robustness {} achieved for perturbation size {}.", best_robustness, perturbation_size);
+                    }
+                    return PhenotypeControlMap {
+                        perturbation_variables: self.perturbable_variables().clone(),
+                        perturbation_set: control_map_all,
+                        context: self.clone(),
+                    }
                 }
             }
         }
 
-        // println!("Sufficient robustness not achieved with perturbation size {}.", size_bound);
 
         return PhenotypeControlMap {
             perturbation_variables: self.perturbable_variables().clone(),

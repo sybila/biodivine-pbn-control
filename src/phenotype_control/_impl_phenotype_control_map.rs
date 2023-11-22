@@ -29,7 +29,7 @@ impl PhenotypeControlMap {
         let control_map_bdd = self.as_bdd();
         let perturbation_vars_projection = RawProjection::new(perturbation_bdd_vars.clone(), &control_map_bdd);
 
-        let all_colors_size = self.context.unit_colors().approx_cardinality() / 2.0f64.powi(perturbation_bdd_vars.len() as i32);
+        let all_colors_size = self.context.as_non_perturbable().unit_colors().approx_cardinality();
         let mut best_robustness = 0.0;
         let mut with_best_robustness = 0;
 
@@ -61,6 +61,7 @@ impl PhenotypeControlMap {
                 // This should remove all remaining perturbed state variables. Unperturbed
                 // variables should not appear in the control map add all.
                 let control_colors = control_subset.restrict(&state_vector.to_values());
+                let converted_colors = self.context.as_non_perturbable().transfer_colors_from(&self.context.as_original().empty_colors().copy(control_colors), self.context.as_original()).unwrap();
                 let mut map = HashMap::new();
                 for var in &perturbed_variables {
                     let state_var = self.context.as_symbolic_context().get_state_variable(*var);
@@ -69,11 +70,7 @@ impl PhenotypeControlMap {
                         state_vector.get_value(state_var).unwrap(),
                     );
                 }
-                let factor = 2.0f64.powi(
-                    (self.context.as_symbolic_context().state_variables().len() + self.context.num_perturbation_parameters()) as i32
-                );
-
-                let working_colors = control_colors.cardinality() / factor;
+                let working_colors = converted_colors.approx_cardinality();
                 let robustness = working_colors / all_colors_size;
                 if robustness >= best_robustness {
                     if robustness != best_robustness {
@@ -83,7 +80,6 @@ impl PhenotypeControlMap {
                     with_best_robustness += 1;
                 }
                 if robustness >= min_robustness {
-                    let converted_colors = self.context.as_non_perturbable().transfer_colors_from(&self.context.as_original().empty_colors().copy(control_colors), self.context.as_original()).unwrap();
                     result.push((map.clone(), converted_colors))
                 }
 
@@ -93,7 +89,7 @@ impl PhenotypeControlMap {
             }
         }
         if verbose {
-            println!("Best robustness {} for {} perturbations.", best_robustness, with_best_robustness);
+            println!("Best robustness {} observed in {} perturbations.", best_robustness, with_best_robustness);
         }
         result
     }
