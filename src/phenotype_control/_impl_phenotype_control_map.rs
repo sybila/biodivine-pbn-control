@@ -5,11 +5,22 @@ use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
 use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
+use biodivine_lib_param_bn::VariableId;
 use crate::perturbation;
 use crate::perturbation::PerturbationGraph;
 use crate::phenotype_control::PhenotypeControlMap;
 
 impl PhenotypeControlMap {
+    pub fn new(perturbation_variables: Vec<VariableId>,
+               context: PerturbationGraph,
+               perturbation_set: GraphColoredVertices) -> PhenotypeControlMap {
+        return PhenotypeControlMap {
+            perturbation_variables,
+            context,
+            perturbation_set
+        }
+    }
+
     pub fn as_bdd(&self) -> &Bdd {
         self.perturbation_set.as_bdd()
     }
