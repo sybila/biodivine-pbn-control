@@ -11,11 +11,11 @@ use crate::perturbation::PerturbationGraph;
 use crate::phenotype_control::PhenotypeControlMap;
 
 impl PhenotypeControlMap {
-    pub fn new(perturbation_variables: Vec<VariableId>,
+    pub fn new(
                context: PerturbationGraph,
                perturbation_set: GraphColoredVertices) -> PhenotypeControlMap {
         return PhenotypeControlMap {
-            perturbation_variables,
+            perturbation_variables: context.perturbable_variables().clone(),
             context,
             perturbation_set
         }
