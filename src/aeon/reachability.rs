@@ -13,7 +13,7 @@ pub fn backward_within(
 
     loop {
         let mut stop = true;
-        for var in graph.as_network().variables().rev() {
+        for var in graph.variables().rev() {
             let step = graph.var_pre(var, &result).intersect(bounds).minus(&result);
 
             if !step.is_empty() {
@@ -41,7 +41,7 @@ pub fn backward(
     loop {
         let mut stop = true;
         // The order is important to update Bdd based on the "easiest" variables first.
-        for var in graph.as_network().variables().rev() {
+        for var in graph.variables().rev() {
             let step = graph.var_pre(var, &result).minus(&result);
 
             if !step.is_empty() {
@@ -66,7 +66,7 @@ pub fn forward(graph: &SymbolicAsyncGraph, initial: &GraphColoredVertices) -> Gr
     loop {
         let mut stop = true;
         // The order is important to update Bdd based on the "easiest" variables first.
-        for var in graph.as_network().variables().rev() {
+        for var in graph.variables().rev() {
             let step = graph.var_post(var, &result).minus(&result);
 
             if !step.is_empty() {
@@ -95,7 +95,7 @@ pub fn forward_within(
 
     loop {
         let mut stop = true;
-        for var in graph.as_network().variables().rev() {
+        for var in graph.variables().rev() {
             let step = graph
                 .var_post(var, &result)
                 .intersect(bounds)
@@ -128,7 +128,7 @@ pub fn forward_closed_within(
 
     loop {
         let mut stop = true;
-        for var in graph.as_network().variables().rev() {
+        for var in graph.variables().rev() {
             let step = graph.var_post(var, &result).minus(&result);
 
             if !step.is_empty() {
@@ -154,7 +154,7 @@ pub fn backward_closed_subset(
 ) -> GraphColoredVertices {
     let mut result = set.clone();
 
-    for var in graph.as_network().variables().rev() {
+    for var in graph.variables().rev() {
         let bwd_step = graph.var_pre(var, &result).minus(&result);
         result = result.minus_colors(&bwd_step.colors());
     }
@@ -169,7 +169,7 @@ pub fn forward_closed_subset(
 ) -> GraphColoredVertices {
     let mut result = set.clone();
 
-    for var in graph.as_network().variables().rev() {
+    for var in graph.variables().rev() {
         let fwd_step = graph.var_post(var, &result).minus(&result);
         result = result.minus_colors(&fwd_step.colors());
     }
@@ -188,7 +188,7 @@ pub fn forward_closed(
     let mut basin = initial.clone();
     loop {
         let mut stop = true;
-        for var in graph.as_network().variables().rev() {
+        for var in graph.variables().rev() {
             let can_go_out = graph.var_can_post_out(var, &basin);
             if !can_go_out.is_empty() {
                 basin = basin.minus(&can_go_out);

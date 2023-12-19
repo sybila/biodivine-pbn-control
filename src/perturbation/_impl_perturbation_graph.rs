@@ -3,7 +3,7 @@ use crate::perturbation::_algo_network_transformations::{
     make_original_network, make_perturbed_network, normalize_network,
 };
 use biodivine_lib_param_bn::biodivine_std::bitvector::{ArrayBitVector, BitVector};
-use biodivine_lib_param_bn::biodivine_std::traits::{Graph, Set};
+use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{
     GraphColoredVertices, GraphColors, SymbolicAsyncGraph, SymbolicContext,
 };
@@ -34,8 +34,8 @@ impl PerturbationGraph {
         assert_eq!(original_parameters, perturbed_parameters);
 
         PerturbationGraph {
-            original_graph: SymbolicAsyncGraph::new(original).unwrap(),
-            perturbed_graph: SymbolicAsyncGraph::new(perturbed).unwrap(),
+            original_graph: SymbolicAsyncGraph::new(&original).unwrap(),
+            perturbed_graph: SymbolicAsyncGraph::new(&perturbed).unwrap(),
             perturbation_parameters: original_parameters,
         }
     }
@@ -53,7 +53,7 @@ impl PerturbationGraph {
     }
 
     pub fn variables(&self) -> VariableIdIterator {
-        self.original_graph.as_network().variables()
+        self.original_graph.variables()
     }
 
     pub fn get_perturbation_parameter(&self, variable: VariableId) -> Option<ParameterId> {
@@ -81,11 +81,11 @@ impl PerturbationGraph {
     }
 
     pub fn empty_colored_vertices(&self) -> &GraphColoredVertices {
-        self.original_graph.empty_vertices()
+        self.original_graph.empty_colored_vertices()
     }
 
     pub fn mk_empty_colored_vertices(&self) -> GraphColoredVertices {
-        self.original_graph.mk_empty_vertices()
+        self.original_graph.mk_empty_colored_vertices()
     }
 
     pub fn unit_colors(&self) -> &GraphColors {
@@ -146,34 +146,38 @@ impl PerturbationGraph {
         }
     }
 
-    pub fn build_colors_with_values(&self, bn: &BooleanNetwork, values: HashMap<String, bool>) -> GraphColors {
+    pub fn build_colors_with_values(
+        &self,
+        bn: &BooleanNetwork,
+        values: HashMap<String, bool>,
+    ) -> GraphColors {
         let mut colors = self.as_original().mk_empty_colors();
         for v in bn.variables() {
             let function = bn.get_update_function(v);
             if !function.is_none() {
-                continue
+                continue;
             }
             println!("{:?}", bn.get_variable_name(v));
 
             let v_name = bn.get_variable_name(v);
-            let value;
-            if values.contains_key(v_name) {
-                value = values.get(v_name).unwrap().clone();
-            } else {
-                value = false;
-            }
+            let value = values.get(v_name).cloned().unwrap_or(false);
 
             // let variable_parameter = bn.find_parameter((param_prefix + v_name).as_str()).unwrap();
             // assert_eq!(bn.get_parameter(variable_parameter).get_name().as_str(), format!("param_{}", v.as_str()));
 
-            let colors_v_set;
-            if value {
-                let bdd = self.as_symbolic_context().mk_implicit_function_is_true(v, &[]);
-                colors_v_set = self.unit_colors().copy(bdd);
+            let colors_v_set = if value {
+                let bdd = self
+                    .as_symbolic_context()
+                    .mk_implicit_function_is_true(v, &[]);
+                self.unit_colors().copy(bdd)
             } else {
-                let bdd = self.as_symbolic_context().mk_implicit_function_is_true(v, &[]);
-                colors_v_set = self.as_original().mk_unit_colors().minus(&self.unit_colors().copy(bdd));
-            }
+                let bdd = self
+                    .as_symbolic_context()
+                    .mk_implicit_function_is_true(v, &[]);
+                self.as_original()
+                    .mk_unit_colors()
+                    .minus(&self.unit_colors().copy(bdd))
+            };
 
             colors = colors.minus(&colors_v_set);
         }
