@@ -138,7 +138,7 @@ pub fn get_all_params_with_attractor(
         if cfg!(feature = "print_progress") && attractor.as_bdd().size() > 100_000 {
             println!("FWD-attractor: {}", attractor.as_bdd().size());
         }
-        for var in graph.as_original().as_network().variables().rev() {
+        for var in graph.as_original().variables().rev() {
             let step = graph
                 .as_original()
                 .var_post(var, &attractor)

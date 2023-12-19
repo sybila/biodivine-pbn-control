@@ -1,17 +1,14 @@
 use crate::aeon::attractors;
 use crate::perturbation::PerturbationGraph;
 use crate::phenotype_control::PhenotypeControlMap;
-use biodivine_lib_bdd::{Bdd, bdd, BddPartialValuation, BddVariable};
+use crate::phenotype_control::_symbolic_utils::mk_bdd_up_to_bound;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::fixed_points::FixedPoints;
 use biodivine_lib_param_bn::symbolic_async_graph::reachability::Reachability;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, GraphVertices};
-use biodivine_lib_param_bn::{ParameterId, VariableId};
+use biodivine_lib_param_bn::VariableId;
 use chrono::Local;
-use itertools::Itertools;
-use std::collections::{HashMap, HashSet};
 use std::time::Instant;
-use crate::phenotype_control::_symbolic_utils::mk_bdd_up_to_bound;
 
 impl PerturbationGraph {
     pub fn ceiled_phenotype_permanent_control(
@@ -19,7 +16,7 @@ impl PerturbationGraph {
         phenotype: GraphVertices,
         max_size: usize,
         perturbation_variables: Vec<VariableId>,
-        attractor_search_method: &str
+        attractor_search_method: &str,
     ) -> PhenotypeControlMap {
         assert!(!perturbation_variables.is_empty());
 
@@ -49,7 +46,11 @@ impl PerturbationGraph {
         let colors = self.empty_colors().copy(admissible_bdd);
         admissible_perturbations = admissible_perturbations.union(&colors);
 
-        let result = self.phenotype_permanent_control(phenotype, admissible_perturbations, attractor_search_method);
+        let result = self.phenotype_permanent_control(
+            phenotype,
+            admissible_perturbations,
+            attractor_search_method,
+        );
         let duration = now.elapsed();
         println!("Control map computation finished at {:?} ", Local::now());
         println!("Time elapsed for computing control map: {:?}", duration);
@@ -60,7 +61,7 @@ impl PerturbationGraph {
         &self,
         phenotype: GraphVertices,
         admissible_perturbations: GraphColors,
-        attractor_search_method: &str
+        attractor_search_method: &str,
     ) -> PhenotypeControlMap {
         println!(
             "all space {}",
@@ -77,15 +78,13 @@ impl PerturbationGraph {
         );
         println!("phenotype vertices {}", phenotype.approx_cardinality());
 
-
         let now = Instant::now();
 
-        let selected_attractor_search_method;
-        if attractor_search_method  == "heuristic" {
-            selected_attractor_search_method= self.get_attractor_type_in_unperturbed_network()
+        let selected_attractor_search_method = if attractor_search_method == "heuristic" {
+            self.get_attractor_type_in_unperturbed_network()
         } else {
-            selected_attractor_search_method = attractor_search_method;
-        }
+            attractor_search_method
+        };
 
         let mut phenotype_violating_attractors = self.mk_empty_colored_vertices();
         if selected_attractor_search_method == "sinks" {
@@ -103,7 +102,11 @@ impl PerturbationGraph {
                 FixedPoints::symbolic(self.as_perturbed(), &phenotype_violating_space);
         } else if selected_attractor_search_method == "complex" {
             println!("------- Using all attractors implementation");
-            let complex_attractors = attractors::compute_restricted(self.as_perturbed(), self.mk_unit_colored_vertices().intersect_colors(&admissible_perturbations));
+            let complex_attractors = attractors::compute_restricted(
+                self.as_perturbed(),
+                self.mk_unit_colored_vertices()
+                    .intersect_colors(&admissible_perturbations),
+            );
             for ca in complex_attractors {
                 let states_in_ca_but_not_phenotype = ca.minus_vertices(&phenotype);
                 let colors_with_states_outside_phenotype = states_in_ca_but_not_phenotype.colors();
@@ -113,7 +116,10 @@ impl PerturbationGraph {
                     phenotype_violating_attractors.union(&violating_attractors);
             }
         } else {
-            panic!("Unknown attractor search method {:?}", attractor_search_method);
+            panic!(
+                "Unknown attractor search method {:?}",
+                attractor_search_method
+            );
         }
 
         print!("Attractor search computation took: {:?}", now.elapsed());
@@ -150,9 +156,9 @@ impl PerturbationGraph {
         }
     }
 
-    fn get_attractor_type_in_unperturbed_network(&self) -> &str{
+    fn get_attractor_type_in_unperturbed_network(&self) -> &str {
         let unperturbed_attractors = attractors::compute(self.as_original());
-        let mut unperturbed_attractors_all = self.as_original().mk_empty_vertices();
+        let mut unperturbed_attractors_all = self.as_original().mk_empty_colored_vertices();
         for ua in unperturbed_attractors {
             unperturbed_attractors_all = unperturbed_attractors_all.union(&ua);
         }
@@ -171,7 +177,8 @@ impl PerturbationGraph {
         );
         if unperturbed_attractors_all
             .vertices()
-            .is_subset(&unperturbed_attractors_fps.vertices()) {
+            .is_subset(&unperturbed_attractors_fps.vertices())
+        {
             "sinks"
         } else {
             "complex"
@@ -204,7 +211,7 @@ mod tests {
         let control = perturbations.phenotype_permanent_control(
             erythrocyte_phenotype,
             perturbations.as_perturbed().mk_unit_colors(),
-            "sinks"
+            "sinks",
         );
 
         // Trivial working control
@@ -259,8 +266,12 @@ mod tests {
             perturbations.as_perturbed(),
             HashMap::from([("EKLF", true)]),
         );
-        let control =
-            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, 3, all_vars, "sinks");
+        let control = perturbations.ceiled_phenotype_permanent_control(
+            erythrocyte_phenotype,
+            3,
+            all_vars,
+            "sinks",
+        );
 
         // Trivial working control
         let working_colors =

@@ -256,7 +256,7 @@ fn main_control_robustness_template<F>(
         .empty_colors()
         .as_bdd()
         .or(perturbations.empty_colors().as_bdd());
-    for combination in model.variables().into_iter().powerset() {
+    for combination in model.variables().powerset() {
         let control_size = combination.len();
         if control_size > current_iter {
             println!(
@@ -298,7 +298,7 @@ fn main_control_robustness_template<F>(
 /// At the moment, we don't consider every pair of attractor states, we just pick one state
 /// from the first attractor as target, and then different source states from the remaining attractors.
 fn compute_attractor_pairs(network: &BooleanNetwork) -> Vec<(ArrayBitVector, ArrayBitVector)> {
-    let graph = SymbolicAsyncGraph::new(network.clone()).unwrap();
+    let graph = SymbolicAsyncGraph::new(network).unwrap();
     let attractors = biodivine_pbn_control::aeon::attractors::compute(&graph);
     let target: ArrayBitVector = attractors[0]
         .vertices()
@@ -319,7 +319,7 @@ fn find_witness_attractors(m: &str) -> Vec<ArrayBitVector> {
     let model_string: &str =
         &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
     let model = BooleanNetwork::try_from(model_string).unwrap();
-    let graph = SymbolicAsyncGraph::new(model).unwrap();
+    let graph = SymbolicAsyncGraph::new(&model).unwrap();
     let attractors = biodivine_pbn_control::aeon::attractors::compute(&graph);
     let mut vertices = Vec::new();
     for a in attractors {
@@ -343,7 +343,7 @@ pub fn get_all_params_with_attractor(
         if attractor.as_bdd().size() > 10_000 {
             println!("FWD: {}", attractor.as_bdd().size());
         }
-        for var in graph.as_original().as_network().variables().rev() {
+        for var in graph.as_original().variables().rev() {
             let step = graph
                 .as_original()
                 .var_post(var, &attractor)
