@@ -20,7 +20,7 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
                 )
                 .unwrap();
             network
-                .add_update_function(var, FnUpdate::Param(parameter, regulators))
+                .add_update_function(var, FnUpdate::mk_basic_param(parameter, &regulators))
                 .unwrap();
         }
     }

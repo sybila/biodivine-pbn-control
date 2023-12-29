@@ -1,5 +1,5 @@
 use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
-use biodivine_lib_param_bn::{BooleanNetwork, ParameterId, VariableId};
+use biodivine_lib_param_bn::{ParameterId, VariableId};
 use std::collections::HashMap;
 
 /// Procedures for transforming Boolean networks so that they conform to our encoding.

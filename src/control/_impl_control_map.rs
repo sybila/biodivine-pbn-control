@@ -1,5 +1,4 @@
 use crate::control::ControlMap;
-use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::GraphColoredVertices;
 use biodivine_lib_param_bn::VariableId;
@@ -35,7 +34,7 @@ impl ControlMap {
             if let Some(parameter) = parameter {
                 for (_, bdd_var) in bdd_context.get_explicit_function_table(parameter) {
                     // There should be only one because arity is zero
-                    bdd = bdd.var_project(bdd_var);
+                    bdd = bdd.var_exists(bdd_var);
                 }
             }
         }

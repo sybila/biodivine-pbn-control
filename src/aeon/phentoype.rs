@@ -18,9 +18,9 @@ pub fn build_phenotype(graph: &SymbolicAsyncGraph, phenotype: HashMap<&str, bool
 
 pub fn resolve_var_id(graph: &SymbolicAsyncGraph, var: &str) -> Option<VariableId> {
     let mut v_name: &str = "";
-    for v in graph.as_network().variables() {
+    for v in graph.variables() {
         // Resolve variable name
-        v_name = graph.as_network().get_variable_name(v);
+        v_name = graph.as_network().unwrap().get_variable_name(v);
         if var == v_name {
             return Some(v)
         }

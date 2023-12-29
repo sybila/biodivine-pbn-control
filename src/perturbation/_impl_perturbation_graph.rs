@@ -3,7 +3,7 @@ use crate::perturbation::_algo_network_transformations::{
     make_original_network, make_perturbed_network, normalize_network,
 };
 use biodivine_lib_param_bn::biodivine_std::bitvector::{ArrayBitVector, BitVector};
-use biodivine_lib_param_bn::biodivine_std::traits::{Graph, Set};
+use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{
     GraphColoredVertices, GraphColors, SymbolicAsyncGraph, SymbolicContext,
 };
@@ -34,9 +34,9 @@ impl PerturbationGraph {
         assert_eq!(original_parameters, perturbed_parameters);
 
         PerturbationGraph {
-            non_perturbable_graph: SymbolicAsyncGraph::new(network.clone()).unwrap(),
-            original_graph: SymbolicAsyncGraph::new(original).unwrap(),
-            perturbed_graph: SymbolicAsyncGraph::new(perturbed).unwrap(),
+            non_perturbable_graph: SymbolicAsyncGraph::new(network).unwrap(),
+            original_graph: SymbolicAsyncGraph::new(&original).unwrap(),
+            perturbed_graph: SymbolicAsyncGraph::new(&perturbed).unwrap(),
             perturbable_vars: perturb.clone(),
             perturbation_parameters: original_parameters,
         }
@@ -57,7 +57,7 @@ impl PerturbationGraph {
     }
 
     pub fn variables(&self) -> VariableIdIterator {
-        self.original_graph.as_network().variables()
+        self.original_graph.as_network().unwrap().variables()
     }
 
     pub fn perturbable_variables(&self) -> &Vec<VariableId> { &self.perturbable_vars }
@@ -87,11 +87,11 @@ impl PerturbationGraph {
     }
 
     pub fn empty_colored_vertices(&self) -> &GraphColoredVertices {
-        self.original_graph.empty_vertices()
+        self.original_graph.empty_colored_vertices()
     }
 
     pub fn mk_empty_colored_vertices(&self) -> GraphColoredVertices {
-        self.original_graph.mk_empty_vertices()
+        self.original_graph.mk_empty_colored_vertices()
     }
 
     pub fn unit_colors(&self) -> &GraphColors {

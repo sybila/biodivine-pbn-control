@@ -1,9 +1,8 @@
 use crate::perturbation::PerturbationGraph;
 use crate::phenotype_control::{PhenotypeControlMap, PhenotypeOscillationType};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors, GraphVertices};
+use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, GraphVertices};
 use biodivine_lib_param_bn::{VariableId};
-use itertools::Itertools;
 use std::collections::HashMap;
 use std::time::SystemTime;
 use biodivine_lib_bdd::BddVariable;
@@ -29,6 +28,17 @@ impl PerturbationGraph {
     ) -> PhenotypeControlMap {
         let start = SystemTime::now();
 
+        // println!("PERTURBED {}",self.as_perturbed().unit_colors().as_bdd().num_vars());
+        //
+        // for v in self.as_perturbed().symbolic_context().parameter_variables() {
+        //     println!("{}", self.as_perturbed().symbolic_context().bdd_variable_set().name_of(*v));
+        // }
+        //
+        // println!("UNPERTURBED {}", self.as_non_perturbable().unit_colors().as_bdd().num_vars());
+        // for v in self.as_non_perturbable().symbolic_context().parameter_variables() {
+        //     println!("{}", self.as_non_perturbable().symbolic_context().bdd_variable_set().name_of(*v));
+        // }
+        //
         let allowed_colors = self.as_perturbed().transfer_colors_from(self.as_non_perturbable().unit_colors(), &self.as_non_perturbable()).unwrap().intersect(&admissible_colors_perturbations);
 
         if verbose {
@@ -110,11 +120,11 @@ impl PerturbationGraph {
                     .var_select(*perturbation_var, true);
                 let is_not_perturbed = inverse_control
                     .var_select(*perturbation_var, false)
-                    .var_project(state_var);
+                    .var_exists(state_var);
                 inverse_control = is_perturbed.or(&is_not_perturbed);
             } else {
                 // If the variable cannot be perturbed, we can eliminate it everywhere.
-                inverse_control = inverse_control.var_project(state_var);
+                inverse_control = inverse_control.var_exists(state_var);
             }
         }
 
@@ -150,7 +160,7 @@ impl PerturbationGraph {
             let mut only_perturbation_parameters = control_map.into_bdd();
             for var in bdd_vars.variables() {
                 if !perturbation_bdd_vars.contains(&var) {
-                    only_perturbation_parameters = only_perturbation_parameters.var_project(var);
+                    only_perturbation_parameters = only_perturbation_parameters.var_exists(var);
                 }
             }
 

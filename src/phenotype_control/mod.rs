@@ -1,6 +1,6 @@
 use crate::perturbation::PerturbationGraph;
-use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
-use biodivine_lib_param_bn::{VariableId, VariableIdIterator};
+use biodivine_lib_param_bn::symbolic_async_graph::GraphColoredVertices;
+use biodivine_lib_param_bn::VariableId;
 
 pub mod _impl_phenotype_permanent_control;
 pub mod _impl_phenotype_control_map;

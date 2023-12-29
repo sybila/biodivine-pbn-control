@@ -9,7 +9,7 @@ pub fn reduction(
     graph: &SymbolicAsyncGraph,
     mut universe: GraphColoredVertices,
 ) -> GraphColoredVertices {
-    for var in graph.as_network().variables() {
+    for var in graph.variables() {
         let var_can_post = graph.var_can_post(var, &universe);
         let reach_from_post =
             super::reachability::forward(graph, &var_can_post).intersect(&universe);

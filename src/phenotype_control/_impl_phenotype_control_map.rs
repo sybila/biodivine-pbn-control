@@ -1,12 +1,7 @@
 use std::collections::HashMap;
-use std::hash::Hash;
-use std::thread::yield_now;
 use biodivine_lib_bdd::Bdd;
-use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
 use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
-use biodivine_lib_param_bn::VariableId;
-use crate::perturbation;
 use crate::perturbation::PerturbationGraph;
 use crate::phenotype_control::PhenotypeControlMap;
 
@@ -77,7 +72,7 @@ impl PhenotypeControlMap {
                 for var in &perturbed_variables {
                     let state_var = self.context.as_symbolic_context().get_state_variable(*var);
                     map.insert(
-                        self.context.as_original().as_network().get_variable_name(*var).clone(),
+                        self.context.as_original().as_network().unwrap().get_variable_name(*var).clone(),
                         state_vector.get_value(state_var).unwrap(),
                     );
                 }
@@ -108,9 +103,9 @@ impl PhenotypeControlMap {
     pub fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors {
         let mut perturbation_bdd = self.perturbation_set.as_bdd().clone();
         // Obtain BDD having given variables perturbed to the specified value and remaining variables having unperturbed
-        for v in self.context.as_perturbed().as_network().variables() {
+        for v in self.context.as_perturbed().variables() {
             // println!("{:?}", GraphColoredVertices::new(perturbation_bdd.clone(), &self.context.as_perturbed().symbolic_context()).colors().approx_cardinality());
-            let var_name = self.context.as_perturbed().as_network().get_variable_name(v);
+            let var_name = self.context.as_perturbed().as_network().unwrap().get_variable_name(v);
             let bdd_var = self.context.as_perturbed().symbolic_context().get_state_variable(v);
             if perturbation.contains_key(var_name) {
                 // println!("{:?}", var_name);
