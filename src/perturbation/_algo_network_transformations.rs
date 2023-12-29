@@ -15,7 +15,7 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
             let regulators = network.regulators(var);
             let parameter = network
                 .add_parameter(
-                    format!("update_{}", network.get_variable_name(var)).as_str(),
+                    format!("f_{}", network.get_variable_name(var)).as_str(),
                     u32::try_from(regulators.len()).unwrap(),
                 )
                 .unwrap();
