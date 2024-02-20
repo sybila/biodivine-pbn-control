@@ -1,22 +1,27 @@
+use crate::aeon::reachability::backward_within;
 use crate::perturbation::PerturbationGraph;
+use crate::phenotype_control::_symbolic_utils::mk_bdd_of_bound;
 use crate::phenotype_control::{PhenotypeControlMap, PhenotypeOscillationType};
+use biodivine_lib_bdd::BddVariable;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, GraphVertices};
-use biodivine_lib_param_bn::{VariableId};
+use biodivine_lib_param_bn::VariableId;
 use std::collections::HashMap;
 use std::time::SystemTime;
-use biodivine_lib_bdd::BddVariable;
-use crate::aeon::reachability::backward_within;
-use crate::phenotype_control::_symbolic_utils::mk_bdd_of_bound;
 
 impl PerturbationGraph {
     pub fn phenotype_permanent_control(
         &self,
         phenotype: GraphVertices,
         oscillation: PhenotypeOscillationType,
-        verbose: bool
+        verbose: bool,
     ) -> PhenotypeControlMap {
-        self.phenotype_permanent_control_internal(phenotype, self.as_non_perturbable().mk_unit_colors(), oscillation, verbose)
+        self.phenotype_permanent_control_internal(
+            phenotype,
+            self.as_original().mk_unit_colors(),
+            oscillation,
+            verbose,
+        )
     }
 
     fn phenotype_permanent_control_internal(
@@ -24,7 +29,7 @@ impl PerturbationGraph {
         phenotype: GraphVertices,
         admissible_colors_perturbations: GraphColors,
         oscillation: PhenotypeOscillationType,
-        verbose: bool
+        verbose: bool,
     ) -> PhenotypeControlMap {
         let start = SystemTime::now();
 
@@ -39,26 +44,49 @@ impl PerturbationGraph {
         //     println!("{}", self.as_non_perturbable().symbolic_context().bdd_variable_set().name_of(*v));
         // }
         //
-        let allowed_colors = self.as_perturbed().transfer_colors_from(self.as_non_perturbable().unit_colors(), &self.as_non_perturbable()).unwrap().intersect(&admissible_colors_perturbations);
+
+        let allowed_colors = self
+            .as_perturbed()
+            .transfer_colors_from(
+                self.as_non_perturbable().unit_colors(),
+                &self.as_non_perturbable(),
+            )
+            .unwrap()
+            .intersect(&admissible_colors_perturbations);
 
         if verbose {
             println!(">>>>>>>>>>>>> Computing phenotype control with allowed perturbations of cardinality {}", allowed_colors.approx_cardinality())
         }
-        let perturbation_bbd_vars_mapping = self.get_perturbation_bdd_mapping(self.perturbable_variables());
+        let perturbation_bbd_vars_mapping =
+            self.get_perturbation_bdd_mapping(self.perturbable_variables());
         let bdd_vars = self.as_symbolic_context().bdd_variable_set();
 
         // The list of symbolic variables of perturbation parameters.
         let perturbation_bdd_vars = Self::get_perturbation_bdd_vars(&perturbation_bbd_vars_mapping);
         let mut trap;
-        let control_universe = self.unit_colored_vertices().intersect_colors(&allowed_colors);
+        let control_universe = self
+            .unit_colored_vertices()
+            .intersect_colors(&allowed_colors);
         let phenotype_coloured_vertices = control_universe.intersect_vertices(&phenotype);
         match oscillation {
-            PhenotypeOscillationType::Required => {return self.phenotype_permanent_control_with_true_oscillation_internal(phenotype, allowed_colors, verbose)}
+            PhenotypeOscillationType::Required => {
+                return self.phenotype_permanent_control_with_true_oscillation_internal(
+                    phenotype,
+                    allowed_colors,
+                    verbose,
+                )
+            }
             PhenotypeOscillationType::Allowed => {
-                let bwd_reach = backward_within(self.as_perturbed(), &phenotype_coloured_vertices, &control_universe);
+                let bwd_reach = backward_within(
+                    self.as_perturbed(),
+                    &phenotype_coloured_vertices,
+                    &control_universe,
+                );
                 trap = bwd_reach
             }
-            PhenotypeOscillationType::Forbidden => {trap = phenotype_coloured_vertices;}
+            PhenotypeOscillationType::Forbidden => {
+                trap = phenotype_coloured_vertices;
+            }
         }
 
         'trap: loop {
@@ -67,7 +95,11 @@ impl PerturbationGraph {
                 if !can_leave.is_empty() {
                     trap = trap.minus(&can_leave);
                     if trap.symbolic_size() > 100_000 {
-                        println!(" Trap phenotype progress: {} / {}",  trap.symbolic_size(), trap.approx_cardinality());
+                        println!(
+                            " Trap phenotype progress: {} / {}",
+                            trap.symbolic_size(),
+                            trap.approx_cardinality()
+                        );
                     }
                     continue 'trap;
                 }
@@ -80,10 +112,14 @@ impl PerturbationGraph {
         }
 
         if verbose {
-            println!("Cardinality of phenotype trap set: {}", trap.approx_cardinality())
+            println!(
+                "Cardinality of phenotype trap set: {}",
+                trap.approx_cardinality()
+            )
         }
 
-        let mut trap = self.unit_colored_vertices()
+        let mut trap = self
+            .unit_colored_vertices()
             .intersect_colors(&admissible_colors_perturbations)
             .minus(&trap);
 
@@ -93,7 +129,11 @@ impl PerturbationGraph {
                 if !can_leave.is_empty() {
                     trap = trap.minus(&can_leave);
                     if trap.symbolic_size() > 100_000 {
-                        println!(" Trap non-phenotype progress: {} / {}", trap.symbolic_size(), trap.approx_cardinality());
+                        println!(
+                            " Trap non-phenotype progress: {} / {}",
+                            trap.symbolic_size(),
+                            trap.approx_cardinality()
+                        );
                     }
                     continue 'trap;
                 }
@@ -106,7 +146,10 @@ impl PerturbationGraph {
         }
 
         if verbose {
-            println!("Cardinality of inversed trap set: {}", trap.approx_cardinality())
+            println!(
+                "Cardinality of inversed trap set: {}",
+                trap.approx_cardinality()
+            )
         }
 
         let mut inverse_control = trap.into_bdd();
@@ -116,8 +159,7 @@ impl PerturbationGraph {
                 // If the variable can be perturbed, we split into two cases and eliminate
                 // it in the unperturbed cases.
 
-                let is_perturbed = inverse_control
-                    .var_select(*perturbation_var, true);
+                let is_perturbed = inverse_control.var_select(*perturbation_var, true);
                 let is_not_perturbed = inverse_control
                     .var_select(*perturbation_var, false)
                     .var_exists(state_var);
@@ -129,34 +171,44 @@ impl PerturbationGraph {
         }
 
         let inverse_control_map = self.empty_colored_vertices().copy(inverse_control);
-        if verbose{
-            println!("Inverse control cardinality {}", inverse_control_map.approx_cardinality());
+        if verbose {
+            println!(
+                "Inverse control cardinality {}",
+                inverse_control_map.approx_cardinality()
+            );
         }
 
-
         if verbose {
-            println!("Cardinality of inversed control map: {}", inverse_control_map.approx_cardinality())
+            println!(
+                "Cardinality of inversed control map: {}",
+                inverse_control_map.approx_cardinality()
+            )
         }
 
         // Control map consists of admissible state-color pairs that are also admissible
         // for our perturbation size and are not in the inverse map.
-        let control_map = self.unit_colored_vertices()
+        let control_map = self
+            .unit_colored_vertices()
             .intersect_colors(&admissible_colors_perturbations)
             .minus(&inverse_control_map);
 
         if verbose {
-            println!("Cardinality of control map: {}", control_map.approx_cardinality())
+            println!(
+                "Cardinality of control map: {}",
+                control_map.approx_cardinality()
+            )
         }
 
         let result = PhenotypeControlMap {
             perturbation_variables: self.perturbable_variables().clone(),
             perturbation_set: control_map.clone(),
-            context: self.clone()
+            context: self.clone(),
         };
 
         if verbose {
             // Compute the number of valuations of the perturbation parameters.
-            let factor = 2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
+            let factor =
+                2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
             let mut only_perturbation_parameters = control_map.into_bdd();
             for var in bdd_vars.variables() {
                 if !perturbation_bdd_vars.contains(&var) {
@@ -166,22 +218,27 @@ impl PerturbationGraph {
 
             result.working_perturbations(0.0, true);
             println!(">>>>>> Elapsed: {}ms", start.elapsed().unwrap().as_millis());
-
         }
 
         result
     }
-
 
     pub fn phenotype_permanent_control_of_specific_size(
         &self,
         phenotype: GraphVertices,
         perturbation_size: usize,
         allow_oscillation: PhenotypeOscillationType,
-        verbose: bool
+        verbose: bool,
     ) -> PhenotypeControlMap {
         let admissible_perturbations = self.create_perturbation_colors(perturbation_size, verbose);
-        let control_map = self.phenotype_permanent_control_internal(phenotype.clone(), admissible_perturbations, allow_oscillation, verbose).perturbation_set;
+        let control_map = self
+            .phenotype_permanent_control_internal(
+                phenotype.clone(),
+                admissible_perturbations,
+                allow_oscillation,
+                verbose,
+            )
+            .perturbation_set;
 
         let map = PhenotypeControlMap {
             perturbation_variables: self.perturbable_variables().clone(),
@@ -189,21 +246,32 @@ impl PerturbationGraph {
             context: self.clone(),
         };
 
-        return map
+        return map;
     }
 
-    pub fn create_perturbation_colors(&self, perturbation_size: usize, verbose: bool) -> GraphColors {
+    pub fn create_perturbation_colors(
+        &self,
+        perturbation_size: usize,
+        verbose: bool,
+    ) -> GraphColors {
         // A map which gives us the symbolic variable of the perturbation parameter.
-        let perturbation_bbd_vars_mapping = self.get_perturbation_bdd_mapping(self.perturbable_variables());
+        let perturbation_bbd_vars_mapping =
+            self.get_perturbation_bdd_mapping(self.perturbable_variables());
         let bdd_vars = self.as_symbolic_context().bdd_variable_set();
         // The list of symbolic variables of perturbation parameters.
         let perturbation_bdd_vars = Self::get_perturbation_bdd_vars(&perturbation_bbd_vars_mapping);
 
-        let admissible_perturbations = mk_bdd_of_bound(bdd_vars, &perturbation_bdd_vars, perturbation_size);
+        let admissible_perturbations =
+            mk_bdd_of_bound(bdd_vars, &perturbation_bdd_vars, perturbation_size);
         {
-            let factor = 2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
+            let factor =
+                2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
             if verbose {
-                println!("[{}] >> Admissible fixed(Q) sets: {}", perturbation_size, admissible_perturbations.cardinality() / factor);
+                println!(
+                    "[{}] >> Admissible fixed(Q) sets: {}",
+                    perturbation_size,
+                    admissible_perturbations.cardinality() / factor
+                );
             }
         }
         let admissible_perturbations = self.empty_colors().copy(admissible_perturbations);
@@ -216,18 +284,26 @@ impl PerturbationGraph {
         size_bound: usize,
         allow_oscillation: PhenotypeOscillationType,
         stop_early: bool,
-        verbose: bool
+        verbose: bool,
     ) -> PhenotypeControlMap {
         // A map which gives us the symbolic variable of the perturbation parameter.
         let mut control_map_all = self.mk_empty_colored_vertices();
 
         for perturbation_size in 0..(size_bound + 1) {
             let start = SystemTime::now();
-            let admissible_perturbations = self.create_perturbation_colors(perturbation_size, verbose);
+            let admissible_perturbations =
+                self.create_perturbation_colors(perturbation_size, verbose);
 
             // perturbation_graph.as_perturbed().transfer_colors_from(normal_graph.unit_colors(), &normal_graph).unwrap();
 
-            let control_map = self.phenotype_permanent_control_internal(phenotype.clone(), admissible_perturbations, allow_oscillation.clone(), verbose).perturbation_set;
+            let control_map = self
+                .phenotype_permanent_control_internal(
+                    phenotype.clone(),
+                    admissible_perturbations,
+                    allow_oscillation.clone(),
+                    verbose,
+                )
+                .perturbation_set;
 
             control_map_all = control_map_all.union(&control_map);
 
@@ -235,56 +311,78 @@ impl PerturbationGraph {
                 perturbation_variables: self.perturbable_variables().clone(),
                 perturbation_set: control_map,
                 context: self.clone(),
-            }.working_perturbations( 1.0, verbose);
+            }
+            .working_perturbations(1.0, verbose);
 
             if verbose || stop_early {
                 let mut best_robustness = 0.0;
                 for (_perturbation, working_colors) in working_perturbations {
-                    let robustness = working_colors.approx_cardinality() / self.as_non_perturbable().unit_colors().approx_cardinality();
+                    let robustness = working_colors.approx_cardinality()
+                        / self.as_non_perturbable().unit_colors().approx_cardinality();
                     if robustness > best_robustness {
                         best_robustness = robustness
                     }
                 }
 
                 if verbose {
-                    println!("Robustness {} achieved for perturbation size {}.", best_robustness, perturbation_size);
+                    println!(
+                        "Robustness {} achieved for perturbation size {}.",
+                        best_robustness, perturbation_size
+                    );
                 }
 
                 if best_robustness >= 1.0 && stop_early {
                     if verbose {
-                        println!("Robustness {} achieved for perturbation size {}.", best_robustness, perturbation_size);
+                        println!(
+                            "Robustness {} achieved for perturbation size {}.",
+                            best_robustness, perturbation_size
+                        );
                     }
                     return PhenotypeControlMap {
                         perturbation_variables: self.perturbable_variables().clone(),
                         perturbation_set: control_map_all,
                         context: self.clone(),
-                    }
+                    };
                 }
             }
         }
-
 
         return PhenotypeControlMap {
             perturbation_variables: self.perturbable_variables().clone(),
             perturbation_set: control_map_all,
             context: self.clone(),
-        }
+        };
     }
-
 
     fn phenotype_permanent_control_with_true_oscillation_internal(
         &self,
         phenotype: GraphVertices,
         admissible_colors: GraphColors,
-        verbose: bool
+        verbose: bool,
     ) -> PhenotypeControlMap {
-
         // oscillation with phenotype set to true
-        let control_map_in_phenotype = self.phenotype_permanent_control_internal(phenotype.clone(), admissible_colors.clone(), PhenotypeOscillationType::Allowed, verbose).perturbation_set;
+        let control_map_in_phenotype = self
+            .phenotype_permanent_control_internal(
+                phenotype.clone(),
+                admissible_colors.clone(),
+                PhenotypeOscillationType::Allowed,
+                verbose,
+            )
+            .perturbation_set;
 
         // oscillation with outside of phenotype
-        let outside_phenotype = self.mk_unit_colored_vertices().minus_vertices(&phenotype).vertices();
-        let control_map_outside_phenotype = self.phenotype_permanent_control_internal(outside_phenotype, admissible_colors, PhenotypeOscillationType::Allowed, verbose).perturbation_set;
+        let outside_phenotype = self
+            .mk_unit_colored_vertices()
+            .minus_vertices(&phenotype)
+            .vertices();
+        let control_map_outside_phenotype = self
+            .phenotype_permanent_control_internal(
+                outside_phenotype,
+                admissible_colors,
+                PhenotypeOscillationType::Allowed,
+                verbose,
+            )
+            .perturbation_set;
 
         let control_map = control_map_in_phenotype.intersect(&control_map_outside_phenotype);
 
@@ -292,10 +390,12 @@ impl PerturbationGraph {
             perturbation_variables: self.perturbable_variables().clone(),
             perturbation_set: control_map,
             context: self.clone(),
-        }
+        };
     }
 
-    pub fn get_perturbation_bdd_vars(perturbation_bbd_vars_mapping: &HashMap<VariableId, BddVariable>) -> Vec<BddVariable> {
+    pub fn get_perturbation_bdd_vars(
+        perturbation_bbd_vars_mapping: &HashMap<VariableId, BddVariable>,
+    ) -> Vec<BddVariable> {
         let perturbation_bdd_vars = {
             let mut values = perturbation_bbd_vars_mapping
                 .values()
@@ -307,13 +407,23 @@ impl PerturbationGraph {
         perturbation_bdd_vars
     }
 
-    pub fn get_perturbation_bdd_mapping(&self, perturbation_variables: &Vec<VariableId>) -> HashMap<VariableId, BddVariable> {
-        let perturbation_bbd_vars_mapping = perturbation_variables.iter()
-            .filter_map(|var| self.get_perturbation_parameter(var.clone()).map(|it| (var.clone(), it)))
+    pub fn get_perturbation_bdd_mapping(
+        &self,
+        perturbation_variables: &Vec<VariableId>,
+    ) -> HashMap<VariableId, BddVariable> {
+        let perturbation_bbd_vars_mapping = perturbation_variables
+            .iter()
+            .filter_map(|var| {
+                self.get_perturbation_parameter(var.clone())
+                    .map(|it| (var.clone(), it))
+            })
             .map(|(var, param)| {
-                (var, self.as_symbolic_context()
-                    .get_explicit_function_table(param)
-                    .symbolic_variables()[0])
+                (
+                    var,
+                    self.as_symbolic_context()
+                        .get_explicit_function_table(param)
+                        .symbolic_variables()[0],
+                )
             })
             .collect::<HashMap<_, _>>();
         perturbation_bbd_vars_mapping
@@ -324,10 +434,11 @@ impl PerturbationGraph {
 mod tests {
     use crate::aeon::phentoype::build_phenotype;
     use crate::perturbation::PerturbationGraph;
+    use crate::phenotype_control::_impl_phenotype_permanent_control::PhenotypeOscillationType;
+    use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::collections::HashMap;
     use std::convert::TryFrom;
-    use crate::phenotype_control::_impl_phenotype_permanent_control::PhenotypeOscillationType;
 
     #[test]
     pub fn test_standard_permanent_myeloid() {
@@ -346,16 +457,16 @@ mod tests {
         let control = perturbations.phenotype_permanent_control(
             erythrocyte_phenotype,
             PhenotypeOscillationType::Forbidden,
-            false
+            false,
         );
 
-        let working_perturbations = control.working_perturbations(1.0,  false);
+        let working_perturbations = control.working_perturbations(1.0, false);
 
         // println!("{:?}", control.working_perturbations(1.0, true));
 
         // Trivial working control
         let working_colors =
-            control.perturbation_working_colors( &HashMap::from([(String::from("EKLF"), true)]));
+            control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), true)]));
 
         assert_eq!(1.0, working_colors.approx_cardinality());
 
@@ -401,9 +512,13 @@ mod tests {
             perturbations.as_perturbed(),
             HashMap::from([("EKLF", true)]),
         );
-        let control =
-            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype,  3, PhenotypeOscillationType::Forbidden,
-                                                              false, true);
+        let control = perturbations.ceiled_phenotype_permanent_control(
+            erythrocyte_phenotype,
+            3,
+            PhenotypeOscillationType::Forbidden,
+            false,
+            true,
+        );
 
         let working_perturbations = control.working_perturbations(1.0, false);
         // Trivial working control
@@ -439,7 +554,6 @@ mod tests {
         assert_eq!(0.0, not_working_colors.approx_cardinality());
     }
 
-
     #[test]
     pub fn test_restricted_vars_permanent_myeloid() {
         let model_string = &std::fs::read_to_string("models/myeloid_witness.aeon").unwrap();
@@ -462,17 +576,41 @@ mod tests {
             perturbations.as_perturbed(),
             HashMap::from([("EKLF", true)]),
         );
-        let control =
-            perturbations.ceiled_phenotype_permanent_control(erythrocyte_phenotype, 1, PhenotypeOscillationType::Forbidden,
-                                                             false, true);
+        let control = perturbations.ceiled_phenotype_permanent_control(
+            erythrocyte_phenotype,
+            1,
+            PhenotypeOscillationType::Forbidden,
+            false,
+            true,
+        );
 
-        println!("{:?}", control.working_perturbations(1.0,  false).len());
+        println!("{:?}", control.working_perturbations(1.0, false).len());
         // Trivial working control
         let working_colors =
             control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), true)]));
 
         assert_eq!(0.0, working_colors.approx_cardinality());
-        assert_eq!(0, control.working_perturbations(1.0,  false).len());
+        assert_eq!(0, control.working_perturbations(1.0, false).len());
+    }
 
+    #[test]
+    pub fn test_implicit_parameter_compatibility() {
+        let bn = BooleanNetwork::try_from(
+            r"
+            v_1 -> v_2
+            v_3 -| v_2
+            v_2 -> v_3
+            $v_3: v_2
+        ",
+        )
+        .unwrap();
+
+        let stg = SymbolicAsyncGraph::new(&bn).unwrap();
+        let perturbed = PerturbationGraph::new(&bn);
+
+        assert!(perturbed
+            .as_perturbed()
+            .transfer_colors_from(stg.unit_colors(), &stg)
+            .is_some());
     }
 }

@@ -24,7 +24,7 @@ pub fn mk_bdd_up_to_bound(ctx: &BddVariableSet, variables: &[BddVariable], bound
                 (&result, None),
                 (&not_var, None),
                 Some(*var),
-                biodivine_lib_bdd::op_function::and
+                biodivine_lib_bdd::op_function::and,
             );
             result_plus_one = result_plus_one.or(&with_var);
         }
@@ -54,7 +54,7 @@ pub fn mk_bdd_of_bound(ctx: &BddVariableSet, variables: &[BddVariable], bound: u
                 (&result, None),
                 (&not_var, None),
                 Some(*var),
-                biodivine_lib_bdd::op_function::and
+                biodivine_lib_bdd::op_function::and,
             );
             result_plus_one = result_plus_one.or(&with_var);
         }
@@ -66,8 +66,8 @@ pub fn mk_bdd_of_bound(ctx: &BddVariableSet, variables: &[BddVariable], bound: u
 
 #[cfg(test)]
 mod tests {
-    use biodivine_lib_bdd::BddVariableSet;
     use crate::phenotype_control::_symbolic_utils::{mk_bdd_of_bound, mk_bdd_up_to_bound};
+    use biodivine_lib_bdd::BddVariableSet;
 
     #[test]
     pub fn test_bounded_bdd() {
@@ -85,7 +85,10 @@ mod tests {
 
         let bdd = mk_bdd_up_to_bound(&vars, &vars.variables(), 3);
         // The number of such valuations is exactly the binomial coefficient.
-        assert_eq!(bdd.cardinality(), (binomial(5, 3) + binomial(5, 2) + binomial(5, 1) + binomial(5, 0)) as f64);
+        assert_eq!(
+            bdd.cardinality(),
+            (binomial(5, 3) + binomial(5, 2) + binomial(5, 1) + binomial(5, 0)) as f64
+        );
     }
 
     pub fn binomial(n: usize, k: usize) -> usize {
@@ -99,5 +102,4 @@ mod tests {
             x * factorial(x - 1)
         }
     }
-
 }

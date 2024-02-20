@@ -1,13 +1,12 @@
-use std::collections::HashMap;
+use biodivine_lib_param_bn::fixed_points::FixedPoints;
+use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
+use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
 use biodivine_pbn_control::experiment_utils::{parse_experiment, run_control_experiment};
 use biodivine_pbn_control::perturbation::PerturbationGraph;
-use biodivine_lib_param_bn::fixed_points::FixedPoints;
-use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
-use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
+use std::collections::HashMap;
 use std::time::Instant;
 // use biodivine_lib_param_bn::symbolic_async_graph::reachability::Reachability;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
-
 
 fn main() {
     // let phenotypes = [
@@ -58,22 +57,34 @@ fn main() {
     // }
 }
 
-
 fn get_controllable_vars(model_name: &str, model_file: &str) -> Vec<VariableId> {
-    let model_string = std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
+    let model_string =
+        std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
 
     let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
     let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
 
     let mut controllable_vars = Vec::new();
-    let uncontrollable = config[model_name]["uncontrollable"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
-    let inputs = config[model_name]["inputs"].as_array().unwrap().into_iter().map(|x| x.as_str().unwrap()).collect::<Vec<&str>>();
+    let uncontrollable = config[model_name]["uncontrollable"]
+        .as_array()
+        .unwrap()
+        .into_iter()
+        .map(|x| x.as_str().unwrap())
+        .collect::<Vec<&str>>();
+    let inputs = config[model_name]["inputs"]
+        .as_array()
+        .unwrap()
+        .into_iter()
+        .map(|x| x.as_str().unwrap())
+        .collect::<Vec<&str>>();
     for v in bn.variables() {
-        if !uncontrollable.contains(&bn.get_variable_name(v).as_str()) && !inputs.contains(&bn.get_variable_name(v).as_str()){
+        if !uncontrollable.contains(&bn.get_variable_name(v).as_str())
+            && !inputs.contains(&bn.get_variable_name(v).as_str())
+        {
             controllable_vars.push(v);
         }
     }
 
-    return controllable_vars
+    return controllable_vars;
 }

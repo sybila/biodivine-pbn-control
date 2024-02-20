@@ -28,8 +28,10 @@ impl PerturbationGraph {
         let mut original_parameters = HashMap::new();
         let mut perturbed_parameters = HashMap::new();
 
-        let original = make_original_network(&normalized, &mut original_parameters, perturb.clone());
-        let perturbed = make_perturbed_network(&normalized, &mut perturbed_parameters, perturb.clone());
+        let original =
+            make_original_network(&normalized, &mut original_parameters, perturb.clone());
+        let perturbed =
+            make_perturbed_network(&normalized, &mut perturbed_parameters, perturb.clone());
 
         assert_eq!(original_parameters, perturbed_parameters);
 
@@ -42,7 +44,9 @@ impl PerturbationGraph {
         }
     }
 
-    pub fn as_non_perturbable(&self) -> &SymbolicAsyncGraph { &self.non_perturbable_graph }
+    pub fn as_non_perturbable(&self) -> &SymbolicAsyncGraph {
+        &self.non_perturbable_graph
+    }
 
     pub fn as_original(&self) -> &SymbolicAsyncGraph {
         &self.original_graph
@@ -60,7 +64,9 @@ impl PerturbationGraph {
         self.original_graph.as_network().unwrap().variables()
     }
 
-    pub fn perturbable_variables(&self) -> &Vec<VariableId> { &self.perturbable_vars }
+    pub fn perturbable_variables(&self) -> &Vec<VariableId> {
+        &self.perturbable_vars
+    }
 
     pub fn get_perturbation_parameter(&self, variable: VariableId) -> Option<ParameterId> {
         self.perturbation_parameters.get(&variable).cloned()
@@ -152,12 +158,16 @@ impl PerturbationGraph {
         }
     }
 
-    pub fn build_colors_with_values(&self, bn: &BooleanNetwork, values: HashMap<String, bool>) -> GraphColors {
+    pub fn build_colors_with_values(
+        &self,
+        bn: &BooleanNetwork,
+        values: HashMap<String, bool>,
+    ) -> GraphColors {
         let mut colors = self.as_original().mk_empty_colors();
         for v in bn.variables() {
             let function = bn.get_update_function(v);
             if !function.is_none() {
-                continue
+                continue;
             }
             println!("{:?}", bn.get_variable_name(v));
 
@@ -174,11 +184,18 @@ impl PerturbationGraph {
 
             let colors_v_set;
             if value {
-                let bdd = self.as_symbolic_context().mk_implicit_function_is_true(v, &[]);
+                let bdd = self
+                    .as_symbolic_context()
+                    .mk_implicit_function_is_true(v, &[]);
                 colors_v_set = self.unit_colors().copy(bdd);
             } else {
-                let bdd = self.as_symbolic_context().mk_implicit_function_is_true(v, &[]);
-                colors_v_set = self.as_original().mk_unit_colors().minus(&self.unit_colors().copy(bdd));
+                let bdd = self
+                    .as_symbolic_context()
+                    .mk_implicit_function_is_true(v, &[]);
+                colors_v_set = self
+                    .as_original()
+                    .mk_unit_colors()
+                    .minus(&self.unit_colors().copy(bdd));
             }
 
             colors = colors.minus(&colors_v_set);

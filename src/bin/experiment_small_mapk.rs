@@ -1,15 +1,15 @@
-use std::borrow::Borrow;
-use std::collections::HashMap;
-use std::hash::Hash;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use biodivine_lib_param_bn::BooleanNetwork;
 use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
+use biodivine_lib_param_bn::BooleanNetwork;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
 use biodivine_pbn_control::perturbation::PerturbationGraph;
 use biodivine_pbn_control::phenotype_control::PhenotypeOscillationType;
+use std::borrow::Borrow;
+use std::collections::HashMap;
+use std::hash::Hash;
 
 fn main() {
-    let model_string = std::fs::read_to_string( "./model.aeon").unwrap();
+    let model_string = std::fs::read_to_string("./model.aeon").unwrap();
     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
     let perturbation_graph = PerturbationGraph::new(&bn);
     let mut phenotype_vals = HashMap::new();
@@ -17,12 +17,16 @@ fn main() {
     phenotype_vals.insert("v_Growth_Arrest", true);
     phenotype_vals.insert("v_Proliferation", false);
 
-    let phenotype = build_phenotype(perturbation_graph.as_perturbed(),
-                                    phenotype_vals);
+    let phenotype = build_phenotype(perturbation_graph.as_perturbed(), phenotype_vals);
 
-    let map = perturbation_graph.ceiled_phenotype_permanent_control(phenotype.clone(), 1, PhenotypeOscillationType::Forbidden, false, false);
-    let perturbations = map.working_perturbations(0.1,  false);
-
+    let map = perturbation_graph.ceiled_phenotype_permanent_control(
+        phenotype.clone(),
+        1,
+        PhenotypeOscillationType::Forbidden,
+        false,
+        false,
+    );
+    let perturbations = map.working_perturbations(0.1, false);
 
     // let model_string = std::fs::read_to_string( "./models/small_mapk.aeon").unwrap();
     // let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
@@ -129,5 +133,4 @@ fn main() {
     // println!("Set working perturbations of {:?}: {:?}",perturbations2[2].0, perturbations2[2].1.approx_cardinality());
     // println!("Single working perturbations: {:?}", map2.perturbation_working_colors( &HashMap::new()).approx_cardinality());
     // println!("Single working perturbations: {:?}", map2.perturbation_working_colors( &HashMap::from([("v_SPRY".to_string(), true)])).approx_cardinality());
-
 }
