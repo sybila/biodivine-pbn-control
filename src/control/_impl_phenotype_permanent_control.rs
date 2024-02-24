@@ -1,6 +1,6 @@
 use crate::aeon::reachability::backward_within;
 use crate::perturbation::PerturbationGraph;
-use crate::control::_symbolic_utils::mk_bdd_of_bound;
+
 use crate::control::{ControlMap, PhenotypeControlMap, PhenotypeOscillationType};
 use biodivine_lib_bdd::BddVariable;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
@@ -208,7 +208,7 @@ impl PerturbationGraph {
 
         if verbose {
             // Compute the number of valuations of the perturbation parameters.
-            let factor =
+            let _factor =
                 2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
             let mut only_perturbation_parameters = control_map.into_bdd();
             for var in bdd_vars.variables() {
@@ -262,7 +262,7 @@ impl PerturbationGraph {
         let mut control_map_all = self.mk_empty_colored_vertices();
 
         for perturbation_size in 0..(size_bound + 1) {
-            let start = SystemTime::now();
+            let _start = SystemTime::now();
             let admissible_perturbations =
                 self.create_perturbation_colors(perturbation_size, verbose);
 

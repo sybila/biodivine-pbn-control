@@ -1,5 +1,5 @@
 use crate::aeon::reachability::backward;
-use crate::control::{AttractorControlMap, ControlMap};
+use crate::control::AttractorControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
@@ -85,7 +85,7 @@ pub fn run_control_experiment<F>(
         start_attractor.elapsed().as_millis()
     );
     let start = Instant::now();
-    let control = control_function(&perturbation_graph, &source, &target, &attractor_colors, false);
+    let _control = control_function(&perturbation_graph, &source, &target, &attractor_colors, false);
     // println!(
     //     "Control exists for {} color(s), jumping through {} vertices.",
     //     control.controllable_colors_cardinality(),
@@ -93,7 +93,7 @@ pub fn run_control_experiment<F>(
     // );
     let elapsed = start.elapsed();
     // println!("Elapsed: {} ms", elapsed.as_millis());
-    let elapsed = elapsed.as_millis() as f64 / 1000.0;
+    let _elapsed = elapsed.as_millis() as f64 / 1000.0;
     // println!("WARNING: This is not a real output of UNIX `time` utility. This is just a similar format for compatibility reasons.");
     // print!("real {}\nuser ??\nsys ??\n", elapsed);
 }

@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 use std::iter::zip;
-use crate::control::{AttractorControlMap, ControlMap, PhenotypeControlMap};
+use crate::control::{AttractorControlMap, ControlMap};
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
-use biodivine_lib_param_bn::VariableId;
+
 use itertools::Itertools;
 use crate::perturbation::PerturbationGraph;
 
@@ -24,7 +24,7 @@ impl ControlMap for AttractorControlMap {
         &self.perturbation_set
     }
 
-    fn working_perturbations(&self, min_robustness: f64, verbose: bool) -> Vec<(HashMap<String, bool>, GraphColors)> {
+    fn working_perturbations(&self, min_robustness: f64, _verbose: bool) -> Vec<(HashMap<String, bool>, GraphColors)> {
         let mut perturbations = vec![];
         let mut max_achieved_rob = 0.0;
         for i in 0..self.perturbation_variables.len() {
