@@ -12,6 +12,4 @@ pub mod perturbation;
 /// network_sampler.py and run_groups.py
 pub mod experiment_utils;
 
-pub mod phenotype_control;
-
 pub mod tests;

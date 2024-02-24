@@ -1,5 +1,5 @@
 use crate::aeon::reachability::backward;
-use crate::control::ControlMap;
+use crate::control::{AttractorControlMap, ControlMap};
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
@@ -15,12 +15,13 @@ pub fn run_control_experiment<F>(
     control_function: F,
     control_type: &str,
 ) where
-    F: for<'a> Fn(
-        &'a PerturbationGraph,
-        &'a ArrayBitVector,
-        &'a ArrayBitVector,
-        &'a GraphColors,
-    ) -> ControlMap,
+    F: Fn(
+        &PerturbationGraph,
+        &ArrayBitVector,
+        &ArrayBitVector,
+        &GraphColors,
+        bool
+    ) -> AttractorControlMap,
 {
     println!(
         ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {} CONTROL",
@@ -84,17 +85,17 @@ pub fn run_control_experiment<F>(
         start_attractor.elapsed().as_millis()
     );
     let start = Instant::now();
-    let control = control_function(&perturbation_graph, &source, &target, &attractor_colors);
-    println!(
-        "Control exists for {} color(s), jumping through {} vertices.",
-        control.controllable_colors_cardinality(),
-        control.jump_vertices()
-    );
+    let control = control_function(&perturbation_graph, &source, &target, &attractor_colors, false);
+    // println!(
+    //     "Control exists for {} color(s), jumping through {} vertices.",
+    //     control.controllable_colors_cardinality(),
+    //     control.jump_vertices()
+    // );
     let elapsed = start.elapsed();
-    println!("Elapsed: {} ms", elapsed.as_millis());
+    // println!("Elapsed: {} ms", elapsed.as_millis());
     let elapsed = elapsed.as_millis() as f64 / 1000.0;
-    println!("WARNING: This is not a real output of UNIX `time` utility. This is just a similar format for compatibility reasons.");
-    print!("real {}\nuser ??\nsys ??\n", elapsed);
+    // println!("WARNING: This is not a real output of UNIX `time` utility. This is just a similar format for compatibility reasons.");
+    // print!("real {}\nuser ??\nsys ??\n", elapsed);
 }
 
 pub fn parse_experiment(file: &str) -> (ArrayBitVector, ArrayBitVector, BooleanNetwork) {
@@ -132,7 +133,7 @@ pub fn get_all_params_with_attractor(
     state: &ArrayBitVector,
 ) -> GraphColors {
     let seed = graph.vertex(state);
-    let bwd = backward(graph.as_original(), &seed);
+    let bwd = backward(graph.as_original(), &seed, false);
     let mut attractor = seed;
     'forward: loop {
         if cfg!(feature = "print_progress") && attractor.as_bdd().size() > 100_000 {

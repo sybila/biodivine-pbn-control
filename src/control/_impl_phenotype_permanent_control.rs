@@ -1,7 +1,7 @@
 use crate::aeon::reachability::backward_within;
 use crate::perturbation::PerturbationGraph;
-use crate::phenotype_control::_symbolic_utils::mk_bdd_of_bound;
-use crate::phenotype_control::{PhenotypeControlMap, PhenotypeOscillationType};
+use crate::control::_symbolic_utils::mk_bdd_of_bound;
+use crate::control::{ControlMap, PhenotypeControlMap, PhenotypeOscillationType};
 use biodivine_lib_bdd::BddVariable;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, GraphVertices};
@@ -81,6 +81,7 @@ impl PerturbationGraph {
                     self.as_perturbed(),
                     &phenotype_coloured_vertices,
                     &control_universe,
+                    verbose
                 );
                 trap = bwd_reach
             }
@@ -249,35 +250,6 @@ impl PerturbationGraph {
         return map;
     }
 
-    pub fn create_perturbation_colors(
-        &self,
-        perturbation_size: usize,
-        verbose: bool,
-    ) -> GraphColors {
-        // A map which gives us the symbolic variable of the perturbation parameter.
-        let perturbation_bbd_vars_mapping =
-            self.get_perturbation_bdd_mapping(self.perturbable_variables());
-        let bdd_vars = self.as_symbolic_context().bdd_variable_set();
-        // The list of symbolic variables of perturbation parameters.
-        let perturbation_bdd_vars = Self::get_perturbation_bdd_vars(&perturbation_bbd_vars_mapping);
-
-        let admissible_perturbations =
-            mk_bdd_of_bound(bdd_vars, &perturbation_bdd_vars, perturbation_size);
-        {
-            let factor =
-                2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
-            if verbose {
-                println!(
-                    "[{}] >> Admissible fixed(Q) sets: {}",
-                    perturbation_size,
-                    admissible_perturbations.cardinality() / factor
-                );
-            }
-        }
-        let admissible_perturbations = self.empty_colors().copy(admissible_perturbations);
-        admissible_perturbations
-    }
-
     pub fn ceiled_phenotype_permanent_control(
         &self,
         phenotype: GraphVertices,
@@ -311,8 +283,7 @@ impl PerturbationGraph {
                 perturbation_variables: self.perturbable_variables().clone(),
                 perturbation_set: control_map,
                 context: self.clone(),
-            }
-            .working_perturbations(1.0, verbose);
+            }.working_perturbations(1.0, verbose);
 
             if verbose || stop_early {
                 let mut best_robustness = 0.0;
@@ -434,11 +405,12 @@ impl PerturbationGraph {
 mod tests {
     use crate::aeon::phentoype::build_phenotype;
     use crate::perturbation::PerturbationGraph;
-    use crate::phenotype_control::_impl_phenotype_permanent_control::PhenotypeOscillationType;
+    use crate::control::_impl_phenotype_permanent_control::PhenotypeOscillationType;
     use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::collections::HashMap;
     use std::convert::TryFrom;
+    use crate::control::ControlMap;
 
     #[test]
     pub fn test_standard_permanent_myeloid() {

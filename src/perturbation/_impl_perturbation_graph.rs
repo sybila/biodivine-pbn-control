@@ -126,9 +126,9 @@ impl PerturbationGraph {
 
     pub fn strong_basin(&self, target: &ArrayBitVector) -> GraphColoredVertices {
         let target_set = self.vertex(target);
-        let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set);
+        let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set, false);
         let strong_basin =
-            crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin);
+            crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin, false);
         strong_basin
     }
 
@@ -140,11 +140,11 @@ impl PerturbationGraph {
     pub fn fix_perturbation(
         &self,
         variable: VariableId,
-        value: Option<bool>,
+        value: Option<&bool>,
     ) -> GraphColoredVertices {
         if let Some(is_perturbed) = self.perturbation_parameters.get(&variable) {
             let states = if let Some(value) = value {
-                self.fix_variable(variable, value)
+                self.fix_variable(variable, value.clone())
             } else {
                 self.mk_unit_colored_vertices()
             };
@@ -246,5 +246,34 @@ impl PerturbationGraph {
         }
 
         result
+    }
+
+    pub fn create_perturbation_colors(
+        &self,
+        perturbation_size: usize,
+        verbose: bool,
+    ) -> GraphColors {
+        // A map which gives us the symbolic variable of the perturbation parameter.
+        let perturbation_bbd_vars_mapping =
+            self.get_perturbation_bdd_mapping(self.perturbable_variables());
+        let bdd_vars = self.as_symbolic_context().bdd_variable_set();
+        // The list of symbolic variables of perturbation parameters.
+        let perturbation_bdd_vars = Self::get_perturbation_bdd_vars(&perturbation_bbd_vars_mapping);
+
+        let admissible_perturbations =
+            crate::control::_symbolic_utils::mk_bdd_of_bound(bdd_vars, &perturbation_bdd_vars, perturbation_size);
+        {
+            let factor =
+                2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
+            if verbose {
+                println!(
+                    "[{}] >> Admissible fixed(Q) sets: {}",
+                    perturbation_size,
+                    admissible_perturbations.cardinality() / factor
+                );
+            }
+        }
+        let admissible_perturbations = self.empty_colors().copy(admissible_perturbations);
+        admissible_perturbations
     }
 }

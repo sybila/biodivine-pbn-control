@@ -1,7 +1,8 @@
-use crate::control::ControlMap;
+use crate::control::AttractorControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
 use biodivine_lib_param_bn::symbolic_async_graph::GraphColors;
+use itertools::Itertools;
 
 impl PerturbationGraph {
     /// Compute permanent control map. That is, controls which work when a perturbation is
@@ -11,18 +12,20 @@ impl PerturbationGraph {
         source: &ArrayBitVector,
         target: &ArrayBitVector,
         compute_params: &GraphColors,
-    ) -> ControlMap {
+        verbose: bool
+    ) -> AttractorControlMap {
         /*
            Permanent control works exactly as one-step, but in the perturbed graph instead of original.
         */
         let target_set = self.vertex(target).intersect_colors(compute_params);
-        let weak_basin = crate::aeon::reachability::backward(self.as_perturbed(), &target_set);
+        let weak_basin = crate::aeon::reachability::backward(self.as_perturbed(), &target_set, verbose);
         let strong_basin =
-            crate::aeon::reachability::forward_closed(self.as_perturbed(), &weak_basin);
+            crate::aeon::reachability::forward_closed(self.as_perturbed(), &weak_basin, verbose);
         let can_jump_to = self.post_perturbation(source, &strong_basin);
-        ControlMap {
+        AttractorControlMap {
             perturbation_set: can_jump_to,
             context: self.clone(),
+            perturbation_variables: self.variables().collect_vec()
         }
     }
 }
@@ -33,6 +36,7 @@ mod tests {
     use biodivine_lib_param_bn::biodivine_std::bitvector::{ArrayBitVector, BitVector};
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::convert::TryFrom;
+    use crate::control::ControlMap;
 
     // Test that in non-parametrised models, trivial permanent control always leads to target,
     // and that there are also other controls we can use except trivial.
@@ -65,6 +69,7 @@ mod tests {
                 &source_state,
                 &target_state,
                 perturbations.unit_colors(),
+                false
             );
             println!(
                 "Control from {:?} to {:?} cardinality: {}",

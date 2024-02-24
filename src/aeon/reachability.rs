@@ -7,6 +7,7 @@ pub fn backward_within(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
     bounds: &GraphColoredVertices,
+    verbose: bool
 ) -> GraphColoredVertices {
     assert!(initial.is_subset(bounds));
     let mut result = initial.clone();
@@ -22,7 +23,7 @@ pub fn backward_within(
                 break;
             }
         }
-        if cfg!(feature = "print_progress") && result.as_bdd().size() > 100_000 {
+        if verbose && result.as_bdd().size() > 100_000 {
             println!("Backward progress: {}", result.as_bdd().size())
         }
         if stop {
@@ -35,6 +36,7 @@ pub fn backward_within(
 pub fn backward(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
+    verbose: bool
 ) -> GraphColoredVertices {
     let mut result = initial.clone();
 
@@ -50,7 +52,7 @@ pub fn backward(
                 break;
             }
         }
-        if cfg!(feature = "print_progress") && result.as_bdd().size() > 100_000 {
+        if verbose && result.as_bdd().size() > 100_000 {
             println!("Backward progress: {}", result.as_bdd().size())
         }
         if stop {
@@ -60,7 +62,7 @@ pub fn backward(
 }
 
 /// Compute the coloured set of all forward reachable states from the `initial` set.
-pub fn forward(graph: &SymbolicAsyncGraph, initial: &GraphColoredVertices) -> GraphColoredVertices {
+pub fn forward(graph: &SymbolicAsyncGraph, initial: &GraphColoredVertices, verbose: bool) -> GraphColoredVertices {
     let mut result = initial.clone();
 
     loop {
@@ -75,7 +77,7 @@ pub fn forward(graph: &SymbolicAsyncGraph, initial: &GraphColoredVertices) -> Gr
                 break;
             }
         }
-        if cfg!(feature = "print_progress") && result.as_bdd().size() > 100_000 {
+        if verbose && result.as_bdd().size() > 100_000 {
             println!("Forward progress: {}", result.as_bdd().size())
         }
         if stop {
@@ -90,6 +92,7 @@ pub fn forward_within(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
     bounds: &GraphColoredVertices,
+    verbose: bool
 ) -> GraphColoredVertices {
     let mut result = initial.clone();
 
@@ -107,7 +110,7 @@ pub fn forward_within(
                 break;
             }
         }
-        if cfg!(feature = "print_progress") && result.as_bdd().size() > 100_000 {
+        if verbose && result.as_bdd().size() > 100_000 {
             println!("Forward progress: {}", result.as_bdd().size())
         }
         if stop {
@@ -123,6 +126,7 @@ pub fn forward_closed_within(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
     bounds: &GraphColoredVertices,
+    verbose: bool
 ) -> GraphColoredVertices {
     let mut result = initial.clone();
 
@@ -138,7 +142,7 @@ pub fn forward_closed_within(
                 break;
             }
         }
-        if cfg!(feature = "print_progress") && result.as_bdd().size() > 100_000 {
+        if verbose && result.as_bdd().size() > 100_000 {
             println!("Forward-closed-within progress: {}", result.as_bdd().size())
         }
         if stop {
@@ -184,6 +188,7 @@ pub fn forward_closed_subset(
 pub fn forward_closed(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
+    verbose: bool
 ) -> GraphColoredVertices {
     let mut basin = initial.clone();
     loop {
@@ -196,7 +201,7 @@ pub fn forward_closed(
                 break;
             }
         }
-        if cfg!(feature = "print_progress") && basin.as_bdd().size() > 100_000 {
+        if verbose && basin.as_bdd().size() > 100_000 {
             println!("Forward closed progress: {}", basin.as_bdd().size())
         }
         if stop {

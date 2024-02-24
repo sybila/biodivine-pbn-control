@@ -1,12 +1,12 @@
 use crate::perturbation::PerturbationGraph;
-use crate::phenotype_control::PhenotypeControlMap;
+use crate::control::{ControlMap, PhenotypeControlMap};
 use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
 use std::collections::HashMap;
 
-impl PhenotypeControlMap {
-    pub fn new(
+impl ControlMap for PhenotypeControlMap {
+    fn new(
         context: PerturbationGraph,
         perturbation_set: GraphColoredVertices,
     ) -> PhenotypeControlMap {
@@ -17,15 +17,15 @@ impl PhenotypeControlMap {
         };
     }
 
-    pub fn as_bdd(&self) -> &Bdd {
+    fn as_bdd(&self) -> &Bdd {
         self.perturbation_set.as_bdd()
     }
 
-    pub fn as_colored_vertices(&self) -> &GraphColoredVertices {
+    fn as_colored_vertices(&self) -> &GraphColoredVertices {
         &self.perturbation_set
     }
 
-    pub fn working_perturbations(
+    fn working_perturbations(
         &self,
         min_robustness: f64,
         verbose: bool,
@@ -131,7 +131,7 @@ impl PhenotypeControlMap {
         result
     }
 
-    pub fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors {
+    fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors {
         let mut perturbation_bdd = self.perturbation_set.as_bdd().clone();
         // Obtain BDD having given variables perturbed to the specified value and remaining variables having unperturbed
         for v in self.context.as_perturbed().variables() {
@@ -154,7 +154,7 @@ impl PhenotypeControlMap {
                 perturbation_bdd = perturbation_bdd.and(
                     &self
                         .context
-                        .fix_perturbation(v, Some(perturbation_value.clone()))
+                        .fix_perturbation(v, Some(&perturbation_value))
                         .into_bdd(),
                 );
                 perturbation_bdd = perturbation_bdd.var_exists(bdd_var);

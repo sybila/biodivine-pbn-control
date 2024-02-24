@@ -8,15 +8,16 @@ use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, Symboli
 pub fn reduction(
     graph: &SymbolicAsyncGraph,
     mut universe: GraphColoredVertices,
+    verbose: bool
 ) -> GraphColoredVertices {
     for var in graph.variables() {
         let var_can_post = graph.var_can_post(var, &universe);
         let reach_from_post =
-            super::reachability::forward(graph, &var_can_post).intersect(&universe);
+            super::reachability::forward(graph, &var_can_post, verbose).intersect(&universe);
 
         // Remove basin of the reachable area.
         if reach_from_post != universe {
-            let reach_basin = super::reachability::backward(graph, &reach_from_post)
+            let reach_basin = super::reachability::backward(graph, &reach_from_post, false)
                 .intersect(&universe)
                 .minus(&reach_from_post);
             if !reach_basin.is_empty() {
@@ -25,12 +26,12 @@ pub fn reduction(
         }
 
         let post_extended_component =
-            super::reachability::backward(graph, &var_can_post).intersect(&reach_from_post);
+            super::reachability::backward(graph, &var_can_post, false).intersect(&reach_from_post);
         let bottom_region = reach_from_post.minus(&post_extended_component);
 
         // Remove basin of the bottom area.
         if !bottom_region.is_empty() {
-            let bottom_basin = super::reachability::backward(graph, &bottom_region)
+            let bottom_basin = super::reachability::backward(graph, &bottom_region, false)
                 .intersect(&universe)
                 .minus(&bottom_region);
             if !bottom_basin.is_empty() {

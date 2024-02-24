@@ -1,9 +1,8 @@
-use biodivine_lib_param_bn::biodivine_std::traits::Set;
-use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
+
 use biodivine_lib_param_bn::BooleanNetwork;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
 use biodivine_pbn_control::perturbation::PerturbationGraph;
-use biodivine_pbn_control::phenotype_control::PhenotypeOscillationType;
+use biodivine_pbn_control::control::{ControlMap, PhenotypeOscillationType};
 use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::hash::Hash;

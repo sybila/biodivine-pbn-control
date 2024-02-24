@@ -1,8 +1,9 @@
 use crate::aeon::reachability::{backward, forward_closed};
-use crate::control::ControlMap;
+use crate::control::AttractorControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
 use biodivine_lib_param_bn::symbolic_async_graph::GraphColors;
+use itertools::Itertools;
 
 impl PerturbationGraph {
     /// Compute temporary control map. That is, controls which work when a perturbation is applied,
@@ -12,20 +13,22 @@ impl PerturbationGraph {
         source: &ArrayBitVector,
         target: &ArrayBitVector,
         compute_params: &GraphColors,
-    ) -> ControlMap {
+        verbose: bool
+    ) -> AttractorControlMap {
         /*
            Temporary control is the most challenging, because the control jump needs to be into
            the perturbed basin of a normal basin of target.
         */
         let target_set = self.vertex(target).intersect_colors(compute_params);
-        let original_weak_basin = backward(self.as_original(), &target_set);
-        let original_strong_basin = forward_closed(self.as_original(), &original_weak_basin);
-        let perturbed_weak_basin = backward(self.as_perturbed(), &original_strong_basin);
-        let perturbed_strong_basin = forward_closed(self.as_perturbed(), &perturbed_weak_basin);
+        let original_weak_basin = backward(self.as_original(), &target_set, verbose);
+        let original_strong_basin = forward_closed(self.as_original(), &original_weak_basin, verbose);
+        let perturbed_weak_basin = backward(self.as_perturbed(), &original_strong_basin, verbose);
+        let perturbed_strong_basin = forward_closed(self.as_perturbed(), &perturbed_weak_basin, verbose);
         let can_jump_and_hold = self.post_perturbation(source, &perturbed_strong_basin);
-        ControlMap {
+        AttractorControlMap {
             perturbation_set: can_jump_and_hold,
             context: self.clone(),
+            perturbation_variables: self.variables().collect_vec()
         }
     }
 }
@@ -38,6 +41,7 @@ mod tests {
     use biodivine_lib_param_bn::biodivine_std::traits::Set;
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::convert::TryFrom;
+    use crate::control::ControlMap;
 
     // Test that in non-parametrised models, trivial permanent control always leads to target,
     // and that there are also other controls we can use except trivial.
@@ -70,6 +74,7 @@ mod tests {
                 &source_state,
                 &target_state,
                 perturbations.unit_colors(),
+                false
             );
             println!(
                 "Control from {:?} to {:?} cardinality: {}",
@@ -104,8 +109,8 @@ mod tests {
             assert!(all_perturbed.as_bdd().cardinality() > 1.0);
 
             let target_set = perturbations.vertex(&target_state);
-            let weak_basin = backward(perturbations.as_original(), &target_set);
-            let strong_basin = forward_closed(perturbations.as_original(), &weak_basin);
+            let weak_basin = backward(perturbations.as_original(), &target_set, false);
+            let strong_basin = forward_closed(perturbations.as_original(), &weak_basin, false);
             assert_eq!(
                 all_perturbed.as_bdd().cardinality(),
                 strong_basin.vertices().approx_cardinality()
@@ -123,6 +128,7 @@ mod tests {
                 &source_state,
                 &target_state,
                 perturbations.unit_colors(),
+                false
             );
             let extra_controls = control
                 .as_colored_vertices()

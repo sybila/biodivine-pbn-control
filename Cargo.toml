@@ -1,6 +1,6 @@
 [package]
 name = "biodivine-pbn-control"
-version = "0.2.0"
+version = "0.3.2"
 description = "A library for controlling parametrized Boolean networks."
 authors = ["Samuel Pastva <daemontus@gmail.com>, Eva Smijakova <smijakova.eva@gmail.com>"]
 edition = "2021"
@@ -28,7 +28,7 @@ serde_json = "1.0.59"
 itertools = "0.12.1"
 chrono = "0.4.19"
 biodivine-lib-bdd = "0.5.11"
-biodivine-lib-param-bn = { version="0.5.2", features=["solver-z3"] }
+biodivine-lib-param-bn = { version="0.5.9", features=["solver-z3"] }
 rstest = "0.18.2"
 
 z3="^0.12.1"

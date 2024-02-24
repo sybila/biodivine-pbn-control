@@ -11,6 +11,6 @@ fn main() {
         target,
         model,
         PerturbationGraph::one_step_control,
-        "one-step",
+        "one-step"
     );
 }
