@@ -25,7 +25,7 @@ fn main() {
         false,
         false,
     );
-    let _perturbations = map.working_perturbations(0.1, false);
+    let _perturbations = map.working_perturbations(0.1, false, false);
 
     // let model_string = std::fs::read_to_string( "./models/small_mapk.aeon").unwrap();
     // let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();

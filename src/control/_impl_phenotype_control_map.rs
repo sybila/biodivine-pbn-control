@@ -29,6 +29,7 @@ impl ControlMap for PhenotypeControlMap {
         &self,
         min_robustness: f64,
         verbose: bool,
+        _return_only_smallest: bool
     ) -> Vec<(HashMap<String, bool>, GraphColors)> {
         if min_robustness < 0.0 || min_robustness > 1.0 {
             panic!("Min robustness must be in range between 0.0 and 1.0")

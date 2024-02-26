@@ -24,7 +24,11 @@ impl ControlMap for AttractorControlMap {
         &self.perturbation_set
     }
 
-    fn working_perturbations(&self, min_robustness: f64, _verbose: bool) -> Vec<(HashMap<String, bool>, GraphColors)> {
+    fn working_perturbations(&self, min_robustness: f64, _verbose: bool, return_all: bool) -> Vec<(HashMap<String, bool>, GraphColors)> {
+        if min_robustness < 0.0 || min_robustness > 1.0 {
+            panic!("Min robustness must be in range between 0.0 and 1.0")
+        }
+
         let mut perturbations = vec![];
         let mut max_achieved_rob = 0.0;
         for i in 0..self.perturbation_variables.len() {
@@ -39,7 +43,7 @@ impl ControlMap for AttractorControlMap {
                     if colors.clone().approx_cardinality() > min_robustness {
                         perturbations.push((perturbation, colors.clone()));
                     }
-                    if colors.clone().approx_cardinality() > max_achieved_rob {
+                    if colors.clone().approx_cardinality() > max_achieved_rob && !return_all {
                         max_achieved_rob = colors.approx_cardinality();
                     }
                 }

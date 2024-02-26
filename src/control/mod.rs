@@ -53,6 +53,7 @@ pub trait ControlMap {
         &self,
         min_robustness: f64,
         verbose: bool,
+        return_all: bool
     ) -> Vec<(HashMap<String, bool>, GraphColors)>;
     fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors;
 }

@@ -217,7 +217,7 @@ impl PerturbationGraph {
                 }
             }
 
-            result.working_perturbations(0.0, true);
+            result.working_perturbations(0.0, true, false);
             println!(">>>>>> Elapsed: {}ms", start.elapsed().unwrap().as_millis());
         }
 
@@ -283,7 +283,7 @@ impl PerturbationGraph {
                 perturbation_variables: self.perturbable_variables().clone(),
                 perturbation_set: control_map,
                 context: self.clone(),
-            }.working_perturbations(1.0, verbose);
+            }.working_perturbations(1.0, verbose, false);
 
             if verbose || stop_early {
                 let mut best_robustness = 0.0;
@@ -432,7 +432,7 @@ mod tests {
             false,
         );
 
-        let working_perturbations = control.working_perturbations(1.0, false);
+        let working_perturbations = control.working_perturbations(1.0, false, false);
 
         // println!("{:?}", control.working_perturbations(1.0, true));
 
@@ -492,7 +492,7 @@ mod tests {
             true,
         );
 
-        let working_perturbations = control.working_perturbations(1.0, false);
+        let working_perturbations = control.working_perturbations(1.0, false, false);
         // Trivial working control
         let working_colors =
             control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), true)]));
@@ -556,13 +556,13 @@ mod tests {
             true,
         );
 
-        println!("{:?}", control.working_perturbations(1.0, false).len());
+        println!("{:?}", control.working_perturbations(1.0, false, false).len());
         // Trivial working control
         let working_colors =
             control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), true)]));
 
         assert_eq!(0.0, working_colors.approx_cardinality());
-        assert_eq!(0, control.working_perturbations(1.0, false).len());
+        assert_eq!(0, control.working_perturbations(1.0, false, false).len());
     }
 
     #[test]
