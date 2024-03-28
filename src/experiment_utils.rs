@@ -85,12 +85,12 @@ pub fn run_control_experiment<F>(
         start_attractor.elapsed().as_millis()
     );
     let start = Instant::now();
-    let _control = control_function(&perturbation_graph, &source, &target, &attractor_colors, false);
-    // println!(
-    //     "Control exists for {} color(s), jumping through {} vertices.",
-    //     control.controllable_colors_cardinality(),
-    //     control.jump_vertices()
-    // );
+    let control = control_function(&perturbation_graph, &source, &target, &attractor_colors, false);
+    println!(
+        "Control exists jumping through {} vertices.",
+        // control.controllable_colors_cardinality(),
+        control.jump_vertices()
+    );
     let elapsed = start.elapsed();
     // println!("Elapsed: {} ms", elapsed.as_millis());
     let _elapsed = elapsed.as_millis() as f64 / 1000.0;
