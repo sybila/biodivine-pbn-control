@@ -40,12 +40,15 @@ impl ControlMap for AttractorControlMap {
         let mut perturbations = vec![] ;
         let var_names = self.clone().perturbation_variables.into_iter().map(|v| { self.context.as_original().as_network().unwrap().get_variable_name(v.clone()).clone() });
         for combination in var_names.powerset() {
+            if combination.contains(&"Fli1".to_string()) && combination.contains(&"PU1".to_string()) && combination.contains(&"GATA1".to_string()) {
+                println!("OK");
+            }
             if max_robustness >= min_robustness && combination.len() > best_control_size && !return_all {
                 return perturbations
             }
-            for values in vec![true,false].into_iter().permutations(combination.clone().len())
+            for true_values in combination.clone().iter().powerset()
             {
-                let perturbation = HashMap::from_iter(combination.clone().into_iter().zip(values));
+                let perturbation = HashMap::from_iter(combination.clone().into_iter().map(|var| {(var.clone(), true_values.contains(&&var))}));
                 let control_colors = self.perturbation_working_colors(&perturbation);
 
                 let robustness = control_colors.approx_cardinality() / all_colors_size;
@@ -56,8 +59,6 @@ impl ControlMap for AttractorControlMap {
                 if robustness > min_robustness {
                     perturbations.push((perturbation.clone(), control_colors.clone()));
                 }
-
-
             }
         }
         return perturbations
