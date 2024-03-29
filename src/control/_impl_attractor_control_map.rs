@@ -40,10 +40,6 @@ impl ControlMap for AttractorControlMap {
         let mut perturbations = vec![] ;
         let var_names = self.clone().perturbation_variables.into_iter().map(|v| { self.context.as_original().as_network().unwrap().get_variable_name(v.clone()).clone() });
         for combination in var_names.powerset() {
-            if combination.len() > 2 {
-                break
-            }
-
             if max_robustness >= min_robustness && combination.len() > best_control_size && !return_all {
                 return perturbations
             }
