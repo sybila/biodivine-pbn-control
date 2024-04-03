@@ -129,7 +129,7 @@ impl PerturbationGraph {
                 let can_leave = self.as_perturbed().var_can_post_out(var, &trap);
                 if !can_leave.is_empty() {
                     trap = trap.minus(&can_leave);
-                    if trap.symbolic_size() > 100_000 {
+                    if verbose && trap.symbolic_size() > 100_000 {
                         println!(
                             " Trap non-phenotype progress: {} / {}",
                             trap.symbolic_size(),
