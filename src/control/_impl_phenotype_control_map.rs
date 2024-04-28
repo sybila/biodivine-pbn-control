@@ -166,13 +166,7 @@ impl ControlMap for PhenotypeControlMap {
             }
         }
 
-        // TODO switch to following, when projection works
-        // let colors = self.context.as_non_perturbable().transfer_colors_from(&self.context.as_original().empty_colors().copy(perturbation_bdd), self.context.as_original()).unwrap();
-        let colors = self
-            .context
-            .as_original()
-            .empty_colors()
-            .copy(perturbation_bdd);
+        let colors = self.context.as_non_perturbable().transfer_colors_from(&self.context.as_original().empty_colors().copy(perturbation_bdd), self.context.as_original()).unwrap();
         colors
     }
 }
