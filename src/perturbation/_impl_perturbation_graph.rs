@@ -23,11 +23,14 @@ impl PerturbationGraph {
         network: &BooleanNetwork,
         perturb: Vec<VariableId>,
     ) -> PerturbationGraph {
+        // A network with all implicit parameters substituted for explicit parameters,
+        // and with all observability constraints removed.
         let normalized = normalize_network(network);
 
         let mut original_parameters = HashMap::new();
         let mut perturbed_parameters = HashMap::new();
 
+        // Two variants of the normalized network with unperturbed and perturbed dynamics.
         let original =
             make_original_network(&normalized, &mut original_parameters, perturb.clone());
         let perturbed =
@@ -35,10 +38,36 @@ impl PerturbationGraph {
 
         assert_eq!(original_parameters, perturbed_parameters);
 
+        // A graph based on the initial, non-normalized network.
+        let basic_graph = SymbolicAsyncGraph::new(network).unwrap();
+
+        // A symbolic context that should be valid for both the original and perturbed network
+        // (these only differ in the usage of perturbation parameters in update functions).
+        let perturbed_symbolic_context = SymbolicContext::new(&original).unwrap();
+
+        // Transfer the BDD unit set from the non-normalized network to the "perturbed" context.
+        // This should work, because the names of the implicit uninterpreted functions are the
+        // same, and otherwise we have only added new parameters.
+        //
+        // This effectively transfers the static constraints from the original network into the
+        // perturbed network, which we must do because we cannot apply them to implicit parameters
+        // directly, and there are other problems with observability anyway.
+        let perturbed_unit = perturbed_symbolic_context
+            .transfer_from(basic_graph.unit_colored_vertices().as_bdd(), basic_graph.symbolic_context())
+            .unwrap();
+
         PerturbationGraph {
-            non_perturbable_graph: SymbolicAsyncGraph::new(network).unwrap(),
-            original_graph: SymbolicAsyncGraph::new(&original).unwrap(),
-            perturbed_graph: SymbolicAsyncGraph::new(&perturbed).unwrap(),
+            non_perturbable_graph: basic_graph,
+            original_graph: SymbolicAsyncGraph::with_custom_context(
+                &original,
+                perturbed_symbolic_context.clone(),
+                perturbed_unit.clone()
+            ).unwrap(),
+            perturbed_graph: SymbolicAsyncGraph::with_custom_context(
+                &perturbed,
+                perturbed_symbolic_context,
+                perturbed_unit
+            ).unwrap(),
             perturbable_vars: perturb.clone(),
             perturbation_parameters: original_parameters,
         }
@@ -276,4 +305,45 @@ impl PerturbationGraph {
         let admissible_perturbations = self.empty_colors().copy(admissible_perturbations);
         admissible_perturbations
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use biodivine_lib_param_bn::BooleanNetwork;
+    use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
+    use crate::perturbation::PerturbationGraph;
+
+    #[test]
+    pub fn test_unit_set_compatibility() {
+        let network = BooleanNetwork::try_from(r#"
+            # This network has:
+            #   - implicit and explicit parameters
+            #   - non-essential regulations
+            #   - monotonicity constraints
+            a -> b
+            a -|? c
+            b -> c
+            c ->? a
+            c -| b
+            $c: f(a) | b
+        "#).unwrap();
+
+        // These two do not share a symbolic representation, but we should be able to transfer
+        // colors between them, as long as the perturbation parameters are unconstrained.
+        let stg = SymbolicAsyncGraph::new(&network).unwrap();
+        let p_stg = PerturbationGraph::new(&network);
+
+        let transferred = stg.transfer_from(&p_stg.mk_unit_colored_vertices(), p_stg.as_original());
+        assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
+
+        let transferred = stg.transfer_from(&p_stg.as_original().mk_unit_colored_vertices(), p_stg.as_original());
+        assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
+
+        let transferred = stg.transfer_from(&p_stg.as_perturbed().mk_unit_colored_vertices(), p_stg.as_perturbed());
+        assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
+
+        let transferred = stg.transfer_from(&p_stg.as_non_perturbable().mk_unit_colored_vertices(), p_stg.as_non_perturbable());
+        assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
+    }
+
 }
