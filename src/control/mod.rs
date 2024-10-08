@@ -38,7 +38,7 @@ pub struct PhenotypeControlMap {
     perturbation_set: GraphColoredVertices,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub enum PhenotypeOscillationType {
     Forbidden,
     Allowed,

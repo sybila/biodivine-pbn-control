@@ -250,6 +250,68 @@ impl PerturbationGraph {
         return map;
     }
 
+    /// Perform target phenotype control with the prescribed parameters:
+    ///  * Target phenotype: set of vertices that must be reached after perturbation.
+    ///  * Phenotype oscillation: Specifies whether the target set of vertices must be reached
+    ///    exactly (cannot be escaped), intermittently (can oscillate through the phenotype set),
+    ///    or both (doesn't matter as long as the phenotype is reached).
+    ///  * Admissible perturbations: Set of perturbations that can be used to achieve the target.
+    ///    If not given, considers all perturbations admissible in this perturbation graph.
+    ///  * Minimum robustness: Only return perturbations that achieves at least this robustness.
+    ///    If not given, returns all working perturbations.
+    ///  * Result limit: Only return this many perturbations. If not given, returns all results
+    ///    as long as they are present in the admissible perturbations.
+    ///  * Verbose: should print progress while working.
+    ///
+    /// Perturbations are tested from smallest to largest (in terms of perturbed variables).
+    /// By specifying result limit=1 and minimum robustness, we can then find the smallest
+    /// perturbation of the required robustness.
+    ///
+    pub fn phenotype_permanent_control_iterated(
+        &self,
+        target_phenotype: &GraphVertices,
+        target_phenotype_oscillation: PhenotypeOscillationType,
+        admissible_perturbations: Option<&GraphColors>,
+        minimum_robustness: Option<f64>,
+        result_limit: Option<usize>,
+        verbose: bool,
+    ) -> Vec<(HashMap<String, bool>, GraphColors)> {
+        let minimum_robustness = minimum_robustness.unwrap_or(0.0);
+        let admissible_perturbations = admissible_perturbations
+            .cloned().unwrap_or(self.as_original().mk_unit_colors());
+        let result_limit = result_limit.unwrap_or(usize::MAX);
+        let mut result_map = Vec::new();
+
+        for size in 0..self.perturbable_variables().len() {
+            let size_perturbations = self.create_perturbation_colors(size, verbose);
+
+            let iteration_perturbations = admissible_perturbations.intersect(&size_perturbations);
+
+            let control_map = self
+                .phenotype_permanent_control_internal(
+                    target_phenotype.clone(),
+                    iteration_perturbations,
+                    target_phenotype_oscillation,
+                    verbose,
+                );
+
+            let filtered_map = control_map.working_perturbations(
+                minimum_robustness,
+                verbose,
+                false
+            );
+
+            for (x,y) in filtered_map {
+                result_map.push((x,y));
+                if result_map.len() >= result_limit {
+                    return result_map;
+                }
+            }
+        }
+
+        result_map
+    }
+
     pub fn ceiled_phenotype_permanent_control(
         &self,
         phenotype: GraphVertices,
