@@ -267,7 +267,7 @@ impl PerturbationGraph {
     /// By specifying result limit=1 and minimum robustness, we can then find the smallest
     /// perturbation of the required robustness.
     ///
-    pub fn phenotype_permanent_control_iterated(
+    pub fn phenotype_permanent_control_iterated<F, E>(
         &self,
         target_phenotype: &GraphVertices,
         target_phenotype_oscillation: PhenotypeOscillationType,
@@ -275,41 +275,45 @@ impl PerturbationGraph {
         minimum_robustness: Option<f64>,
         result_limit: Option<usize>,
         verbose: bool,
-    ) -> Vec<(HashMap<String, bool>, GraphColors)> {
+        is_cancelled: F,
+    ) -> Result<Vec<(HashMap<String, bool>, GraphColors)>, E>
+    where
+        F: Fn(&Vec<(HashMap<String, bool>, GraphColors)>) -> Result<(), E>,
+    {
         let minimum_robustness = minimum_robustness.unwrap_or(0.0);
         let admissible_perturbations = admissible_perturbations
-            .cloned().unwrap_or(self.as_original().mk_unit_colors());
+            .cloned()
+            .unwrap_or(self.as_original().mk_unit_colors());
         let result_limit = result_limit.unwrap_or(usize::MAX);
         let mut result_map = Vec::new();
 
         for size in 0..self.perturbable_variables().len() {
-            let size_perturbations = self.create_perturbation_colors(size, verbose);
+            is_cancelled(&result_map)?;
 
+            let size_perturbations = self.create_perturbation_colors(size, verbose);
             let iteration_perturbations = admissible_perturbations.intersect(&size_perturbations);
 
-            let control_map = self
-                .phenotype_permanent_control_internal(
-                    target_phenotype.clone(),
-                    iteration_perturbations,
-                    target_phenotype_oscillation,
-                    verbose,
-                );
-
-            let filtered_map = control_map.working_perturbations(
-                minimum_robustness,
+            let control_map = self.phenotype_permanent_control_internal(
+                target_phenotype.clone(),
+                iteration_perturbations,
+                target_phenotype_oscillation,
                 verbose,
-                false
             );
 
-            for (x,y) in filtered_map {
-                result_map.push((x,y));
+            let filtered_map =
+                control_map.working_perturbations(minimum_robustness, verbose, false);
+
+            for (x, y) in filtered_map {
+                is_cancelled(&result_map)?;
+
+                result_map.push((x, y));
                 if result_map.len() >= result_limit {
-                    return result_map;
+                    return Ok(result_map);
                 }
             }
         }
 
-        result_map
+        Ok(result_map)
     }
 
     pub fn ceiled_phenotype_permanent_control(
