@@ -35,12 +35,19 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
             .collect(),
     );
     for regulation in network.as_graph().regulations() {
+        // Make all self-regulations non-monotonic, since this can be influences
+        // by the control transformation.
+        let monotonicity = if regulation.get_regulator() == regulation.get_target() {
+            None
+        } else {
+            regulation.get_monotonicity()
+        };
         result
             .add_regulation(
                 network.get_variable_name(regulation.get_regulator()),
                 network.get_variable_name(regulation.get_target()),
                 false,
-                regulation.get_monotonicity(),
+                monotonicity,
             )
             .unwrap();
     }
