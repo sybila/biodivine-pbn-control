@@ -11,31 +11,22 @@ exclude = [
     "results/*"
 ]
 
-[features]
-# For releases, we want to include Z3 statically, so that users
-# don't have to install it (or break compatibility with new versions).
-# So for CI builds, this feature is enabled, but for local builds,
-# you don't need it as long as you have Z3 installed (because your
-# build may take >30min if you enable it).
-static-z3 = ["z3/static-link-z3"]
-print_progress = []
-
-
 [dependencies]
 rayon = "1.3.0"
 clap = "4.0.26"
 serde_json = "1.0.59"
-itertools = "0.12.1"
+itertools = "0.13.0"
 chrono = "0.4.19"
 biodivine-lib-bdd = "0.5.11"
-biodivine-lib-param-bn = { version="0.5.9", features=["solver-z3"] }
-rstest = "0.18.2"
+biodivine-lib-param-bn = "0.5.9"
+rstest = "0.23.0"
 
-z3="^0.12.1"
-z3-sys = "^0.8.1"
+[features]
+# Allows to enable Z3 solver inside lib-param-bn. We don't normally need this,
+# but sometimes (in particular AEON.py), we need lib-param-bn with Z3 enabled.
+solver-z3 = ["biodivine-lib-param-bn/solver-z3"]
 
 [dev-dependencies]
-
 
 # Enable rich docs for some online docs autogen services.
 [package.metadata.docs.rs]
