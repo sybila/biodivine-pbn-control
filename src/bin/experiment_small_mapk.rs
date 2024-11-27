@@ -22,6 +22,7 @@ fn main() {
         phenotype.clone(),
         1,
         PhenotypeOscillationType::Forbidden,
+        perturbation_graph.mk_unit_colored_vertices().vertices().clone(),
         false,
         false,
     );

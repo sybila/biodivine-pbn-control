@@ -14,12 +14,14 @@ impl PerturbationGraph {
         &self,
         phenotype: GraphVertices,
         oscillation: PhenotypeOscillationType,
+        initial_states: GraphVertices,
         verbose: bool,
     ) -> PhenotypeControlMap {
         self.phenotype_permanent_control_internal(
             phenotype,
             self.as_original().mk_unit_colors(),
             oscillation,
+            initial_states,
             verbose,
         )
     }
@@ -29,6 +31,7 @@ impl PerturbationGraph {
         phenotype: GraphVertices,
         admissible_colors_perturbations: GraphColors,
         oscillation: PhenotypeOscillationType,
+        initial_states: GraphVertices,
         verbose: bool,
     ) -> PhenotypeControlMap {
         let start = SystemTime::now();
@@ -73,6 +76,7 @@ impl PerturbationGraph {
                 return self.phenotype_permanent_control_with_true_oscillation_internal(
                     phenotype,
                     allowed_colors,
+                    initial_states,
                     verbose,
                 )
             }
@@ -121,6 +125,7 @@ impl PerturbationGraph {
 
         let mut trap = self
             .unit_colored_vertices()
+            .intersect_vertices(&initial_states)
             .intersect_colors(&admissible_colors_perturbations)
             .minus(&trap);
 
@@ -229,6 +234,7 @@ impl PerturbationGraph {
         phenotype: GraphVertices,
         perturbation_size: usize,
         allow_oscillation: PhenotypeOscillationType,
+        initial_states: GraphVertices,
         verbose: bool,
     ) -> PhenotypeControlMap {
         let admissible_perturbations = self.create_perturbation_colors(perturbation_size, verbose);
@@ -237,6 +243,7 @@ impl PerturbationGraph {
                 phenotype.clone(),
                 admissible_perturbations,
                 allow_oscillation,
+                initial_states,
                 verbose,
             )
             .perturbation_set;
@@ -272,6 +279,7 @@ impl PerturbationGraph {
         target_phenotype: &GraphVertices,
         target_phenotype_oscillation: PhenotypeOscillationType,
         admissible_perturbations: Option<&GraphColors>,
+        initial_states: GraphVertices,
         minimum_robustness: Option<f64>,
         result_limit: Option<usize>,
         verbose: bool,
@@ -297,6 +305,7 @@ impl PerturbationGraph {
                 target_phenotype.clone(),
                 iteration_perturbations,
                 target_phenotype_oscillation,
+                initial_states.clone(),
                 verbose,
             );
 
@@ -321,6 +330,7 @@ impl PerturbationGraph {
         phenotype: GraphVertices,
         size_bound: usize,
         allow_oscillation: PhenotypeOscillationType,
+        initial_states: GraphVertices,
         stop_early: bool,
         verbose: bool,
     ) -> PhenotypeControlMap {
@@ -339,6 +349,7 @@ impl PerturbationGraph {
                     phenotype.clone(),
                     admissible_perturbations,
                     allow_oscillation.clone(),
+                    initial_states.clone(),
                     verbose,
                 )
                 .perturbation_set;
@@ -384,17 +395,18 @@ impl PerturbationGraph {
             }
         }
 
-        return PhenotypeControlMap {
+        PhenotypeControlMap {
             perturbation_variables: self.perturbable_variables().clone(),
             perturbation_set: control_map_all,
             context: self.clone(),
-        };
+        }
     }
 
     fn phenotype_permanent_control_with_true_oscillation_internal(
         &self,
         phenotype: GraphVertices,
         admissible_colors: GraphColors,
+        initial_states: GraphVertices,
         verbose: bool,
     ) -> PhenotypeControlMap {
         // oscillation with phenotype set to true
@@ -403,6 +415,7 @@ impl PerturbationGraph {
                 phenotype.clone(),
                 admissible_colors.clone(),
                 PhenotypeOscillationType::Allowed,
+                initial_states.clone(),
                 verbose,
             )
             .perturbation_set;
@@ -417,6 +430,7 @@ impl PerturbationGraph {
                 outside_phenotype,
                 admissible_colors,
                 PhenotypeOscillationType::Allowed,
+                initial_states,
                 verbose,
             )
             .perturbation_set;
@@ -495,6 +509,7 @@ mod tests {
         let control = perturbations.phenotype_permanent_control(
             erythrocyte_phenotype,
             PhenotypeOscillationType::Forbidden,
+            perturbations.as_perturbed().unit_vertices().clone(),
             false,
         );
 
@@ -554,6 +569,7 @@ mod tests {
             erythrocyte_phenotype,
             3,
             PhenotypeOscillationType::Forbidden,
+            perturbations.as_perturbed().unit_vertices().clone(),
             false,
             true,
         );
@@ -618,6 +634,7 @@ mod tests {
             erythrocyte_phenotype,
             1,
             PhenotypeOscillationType::Forbidden,
+            perturbations.as_perturbed().unit_vertices().clone(),
             false,
             true,
         );
