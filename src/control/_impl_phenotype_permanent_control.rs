@@ -126,43 +126,42 @@ impl PerturbationGraph {
         let init = self
             .unit_colored_vertices()
             .intersect_vertices(&initial_states)
-            .intersect_colors(&admissible_colors_perturbations)
-            .minus(&trap);
+            .intersect(&control_universe);
 
         // All states from which the control should be ensured = reachable from init states
-        let mut trap = forward_within(
+        let mut np_trap = forward_within(
             self.as_perturbed(),
             &init,
             &control_universe,
             verbose
-        );
+        ).minus(&trap);
 
-        'trap: loop {
+        'np_trap: loop {
             for var in self.variables().rev() {
-                let can_leave = self.as_perturbed().var_can_post_out(var, &trap);
+                let can_leave = self.as_perturbed().var_can_post_out(var, &np_trap);
                 if !can_leave.is_empty() {
-                    trap = trap.minus(&can_leave);
-                    if verbose && trap.symbolic_size() > 100_000 {
+                    np_trap = np_trap.minus(&can_leave);
+                    if verbose && np_trap.symbolic_size() > 100_000 {
                         println!(
                             " Trap non-phenotype progress: {} / {}",
-                            trap.symbolic_size(),
-                            trap.approx_cardinality()
+                            np_trap.symbolic_size(),
+                            np_trap.approx_cardinality()
                         );
                     }
-                    continue 'trap;
+                    continue 'np_trap;
                 }
             }
             break;
         }
 
         if verbose {
-            println!("Inverse trap cardinality {}", trap.approx_cardinality());
+            println!("Inverse trap cardinality {}", np_trap.approx_cardinality());
         }
 
         if verbose {
             println!(
                 "Cardinality of inversed trap set: {}",
-                trap.approx_cardinality()
+                np_trap.approx_cardinality()
             )
         }
 
