@@ -165,7 +165,7 @@ impl PerturbationGraph {
             )
         }
 
-        let mut inverse_control = trap.into_bdd();
+        let mut inverse_control = np_trap.into_bdd();
         for var in self.variables() {
             let state_var = self.as_symbolic_context().get_state_variable(var);
             if let Some(perturbation_var) = perturbation_bbd_vars_mapping.get(&var) {
