@@ -1,4 +1,4 @@
-use crate::aeon::reachability::backward_within;
+use crate::aeon::reachability::{backward_within, forward_closed, forward_within};
 use crate::perturbation::PerturbationGraph;
 
 use crate::control::{ControlMap, PhenotypeControlMap, PhenotypeOscillationType};
@@ -123,11 +123,19 @@ impl PerturbationGraph {
             )
         }
 
-        let mut trap = self
+        let init = self
             .unit_colored_vertices()
             .intersect_vertices(&initial_states)
             .intersect_colors(&admissible_colors_perturbations)
             .minus(&trap);
+
+        // All states from which the control should be ensured = reachable from init states
+        let mut trap = forward_within(
+            self.as_perturbed(),
+            &init,
+            &control_universe,
+            verbose
+        );
 
         'trap: loop {
             for var in self.variables().rev() {
