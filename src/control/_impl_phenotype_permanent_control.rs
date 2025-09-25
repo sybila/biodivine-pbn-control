@@ -1,4 +1,4 @@
-use crate::aeon::reachability::{backward_within, forward_closed, forward_within};
+use crate::aeon::reachability::{backward_within, forward_within};
 use crate::perturbation::PerturbationGraph;
 
 use crate::control::{ControlMap, PhenotypeControlMap, PhenotypeOscillationType};
@@ -52,7 +52,7 @@ impl PerturbationGraph {
             .as_perturbed()
             .transfer_colors_from(
                 self.as_non_perturbable().unit_colors(),
-                &self.as_non_perturbable(),
+                self.as_non_perturbable(),
             )
             .unwrap()
             .intersect(&admissible_colors_perturbations);
@@ -85,7 +85,7 @@ impl PerturbationGraph {
                     self.as_perturbed(),
                     &phenotype_coloured_vertices,
                     &control_universe,
-                    verbose
+                    verbose,
                 );
                 trap = bwd_reach
             }
@@ -129,12 +129,8 @@ impl PerturbationGraph {
             .intersect(&control_universe);
 
         // All states from which the control should be ensured = reachable from init states
-        let mut np_trap = forward_within(
-            self.as_perturbed(),
-            &init,
-            &control_universe,
-            verbose
-        ).minus(&trap);
+        let mut np_trap =
+            forward_within(self.as_perturbed(), &init, &control_universe, verbose).minus(&trap);
 
         'np_trap: loop {
             for var in self.variables().rev() {
@@ -261,7 +257,7 @@ impl PerturbationGraph {
             context: self.clone(),
         };
 
-        return map;
+        map
     }
 
     /// Perform target phenotype control with the prescribed parameters:
@@ -295,6 +291,8 @@ impl PerturbationGraph {
     where
         F: Fn(&Vec<(HashMap<String, bool>, GraphColors)>) -> Result<(), E>,
     {
+        #![allow(clippy::type_complexity)]
+        #![allow(clippy::too_many_arguments)]
         let minimum_robustness = minimum_robustness.unwrap_or(0.0);
         let admissible_perturbations = admissible_perturbations
             .cloned()
@@ -355,7 +353,7 @@ impl PerturbationGraph {
                 .phenotype_permanent_control_internal(
                     phenotype.clone(),
                     admissible_perturbations,
-                    allow_oscillation.clone(),
+                    allow_oscillation,
                     initial_states.clone(),
                     verbose,
                 )
@@ -367,7 +365,8 @@ impl PerturbationGraph {
                 perturbation_variables: self.perturbable_variables().clone(),
                 perturbation_set: control_map,
                 context: self.clone(),
-            }.working_perturbations(1.0, verbose, false);
+            }
+            .working_perturbations(1.0, verbose, false);
 
             if verbose || stop_early {
                 let mut best_robustness = 0.0;
@@ -444,11 +443,11 @@ impl PerturbationGraph {
 
         let control_map = control_map_in_phenotype.intersect(&control_map_outside_phenotype);
 
-        return PhenotypeControlMap {
+        PhenotypeControlMap {
             perturbation_variables: self.perturbable_variables().clone(),
             perturbation_set: control_map,
             context: self.clone(),
-        };
+        }
     }
 
     pub fn get_perturbation_bdd_vars(
@@ -467,14 +466,11 @@ impl PerturbationGraph {
 
     pub fn get_perturbation_bdd_mapping(
         &self,
-        perturbation_variables: &Vec<VariableId>,
+        perturbation_variables: &[VariableId],
     ) -> HashMap<VariableId, BddVariable> {
         let perturbation_bbd_vars_mapping = perturbation_variables
             .iter()
-            .filter_map(|var| {
-                self.get_perturbation_parameter(var.clone())
-                    .map(|it| (var.clone(), it))
-            })
+            .filter_map(|var| self.get_perturbation_parameter(*var).map(|it| (*var, it)))
             .map(|(var, param)| {
                 (
                     var,
@@ -491,21 +487,20 @@ impl PerturbationGraph {
 #[cfg(test)]
 mod tests {
     use crate::aeon::phentoype::build_phenotype;
-    use crate::perturbation::PerturbationGraph;
+    use crate::control::ControlMap;
     use crate::control::_impl_phenotype_permanent_control::PhenotypeOscillationType;
+    use crate::perturbation::PerturbationGraph;
     use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
     use biodivine_lib_param_bn::BooleanNetwork;
     use std::collections::HashMap;
     use std::convert::TryFrom;
-    use crate::control::ControlMap;
 
     #[test]
     pub fn test_standard_permanent_myeloid() {
         let model_string = &std::fs::read_to_string("models/myeloid_witness.aeon").unwrap();
         let model = BooleanNetwork::try_from(model_string.as_str()).unwrap();
         println!(
-            "========= {}({}) =========",
-            "models/myeloid_witness.aeon",
+            "========= models/myeloid_witness.aeon({}) =========",
             model.num_vars()
         );
         let perturbations = PerturbationGraph::new(&model);
@@ -520,7 +515,7 @@ mod tests {
             false,
         );
 
-        let working_perturbations = control.working_perturbations(1.0, false, false);
+        let _working_perturbations = control.working_perturbations(1.0, false, false);
 
         // println!("{:?}", control.working_perturbations(1.0, true));
 
@@ -562,8 +557,7 @@ mod tests {
         let model_string = &std::fs::read_to_string("models/myeloid_witness.aeon").unwrap();
         let model = BooleanNetwork::try_from(model_string.as_str()).unwrap();
         println!(
-            "========= {}({}) =========",
-            "models/myeloid_witness.aeon",
+            "========= models/myeloid_witness.aeon({}) =========",
             model.num_vars()
         );
 
@@ -581,7 +575,7 @@ mod tests {
             true,
         );
 
-        let working_perturbations = control.working_perturbations(1.0, false, false);
+        let _working_perturbations = control.working_perturbations(1.0, false, false);
         // Trivial working control
         let working_colors =
             control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), true)]));
@@ -620,8 +614,7 @@ mod tests {
         let model_string = &std::fs::read_to_string("models/myeloid_witness.aeon").unwrap();
         let model = BooleanNetwork::try_from(model_string.as_str()).unwrap();
         println!(
-            "========= {}({}) =========",
-            "models/myeloid_witness.aeon",
+            "========= models/myeloid_witness.aeon({}) =========",
             model.num_vars()
         );
 
@@ -646,7 +639,10 @@ mod tests {
             true,
         );
 
-        println!("{:?}", control.working_perturbations(1.0, false, false).len());
+        println!(
+            "{:?}",
+            control.working_perturbations(1.0, false, false).len()
+        );
         // Trivial working control
         let working_colors =
             control.perturbation_working_colors(&HashMap::from([(String::from("EKLF"), true)]));

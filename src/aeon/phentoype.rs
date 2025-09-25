@@ -11,7 +11,7 @@ pub fn build_phenotype(
     let mut result = graph.unit_colored_vertices().clone();
     for (var, value) in phenotype {
         let var_id = resolve_var_id(graph, var).unwrap();
-        let subspace = graph.fix_network_variable(var_id, value.clone());
+        let subspace = graph.fix_network_variable(var_id, value);
         result = result.intersect(&subspace);
     }
 

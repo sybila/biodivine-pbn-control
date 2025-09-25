@@ -20,7 +20,7 @@ pub fn run_control_experiment<F>(
         &ArrayBitVector,
         &ArrayBitVector,
         &GraphColors,
-        bool
+        bool,
     ) -> AttractorControlMap,
 {
     println!(
@@ -85,7 +85,13 @@ pub fn run_control_experiment<F>(
         start_attractor.elapsed().as_millis()
     );
     let start = Instant::now();
-    let control = control_function(&perturbation_graph, &source, &target, &attractor_colors, false);
+    let control = control_function(
+        &perturbation_graph,
+        &source,
+        &target,
+        &attractor_colors,
+        false,
+    );
     println!(
         "Control exists jumping through {} vertices.",
         // control.controllable_colors_cardinality(),
@@ -136,7 +142,7 @@ pub fn get_all_params_with_attractor(
     let bwd = backward(graph.as_original(), &seed, false);
     let mut attractor = seed;
     'forward: loop {
-        if cfg!(feature = "print_progress") && attractor.as_bdd().size() > 100_000 {
+        if attractor.as_bdd().size() > 100_000 {
             println!("FWD-attractor: {}", attractor.as_bdd().size());
         }
         for var in graph.as_original().variables().rev() {

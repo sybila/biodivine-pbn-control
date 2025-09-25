@@ -1,5 +1,5 @@
-use crate::perturbation::PerturbationGraph;
 use crate::control::{ControlMap, PhenotypeControlMap};
+use crate::perturbation::PerturbationGraph;
 use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
@@ -10,11 +10,11 @@ impl ControlMap for PhenotypeControlMap {
         context: PerturbationGraph,
         perturbation_set: GraphColoredVertices,
     ) -> PhenotypeControlMap {
-        return PhenotypeControlMap {
+        PhenotypeControlMap {
             perturbation_variables: context.perturbable_variables().clone(),
             context,
             perturbation_set,
-        };
+        }
     }
 
     fn as_bdd(&self) -> &Bdd {
@@ -29,9 +29,9 @@ impl ControlMap for PhenotypeControlMap {
         &self,
         min_robustness: f64,
         verbose: bool,
-        _return_only_smallest: bool
+        _return_only_smallest: bool,
     ) -> Vec<(HashMap<String, bool>, GraphColors)> {
-        if min_robustness < 0.0 || min_robustness > 1.0 {
+        if !(0.0..=1.0).contains(&min_robustness) {
             panic!("Min robustness must be in range between 0.0 and 1.0")
         }
 
@@ -43,7 +43,7 @@ impl ControlMap for PhenotypeControlMap {
 
         let control_map_bdd = self.as_bdd();
         let perturbation_vars_projection =
-            RawProjection::new(perturbation_bdd_vars.clone(), &control_map_bdd);
+            RawProjection::new(perturbation_bdd_vars.clone(), control_map_bdd);
 
         let all_colors_size = self
             .context
@@ -155,7 +155,7 @@ impl ControlMap for PhenotypeControlMap {
                 perturbation_bdd = perturbation_bdd.and(
                     &self
                         .context
-                        .fix_perturbation(v, Some(&perturbation_value))
+                        .fix_perturbation(v, Some(perturbation_value))
                         .into_bdd(),
                 );
                 perturbation_bdd = perturbation_bdd.var_exists(bdd_var);

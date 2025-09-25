@@ -8,7 +8,7 @@ use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, Symboli
 pub fn reduction(
     graph: &SymbolicAsyncGraph,
     mut universe: GraphColoredVertices,
-    verbose: bool
+    verbose: bool,
 ) -> GraphColoredVertices {
     for var in graph.variables() {
         let var_can_post = graph.var_can_post(var, &universe);

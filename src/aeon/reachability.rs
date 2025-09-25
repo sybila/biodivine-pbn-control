@@ -7,7 +7,7 @@ pub fn backward_within(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
     bounds: &GraphColoredVertices,
-    verbose: bool
+    verbose: bool,
 ) -> GraphColoredVertices {
     assert!(initial.is_subset(bounds));
     let mut result = initial.clone();
@@ -36,7 +36,7 @@ pub fn backward_within(
 pub fn backward(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
-    verbose: bool
+    verbose: bool,
 ) -> GraphColoredVertices {
     let mut result = initial.clone();
 
@@ -62,7 +62,11 @@ pub fn backward(
 }
 
 /// Compute the coloured set of all forward reachable states from the `initial` set.
-pub fn forward(graph: &SymbolicAsyncGraph, initial: &GraphColoredVertices, verbose: bool) -> GraphColoredVertices {
+pub fn forward(
+    graph: &SymbolicAsyncGraph,
+    initial: &GraphColoredVertices,
+    verbose: bool,
+) -> GraphColoredVertices {
     let mut result = initial.clone();
 
     loop {
@@ -92,7 +96,7 @@ pub fn forward_within(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
     bounds: &GraphColoredVertices,
-    verbose: bool
+    verbose: bool,
 ) -> GraphColoredVertices {
     let mut result = initial.clone();
 
@@ -126,7 +130,7 @@ pub fn forward_closed_within(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
     bounds: &GraphColoredVertices,
-    verbose: bool
+    verbose: bool,
 ) -> GraphColoredVertices {
     let mut result = initial.clone();
 
@@ -188,7 +192,7 @@ pub fn forward_closed_subset(
 pub fn forward_closed(
     graph: &SymbolicAsyncGraph,
     initial: &GraphColoredVertices,
-    verbose: bool
+    verbose: bool,
 ) -> GraphColoredVertices {
     let mut basin = initial.clone();
     loop {

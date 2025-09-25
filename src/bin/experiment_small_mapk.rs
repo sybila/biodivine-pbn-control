@@ -1,11 +1,9 @@
-
 use biodivine_lib_param_bn::BooleanNetwork;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
-use biodivine_pbn_control::perturbation::PerturbationGraph;
 use biodivine_pbn_control::control::{ControlMap, PhenotypeOscillationType};
+use biodivine_pbn_control::perturbation::PerturbationGraph;
 
 use std::collections::HashMap;
-
 
 fn main() {
     let model_string = std::fs::read_to_string("./model.aeon").unwrap();
@@ -22,7 +20,10 @@ fn main() {
         phenotype.clone(),
         1,
         PhenotypeOscillationType::Forbidden,
-        perturbation_graph.mk_unit_colored_vertices().vertices().clone(),
+        perturbation_graph
+            .mk_unit_colored_vertices()
+            .vertices()
+            .clone(),
         false,
         false,
     );

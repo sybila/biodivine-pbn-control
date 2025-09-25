@@ -1,7 +1,6 @@
 use crate::control::AttractorControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_param_bn::biodivine_std::bitvector::ArrayBitVector;
-use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::GraphColors;
 use itertools::Itertools;
 
@@ -13,7 +12,7 @@ impl PerturbationGraph {
         source: &ArrayBitVector,
         target: &ArrayBitVector,
         compute_params: &GraphColors,
-        verbose: bool
+        verbose: bool,
     ) -> AttractorControlMap {
         /*
            Permanent control works exactly as one-step, but in the perturbed graph instead of original.
@@ -22,33 +21,36 @@ impl PerturbationGraph {
             .as_perturbed()
             .transfer_colors_from(
                 self.as_non_perturbable().unit_colors(),
-                &self.as_non_perturbable(),
+                self.as_non_perturbable(),
             )
             .unwrap();
 
-
-        let target_set = self.vertex(target).intersect_colors(compute_params).intersect_colors(&allowed_colors);
-        let weak_basin = crate::aeon::reachability::backward(self.as_perturbed(), &target_set, verbose);
+        let target_set = self
+            .vertex(target)
+            .intersect_colors(compute_params)
+            .intersect_colors(&allowed_colors);
+        let weak_basin =
+            crate::aeon::reachability::backward(self.as_perturbed(), &target_set, verbose);
         let strong_basin =
             crate::aeon::reachability::forward_closed(self.as_perturbed(), &weak_basin, verbose);
         let can_jump_to = self.post_perturbation(source, &strong_basin);
         AttractorControlMap {
             perturbation_set: can_jump_to,
             context: self.clone(),
-            perturbation_variables: self.variables().collect_vec()
+            perturbation_variables: self.variables().collect_vec(),
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
+    use crate::control::ControlMap;
     use crate::perturbation::PerturbationGraph;
     use biodivine_lib_param_bn::biodivine_std::bitvector::{ArrayBitVector, BitVector};
     use biodivine_lib_param_bn::BooleanNetwork;
+    use std::collections::HashMap;
     use std::convert::TryFrom;
     use std::iter::zip;
-    use crate::control::ControlMap;
 
     // Test that in non-parametrised models, trivial permanent control always leads to target,
     // and that there are also other controls we can use except trivial.
@@ -81,7 +83,7 @@ mod tests {
                 &source_state,
                 &target_state,
                 perturbations.unit_colors(),
-                false
+                false,
             );
             println!(
                 "Control from {:?} to {:?} cardinality: {}",
@@ -103,7 +105,12 @@ mod tests {
                 let v_name = perturbations.as_perturbed().get_variable_name(v);
                 pert.insert(v_name, val);
             }
-            assert_eq!(1.0, control.perturbation_working_colors(&pert).approx_cardinality());
+            assert_eq!(
+                1.0,
+                control
+                    .perturbation_working_colors(&pert)
+                    .approx_cardinality()
+            );
 
             // // A slightly less restrictive control that *requires* perturbation of all
             // // variables, but they don't have to exactly match target, just something in

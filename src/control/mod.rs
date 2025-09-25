@@ -1,16 +1,16 @@
-use std::collections::HashMap;
-use biodivine_lib_bdd::Bdd;
 use crate::perturbation::PerturbationGraph;
+use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
 use biodivine_lib_param_bn::VariableId;
+use std::collections::HashMap;
 
 pub mod _impl_one_step_control;
 pub mod _impl_permanent_control;
 pub mod _impl_temporary_control;
 
+pub mod _impl_attractor_control_map;
 pub mod _impl_phenotype_control_map;
 pub mod _impl_phenotype_permanent_control;
-pub mod _impl_attractor_control_map;
 
 pub mod _symbolic_utils;
 
@@ -53,7 +53,7 @@ pub trait ControlMap {
         &self,
         min_robustness: f64,
         verbose: bool,
-        return_all: bool
+        return_all: bool,
     ) -> Vec<(HashMap<String, bool>, GraphColors)>;
     fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors;
 }

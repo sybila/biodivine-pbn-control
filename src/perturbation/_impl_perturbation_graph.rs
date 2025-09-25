@@ -53,7 +53,10 @@ impl PerturbationGraph {
         // perturbed network, which we must do because we cannot apply them to implicit parameters
         // directly, and there are other problems with observability anyway.
         let perturbed_unit = perturbed_symbolic_context
-            .transfer_from(basic_graph.unit_colored_vertices().as_bdd(), basic_graph.symbolic_context())
+            .transfer_from(
+                basic_graph.unit_colored_vertices().as_bdd(),
+                basic_graph.symbolic_context(),
+            )
             .unwrap();
 
         PerturbationGraph {
@@ -61,13 +64,15 @@ impl PerturbationGraph {
             original_graph: SymbolicAsyncGraph::with_custom_context(
                 &original,
                 perturbed_symbolic_context.clone(),
-                perturbed_unit.clone()
-            ).unwrap(),
+                perturbed_unit.clone(),
+            )
+            .unwrap(),
             perturbed_graph: SymbolicAsyncGraph::with_custom_context(
                 &perturbed,
                 perturbed_symbolic_context,
-                perturbed_unit
-            ).unwrap(),
+                perturbed_unit,
+            )
+            .unwrap(),
             perturbable_vars: perturb.clone(),
             perturbation_parameters: original_parameters,
         }
@@ -155,7 +160,8 @@ impl PerturbationGraph {
 
     pub fn strong_basin(&self, target: &ArrayBitVector) -> GraphColoredVertices {
         let target_set = self.vertex(target);
-        let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set, false);
+        let weak_basin =
+            crate::aeon::reachability::backward(self.as_original(), &target_set, false);
         let strong_basin =
             crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin, false);
         strong_basin
@@ -173,7 +179,7 @@ impl PerturbationGraph {
     ) -> GraphColoredVertices {
         if let Some(is_perturbed) = self.perturbation_parameters.get(&variable) {
             let states = if let Some(value) = value {
-                self.fix_variable(variable, value.clone())
+                self.fix_variable(variable, *value)
             } else {
                 self.mk_unit_colored_vertices()
             };
@@ -201,31 +207,28 @@ impl PerturbationGraph {
             println!("{:?}", bn.get_variable_name(v));
 
             let v_name = bn.get_variable_name(v);
-            let value;
-            if values.contains_key(v_name) {
-                value = values.get(v_name).unwrap().clone();
+            let value = if values.contains_key(v_name) {
+                *values.get(v_name).unwrap()
             } else {
-                value = false;
-            }
+                false
+            };
 
             // let variable_parameter = bn.find_parameter((param_prefix + v_name).as_str()).unwrap();
             // assert_eq!(bn.get_parameter(variable_parameter).get_name().as_str(), format!("param_{}", v.as_str()));
 
-            let colors_v_set;
-            if value {
+            let colors_v_set = if value {
                 let bdd = self
                     .as_symbolic_context()
                     .mk_implicit_function_is_true(v, &[]);
-                colors_v_set = self.unit_colors().copy(bdd);
+                self.unit_colors().copy(bdd)
             } else {
                 let bdd = self
                     .as_symbolic_context()
                     .mk_implicit_function_is_true(v, &[]);
-                colors_v_set = self
-                    .as_original()
+                self.as_original()
                     .mk_unit_colors()
-                    .minus(&self.unit_colors().copy(bdd));
-            }
+                    .minus(&self.unit_colors().copy(bdd))
+            };
 
             colors = colors.minus(&colors_v_set);
         }
@@ -289,8 +292,11 @@ impl PerturbationGraph {
         // The list of symbolic variables of perturbation parameters.
         let perturbation_bdd_vars = Self::get_perturbation_bdd_vars(&perturbation_bbd_vars_mapping);
 
-        let admissible_perturbations =
-            crate::control::_symbolic_utils::mk_bdd_of_bound(bdd_vars, &perturbation_bdd_vars, perturbation_size);
+        let admissible_perturbations = crate::control::_symbolic_utils::mk_bdd_of_bound(
+            bdd_vars,
+            &perturbation_bdd_vars,
+            perturbation_size,
+        );
         {
             let factor =
                 2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
@@ -309,13 +315,14 @@ impl PerturbationGraph {
 
 #[cfg(test)]
 mod tests {
-    use biodivine_lib_param_bn::BooleanNetwork;
-    use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
     use crate::perturbation::PerturbationGraph;
+    use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
+    use biodivine_lib_param_bn::BooleanNetwork;
 
     #[test]
     pub fn test_unit_set_compatibility() {
-        let network = BooleanNetwork::try_from(r#"
+        let network = BooleanNetwork::try_from(
+            r#"
             # This network has:
             #   - implicit and explicit parameters
             #   - non-essential regulations
@@ -326,7 +333,9 @@ mod tests {
             c ->? a
             c -| b
             $c: f(a) | b
-        "#).unwrap();
+        "#,
+        )
+        .unwrap();
 
         // These two do not share a symbolic representation, but we should be able to transfer
         // colors between them, as long as the perturbation parameters are unconstrained.
@@ -336,14 +345,22 @@ mod tests {
         let transferred = stg.transfer_from(&p_stg.mk_unit_colored_vertices(), p_stg.as_original());
         assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
 
-        let transferred = stg.transfer_from(&p_stg.as_original().mk_unit_colored_vertices(), p_stg.as_original());
+        let transferred = stg.transfer_from(
+            &p_stg.as_original().mk_unit_colored_vertices(),
+            p_stg.as_original(),
+        );
         assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
 
-        let transferred = stg.transfer_from(&p_stg.as_perturbed().mk_unit_colored_vertices(), p_stg.as_perturbed());
+        let transferred = stg.transfer_from(
+            &p_stg.as_perturbed().mk_unit_colored_vertices(),
+            p_stg.as_perturbed(),
+        );
         assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
 
-        let transferred = stg.transfer_from(&p_stg.as_non_perturbable().mk_unit_colored_vertices(), p_stg.as_non_perturbable());
+        let transferred = stg.transfer_from(
+            &p_stg.as_non_perturbable().mk_unit_colored_vertices(),
+            p_stg.as_non_perturbable(),
+        );
         assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
     }
-
 }
