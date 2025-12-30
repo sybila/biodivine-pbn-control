@@ -16,7 +16,7 @@ serde_json = "1.0"
 itertools = "0.14"
 chrono = "0.4"
 biodivine-lib-bdd = "0.6"
-biodivine-lib-param-bn = "0.6"
+biodivine-lib-param-bn = "0.7"
 
 [features]
 # Allows to enable Z3 solver inside lib-param-bn. We don't normally need this,
