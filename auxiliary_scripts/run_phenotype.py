@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     # 4 days
     CUT_OFF = "96h"
-    SCRIPT = "./target/release/experiment_phenotype"
+    SCRIPT = ".././target/release/experiment_phenotype"
     INTERACTIVE = False
     PARALLEL = 8
 
@@ -136,7 +136,7 @@ if __name__ == "__main__":
         while len(ACTIVE) < PARALLEL and len(BENCHMARKS) > 0:
             model, phenotype = BENCHMARKS.pop(0)
             bench = f"{model}_{phenotype}"
-            # input_file = f"models_phenotype/{bench}"
+            # input_file = f"models/models_phenotype/{bench}"
             output_file = f"{OUT_DIR}/{bench}_out.txt"
             command_body = SCRIPT + " " + model + " " + phenotype + " " + PERTURBATION_MAX_SIZE
             command = TIMEOUT + " " + CUT_OFF + " time -p " + " " + command_body + " > " + output_file + " 2>&1"

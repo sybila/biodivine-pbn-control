@@ -10,10 +10,10 @@
 //     extra_forbidden: Vec<&str>,
 // ) -> Vec<VariableId> {
 //     let model_string =
-//         std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
+//         std::fs::read_to_string(format!("./models/models_phenotype/{}", model_file)).unwrap();
 //     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
 //
-//     let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
+//     let config_str = std::fs::read_to_string("./models/models_phenotype/benchmark.json").unwrap();
 //     let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
 //
 //     let mut controllable_vars = Vec::new();
@@ -40,7 +40,7 @@
 //     phenotype_name: &str,
 //     stg: &PerturbationGraph,
 // ) -> GraphVertices {
-//     let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
+//     let config_str = std::fs::read_to_string("./models/models_phenotype/benchmark.json").unwrap();
 //     let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
 //     let phenotype_map = config[model_name]["targets"][phenotype_name]
 //         .as_object()

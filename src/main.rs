@@ -5,7 +5,7 @@ use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, SymbolicAsyncGraph};
 use biodivine_lib_param_bn::BooleanNetwork;
 use biodivine_pbn_control::aeon::reachability::backward;
-use biodivine_pbn_control::control::ControlMap;
+use biodivine_pbn_control::control::AttractorControlMap;
 use biodivine_pbn_control::perturbation::PerturbationGraph;
 use chrono::Utc;
 use itertools::Itertools;
@@ -115,7 +115,8 @@ fn main_control_template<F>(
         &'a ArrayBitVector,
         &'a ArrayBitVector,
         &'a GraphColors,
-    ) -> ControlMap,
+        bool,
+    ) -> AttractorControlMap,
 {
     println!(
         ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {} CONTROL",
@@ -171,7 +172,7 @@ fn main_control_template<F>(
                     let attractor_colors = all_attractors_colors[t_i].clone();
                     let start = Instant::now();
                     let control =
-                        control_function(&perturbation_graph, source, target, &attractor_colors);
+                        control_function(&perturbation_graph, source, target, &attractor_colors, false);
                     println!(
                         "Control from attr. #{:?} (source) to attr. #{:?} (target) exists for {} color(s), jumping through {} vertices.",
                         s_i,
@@ -207,7 +208,8 @@ fn main_control_robustness_template<F>(
         &'a ArrayBitVector,
         &'a ArrayBitVector,
         &'a GraphColors,
-    ) -> ControlMap,
+        bool,
+    ) -> AttractorControlMap,
 {
     println!(
         "Robustness of {} control in model {}, source: {}, target: {}",
@@ -238,7 +240,7 @@ fn main_control_robustness_template<F>(
         att_colors.approx_cardinality()
     );
     let start = Instant::now();
-    let control = control_function(&perturbations, source, target, &att_colors);
+    let control = control_function(&perturbations, source, target, &att_colors, false);
     println!(
         "Control from Attractor {:?} (source) to Attractor {:?} (target) works for {} color(s), jumping through {} vertices.",
         source_ix,
@@ -289,7 +291,7 @@ fn main_control_robustness_template<F>(
             max_robustness = card;
         }
 
-        union_robustness = union_robustness.or(&local_control.controllable_colors())
+        union_robustness = union_robustness.or(local_control.controllable_colors().as_bdd())
     }
 }
 
@@ -299,7 +301,7 @@ fn main_control_robustness_template<F>(
 /// from the first attractor as target, and then different source states from the remaining attractors.
 fn compute_attractor_pairs(network: &BooleanNetwork) -> Vec<(ArrayBitVector, ArrayBitVector)> {
     let graph = SymbolicAsyncGraph::new(network).unwrap();
-    let attractors = biodivine_pbn_control::aeon::attractors::compute(&graph);
+    let attractors = biodivine_pbn_control::aeon::attractors::compute(&graph, false);
     let target: ArrayBitVector = attractors[0]
         .vertices()
         .materialize()
@@ -320,7 +322,7 @@ fn find_witness_attractors(m: &str) -> Vec<ArrayBitVector> {
         &std::fs::read_to_string(format!("models/{}_witness.aeon", m)).unwrap();
     let model = BooleanNetwork::try_from(model_string).unwrap();
     let graph = SymbolicAsyncGraph::new(&model).unwrap();
-    let attractors = biodivine_pbn_control::aeon::attractors::compute(&graph);
+    let attractors = biodivine_pbn_control::aeon::attractors::compute(&graph, false);
     let mut vertices = Vec::new();
     for a in attractors {
         vertices.push(a.pick_vertex());
@@ -337,7 +339,7 @@ pub fn get_all_params_with_attractor(
     state: &ArrayBitVector,
 ) -> GraphColors {
     let seed = graph.vertex(state);
-    let bwd = backward(graph.as_original(), &seed);
+    let bwd = backward(graph.as_original(), &seed, false);
     let mut attractor = seed;
     'forward: loop {
         if attractor.as_bdd().size() > 10_000 {

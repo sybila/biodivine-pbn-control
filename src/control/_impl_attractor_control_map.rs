@@ -123,7 +123,7 @@ impl AttractorControlMap {
         &self.perturbation_set
     }
 
-    fn controllable_colors(&self) -> GraphColors {
+    pub fn controllable_colors(&self) -> GraphColors {
         let bdd_context = self.context.as_symbolic_context();
         let mut bdd = self.perturbation_set.colors().into_bdd();
         for v in self.context.variables() {

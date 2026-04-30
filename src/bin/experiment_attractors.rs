@@ -19,7 +19,7 @@ fn main() {
         "mensenchymal_3",
         "undefined",
     ];
-    let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
+    let config_str = std::fs::read_to_string("./models/models_phenotype/benchmark.json").unwrap();
     let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
 
     for phenotype in phenotypes {
@@ -28,7 +28,7 @@ fn main() {
         // let controllable_vars = get_controllable_vars("emt", model_file);
 
         let model_string =
-            std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
+            std::fs::read_to_string(format!("./models/models_phenotype/{}", model_file)).unwrap();
         let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
         let graph = SymbolicAsyncGraph::new(&bn).unwrap();
 
@@ -62,10 +62,10 @@ fn main() {
 //
 // fn get_controllable_vars(model_name: &str, model_file: &str) -> Vec<VariableId> {
 //     let model_string =
-//         std::fs::read_to_string(format!("./models_phenotype/{}", model_file)).unwrap();
+//         std::fs::read_to_string(format!("./models/models_phenotype/{}", model_file)).unwrap();
 //     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
 //
-//     let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
+//     let config_str = std::fs::read_to_string("./models/models_phenotype/benchmark.json").unwrap();
 //     let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
 //
 //     let mut controllable_vars = Vec::new();
