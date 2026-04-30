@@ -12,11 +12,7 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
     for var in network.variables() {
         if network.get_update_function(var).is_none() {
             // Create an explicit parameter to replace the implicit function.
-            let regulators = network
-                .regulators(var)
-                .into_iter()
-                .map(FnUpdate::mk_var)
-                .collect::<Vec<_>>();
+            let regulators = network.regulators(var);
             let parameter = network
                 .add_parameter(
                     format!("f_{}", network.get_variable_name(var)).as_str(),
