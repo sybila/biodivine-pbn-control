@@ -1,7 +1,8 @@
 use crate::aeon::reachability::{backward_within, forward_within};
 use crate::perturbation::PerturbationGraph;
 
-use crate::control::{ControlMap, PhenotypeControlMap, PhenotypeOscillationType};
+use crate::control::ControlMap;
+use crate::phenotype_control::{PhenotypeControlMap, PhenotypeOscillationType};
 use biodivine_lib_bdd::BddVariable;
 use biodivine_lib_param_bn::biodivine_std::traits::Set;
 use biodivine_lib_param_bn::symbolic_async_graph::{GraphColors, GraphVertices};
@@ -488,7 +489,7 @@ impl PerturbationGraph {
 mod tests {
     use crate::aeon::phentoype::build_phenotype;
     use crate::control::ControlMap;
-    use crate::control::_impl_phenotype_permanent_control::PhenotypeOscillationType;
+    use crate::phenotype_control::PhenotypeOscillationType;
     use crate::perturbation::PerturbationGraph;
     use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
     use biodivine_lib_param_bn::BooleanNetwork;

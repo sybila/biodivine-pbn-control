@@ -1,4 +1,5 @@
 pub mod control;
+pub mod phenotype_control;
 
 /// "Standard" algorithms mostly adapted from Aeon.
 pub mod aeon;

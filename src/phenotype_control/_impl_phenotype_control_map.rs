@@ -1,4 +1,5 @@
-use crate::control::{ControlMap, PhenotypeControlMap};
+use crate::control::ControlMap;
+use crate::phenotype_control::PhenotypeControlMap;
 use crate::perturbation::PerturbationGraph;
 use biodivine_lib_bdd::Bdd;
 use biodivine_lib_param_bn::symbolic_async_graph::projected_iteration::RawProjection;

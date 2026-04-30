@@ -1,6 +1,7 @@
 use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
-use biodivine_pbn_control::control::{ControlMap, PhenotypeOscillationType};
+use biodivine_pbn_control::control::ControlMap;
+use biodivine_pbn_control::phenotype_control::PhenotypeOscillationType;
 use biodivine_pbn_control::perturbation::PerturbationGraph;
 use serde_json::Value;
 use std::collections::HashMap;

@@ -1,7 +1,8 @@
 use biodivine_lib_param_bn::BooleanNetwork;
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
+use biodivine_pbn_control::control::ControlMap;
+use biodivine_pbn_control::phenotype_control::PhenotypeOscillationType;
 use biodivine_pbn_control::perturbation::PerturbationGraph;
-use biodivine_pbn_control::phenotype_control::_simplified_algorithm::bounded_phenotype_control;
 use std::collections::HashMap;
 
 fn main() {
@@ -57,7 +58,8 @@ fn main() {
     // let w = ag.pick_witness(ag.unit_colors());
     // let perturbation_graph = PerturbationGraph::with_restricted_variables(&w, &controllable_vars);
 
-    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &controllable_vars);
+    let controllable_count = controllable_vars.len();
+    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, controllable_vars);
 
     let phenotype_map = config[model]["targets"][phenotype].as_object().unwrap();
     let mut phenotype_vals = HashMap::new();
@@ -73,13 +75,13 @@ fn main() {
     // All colors considered by the perturbation graph
     let all_colors = perturbation_graph.unit_colors().approx_cardinality();
     // The (combinatorial) portion of colours that appear due to perturbation parameters.
-    let perturbation_colors = 2.0f64.powi(controllable_vars.len() as i32);
+    let perturbation_colors = 2.0f64.powi(controllable_count as i32);
     // The (combinatorial) portion of colours that are carried over from the original model.
     let model_colors = all_colors / perturbation_colors;
 
     println!("Variables: {}", model_variables);
     println!("Inputs: {}", inputs.len());
-    println!("Controllable variables: {}", controllable_vars.len());
+    println!("Controllable variables: {}", controllable_count);
     println!("Uncertainty colors: {}", model_colors);
     println!("Perturbation colors: {}", perturbation_colors);
     println!("All colors: {}", all_colors);
@@ -106,7 +108,19 @@ fn main() {
             .unwrap()
     );
 
-    bounded_phenotype_control(&perturbation_graph, &phenotype, max_control_size);
+    let result = perturbation_graph.ceiled_phenotype_permanent_control(
+        phenotype,
+        max_control_size,
+        PhenotypeOscillationType::Allowed,
+        perturbation_graph
+            .mk_unit_colored_vertices()
+            .vertices()
+            .clone(),
+        false,
+        false,
+    );
+    let working = result.working_perturbations(0.0, false, false);
+    println!("Working perturbations found: {}", working.len());
 
     /*
     let result = PerturbationGraph::ceiled_phenotype_permanent_control(&perturbation_graph, phenotype, max_control_size, controllable_vars.clone(), "complex");
