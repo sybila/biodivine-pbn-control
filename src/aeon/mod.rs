@@ -7,4 +7,5 @@ pub mod reachability;
 /// Transition guided reduction quickly eliminates most non-attractor states in a graph.
 mod tgr;
 
+#[cfg(test)]
 pub mod config;
