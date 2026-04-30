@@ -1,8 +1,8 @@
 [package]
 name = "biodivine-pbn-control"
-version = "0.3.1"
+version = "0.3.2"
 description = "A library for controlling parametrized Boolean networks."
-authors = ["Samuel Pastva <sam.pastva@gmail.com>, Eva Smijakova <smijakova.eva@gmail.com>"]
+authors = ["Samuel Pastva <daemontus@gmail.com>, Eva Smijakova <smijakova.eva@gmail.com>"]
 edition = "2021"
 license = "MIT"
 exclude = [
@@ -12,19 +12,18 @@ exclude = [
 ]
 
 [dependencies]
-rayon = "1.8.0"
-clap = "4.4.11"
-serde_json = "1.0.108"
-itertools = "0.12.0"
-chrono = "0.4.31"
-biodivine-lib-bdd = ">=0.5.7"
-biodivine-lib-param-bn = ">=0.5.1, <1.0.0"
-rstest = "0.18.2"
-
-[dev-dependencies]
+serde_json = "1.0"
+itertools = "0.14"
+chrono = "0.4"
+biodivine-lib-bdd = "0.6"
+biodivine-lib-param-bn = "0.7"
 
 [features]
-print_progress = []
+# Allows to enable Z3 solver inside lib-param-bn. We don't normally need this,
+# but sometimes (in particular AEON.py), we need lib-param-bn with Z3 enabled.
+solver-z3 = ["biodivine-lib-param-bn/solver-z3"]
+
+[dev-dependencies]
 
 # Enable rich docs for some online docs autogen services.
 [package.metadata.docs.rs]

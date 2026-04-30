@@ -22,10 +22,14 @@ mod _impl_perturbation_graph;
 /// for computing pre/post.
 #[derive(Clone)]
 pub struct PerturbationGraph {
+    /// Graph before adding any perturbation params
+    non_perturbable_graph: SymbolicAsyncGraph,
     /// "Normal" unperturbed graph, but with the same encoding as the perturbed graph.
     original_graph: SymbolicAsyncGraph,
     /// Perturbed graph where each edge is also labelled with perturbations that enable it.
     perturbed_graph: SymbolicAsyncGraph,
+    /// Variables which
+    perturbable_vars: Vec<VariableId>,
     /// Obtain parameters that decide whether a specific variable is perturbed.
     perturbation_parameters: HashMap<VariableId, ParameterId>,
 }

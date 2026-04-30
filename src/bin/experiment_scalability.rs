@@ -1,23 +1,23 @@
-use std::collections::HashMap;
-
-use biodivine_lib_param_bn::BooleanNetwork;
-use std::time::Instant;
-
+use biodivine_lib_param_bn::{BooleanNetwork, VariableId};
 use biodivine_pbn_control::aeon::phentoype::build_phenotype;
+use biodivine_pbn_control::control::ControlMap;
+use biodivine_pbn_control::phenotype_control::PhenotypeOscillationType;
 use biodivine_pbn_control::perturbation::PerturbationGraph;
-use chrono::Local;
+use serde_json::Value;
+use std::collections::HashMap;
+use std::vec;
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
     let model = args[1].as_str();
     let phenotype = args[2].as_str();
-    let max_control_size: usize = args[3].parse::<usize>().unwrap();
+    let _max_control_size: usize = args[3].parse::<usize>().unwrap();
     let max_control_vars: usize = args[4].parse::<usize>().unwrap();
-    let config_str = std::fs::read_to_string("./models_phenotype/benchmark.json").unwrap();
-    let config: serde_json::Value = serde_json::from_str(config_str.as_str()).unwrap();
+    let config_str = std::fs::read_to_string("./models/models_phenotype/benchmark.json").unwrap();
+    let config: Value = serde_json::from_str(config_str.as_str()).unwrap();
     let model_name = config[model]["file"].as_str().unwrap();
     let model_string =
-        std::fs::read_to_string(format!("./models_phenotype/{}", model_name)).unwrap();
+        std::fs::read_to_string(format!("./models/models_phenotype/{}", model_name)).unwrap();
     let bn = BooleanNetwork::try_from(model_string.as_str()).unwrap();
 
     let mut controllable_vars = Vec::new();
@@ -50,7 +50,7 @@ fn main() {
             break;
         }
     }
-    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, &p_vars);
+    let perturbation_graph = PerturbationGraph::with_restricted_variables(&bn, p_vars.clone());
 
     let phenotype_map = config[model]["targets"][phenotype].as_object().unwrap();
     let mut phenotype_vals = HashMap::new();
@@ -99,12 +99,15 @@ fn main() {
             .unwrap()
     );
 
-    let result = PerturbationGraph::ceiled_phenotype_permanent_control(
+    let result = PerturbationGraph::phenotype_permanent_control(
         &perturbation_graph,
         phenotype,
-        max_control_size,
-        p_vars.clone(),
-        "heuristic",
+        PhenotypeOscillationType::Allowed,
+        perturbation_graph
+            .mk_unit_colored_vertices()
+            .vertices()
+            .clone(),
+        false,
     );
 
     let zero_perturbation_working_colors = result.perturbation_working_colors(&HashMap::from([]));
@@ -113,24 +116,17 @@ fn main() {
         zero_perturbation_working_colors.approx_cardinality()
     );
 
-    let now = Instant::now();
-    println!("Starting control enumeration at: {}", Local::now());
-
-    result.ceiled_size_perturbation_working_colors(
-        max_control_size,
-        model_colors,
-        &p_vars,
-        false,
-        false,
-    );
-
-    let duration = now.elapsed();
-    println!("Control enumeration finished at {:?} ", Local::now());
-    println!("Time elapsed for control enumeration: {:?}", duration);
+    // let now = Instant::now();
+    // println!("Starting control enumeration at: {}", Local::now());
+    //
+    // result.phenotype_permanent_control(max_control_size, model_colors, &p_vars, false, false);
+    //
+    // let duration = now.elapsed();
+    // println!("Control enumeration finished at {:?} ", Local::now());
+    // println!("Time elapsed for control enumeration: {:?}", duration);
 }
 
-/*
-fn powerset(s: &[VariableId]) -> Vec<Vec<VariableId>> {
+fn _powerset(s: &[VariableId]) -> Vec<Vec<VariableId>> {
     let mut subsets: Vec<Vec<VariableId>> = vec![];
     let empty: Vec<VariableId> = vec![];
     subsets.push(empty);
@@ -146,4 +142,3 @@ fn powerset(s: &[VariableId]) -> Vec<Vec<VariableId>> {
     }
     subsets
 }
-*/

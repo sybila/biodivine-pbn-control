@@ -1,11 +1,16 @@
 use crate::perturbation::PerturbationGraph;
-use biodivine_lib_param_bn::symbolic_async_graph::GraphColoredVertices;
+use biodivine_lib_bdd::Bdd;
+use biodivine_lib_param_bn::symbolic_async_graph::{GraphColoredVertices, GraphColors};
+use biodivine_lib_param_bn::VariableId;
+use std::collections::HashMap;
 
 pub mod _impl_one_step_control;
 pub mod _impl_permanent_control;
 pub mod _impl_temporary_control;
 
-mod _impl_control_map;
+pub mod _impl_attractor_control_map;
+
+pub mod _symbolic_utils;
 
 /// A mapping between admissible perturbations and colors for which the perturbation controls
 /// the network.
@@ -13,7 +18,21 @@ mod _impl_control_map;
 /// The map holds a reference to the `PerturbationGraph` from which it was created and thus
 /// cannot outlive the graph.
 #[derive(Clone)]
-pub struct ControlMap {
+pub struct AttractorControlMap {
+    perturbation_variables: Vec<VariableId>,
     context: PerturbationGraph,
     perturbation_set: GraphColoredVertices,
+}
+
+pub trait ControlMap {
+    fn new(context: PerturbationGraph, perturbation_set: GraphColoredVertices) -> Self;
+    fn as_bdd(&self) -> &Bdd;
+    fn as_colored_vertices(&self) -> &GraphColoredVertices;
+    fn working_perturbations(
+        &self,
+        min_robustness: f64,
+        verbose: bool,
+        return_all: bool,
+    ) -> Vec<(HashMap<String, bool>, GraphColors)>;
+    fn perturbation_working_colors(&self, perturbation: &HashMap<String, bool>) -> GraphColors;
 }

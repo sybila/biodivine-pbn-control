@@ -14,30 +14,72 @@ impl PerturbationGraph {
     pub fn new(network: &BooleanNetwork) -> PerturbationGraph {
         PerturbationGraph::with_restricted_variables(
             network,
-            &network.variables().collect::<Vec<_>>(),
+            network.variables().collect::<Vec<_>>(),
         )
     }
 
     /// Create a new perturbation graph for a given Boolean network.
     pub fn with_restricted_variables(
         network: &BooleanNetwork,
-        perturb: &[VariableId],
+        perturb: Vec<VariableId>,
     ) -> PerturbationGraph {
+        // A network with all implicit parameters substituted for explicit parameters,
+        // and with all observability constraints removed.
         let normalized = normalize_network(network);
 
         let mut original_parameters = HashMap::new();
         let mut perturbed_parameters = HashMap::new();
 
-        let original = make_original_network(&normalized, &mut original_parameters, perturb);
-        let perturbed = make_perturbed_network(&normalized, &mut perturbed_parameters, perturb);
+        // Two variants of the normalized network with unperturbed and perturbed dynamics.
+        let original =
+            make_original_network(&normalized, &mut original_parameters, perturb.clone());
+        let perturbed =
+            make_perturbed_network(&normalized, &mut perturbed_parameters, perturb.clone());
 
         assert_eq!(original_parameters, perturbed_parameters);
 
+        // A graph based on the initial, non-normalized network.
+        let basic_graph = SymbolicAsyncGraph::new(network).unwrap();
+
+        // A symbolic context that should be valid for both the original and perturbed network
+        // (these only differ in the usage of perturbation parameters in update functions).
+        let perturbed_symbolic_context = SymbolicContext::new(&original).unwrap();
+
+        // Transfer the BDD unit set from the non-normalized network to the "perturbed" context.
+        // This should work, because the names of the implicit uninterpreted functions are the
+        // same, and otherwise we have only added new parameters.
+        //
+        // This effectively transfers the static constraints from the original network into the
+        // perturbed network, which we must do because we cannot apply them to implicit parameters
+        // directly, and there are other problems with observability anyway.
+        let perturbed_unit = perturbed_symbolic_context
+            .transfer_from(
+                basic_graph.unit_colored_vertices().as_bdd(),
+                basic_graph.symbolic_context(),
+            )
+            .unwrap();
+
         PerturbationGraph {
-            original_graph: SymbolicAsyncGraph::new(&original).unwrap(),
-            perturbed_graph: SymbolicAsyncGraph::new(&perturbed).unwrap(),
+            non_perturbable_graph: basic_graph,
+            original_graph: SymbolicAsyncGraph::with_custom_context(
+                &original,
+                perturbed_symbolic_context.clone(),
+                perturbed_unit.clone(),
+            )
+            .unwrap(),
+            perturbed_graph: SymbolicAsyncGraph::with_custom_context(
+                &perturbed,
+                perturbed_symbolic_context,
+                perturbed_unit,
+            )
+            .unwrap(),
+            perturbable_vars: perturb.clone(),
             perturbation_parameters: original_parameters,
         }
+    }
+
+    pub fn as_non_perturbable(&self) -> &SymbolicAsyncGraph {
+        &self.non_perturbable_graph
     }
 
     pub fn as_original(&self) -> &SymbolicAsyncGraph {
@@ -53,7 +95,11 @@ impl PerturbationGraph {
     }
 
     pub fn variables(&self) -> VariableIdIterator {
-        self.original_graph.variables()
+        self.original_graph.as_network().unwrap().variables()
+    }
+
+    pub fn perturbable_variables(&self) -> &Vec<VariableId> {
+        &self.perturbable_vars
     }
 
     pub fn get_perturbation_parameter(&self, variable: VariableId) -> Option<ParameterId> {
@@ -114,9 +160,10 @@ impl PerturbationGraph {
 
     pub fn strong_basin(&self, target: &ArrayBitVector) -> GraphColoredVertices {
         let target_set = self.vertex(target);
-        let weak_basin = crate::aeon::reachability::backward(self.as_original(), &target_set);
+        let weak_basin =
+            crate::aeon::reachability::backward(self.as_original(), &target_set, false);
         let strong_basin =
-            crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin);
+            crate::aeon::reachability::forward_closed(self.as_original(), &weak_basin, false);
         strong_basin
     }
 
@@ -128,11 +175,11 @@ impl PerturbationGraph {
     pub fn fix_perturbation(
         &self,
         variable: VariableId,
-        value: Option<bool>,
+        value: Option<&bool>,
     ) -> GraphColoredVertices {
         if let Some(is_perturbed) = self.perturbation_parameters.get(&variable) {
             let states = if let Some(value) = value {
-                self.fix_variable(variable, value)
+                self.fix_variable(variable, *value)
             } else {
                 self.mk_unit_colored_vertices()
             };
@@ -160,7 +207,11 @@ impl PerturbationGraph {
             println!("{:?}", bn.get_variable_name(v));
 
             let v_name = bn.get_variable_name(v);
-            let value = values.get(v_name).cloned().unwrap_or(false);
+            let value = if values.contains_key(v_name) {
+                *values.get(v_name).unwrap()
+            } else {
+                false
+            };
 
             // let variable_parameter = bn.find_parameter((param_prefix + v_name).as_str()).unwrap();
             // assert_eq!(bn.get_parameter(variable_parameter).get_name().as_str(), format!("param_{}", v.as_str()));
@@ -227,5 +278,89 @@ impl PerturbationGraph {
         }
 
         result
+    }
+
+    pub fn create_perturbation_colors(
+        &self,
+        perturbation_size: usize,
+        verbose: bool,
+    ) -> GraphColors {
+        // A map which gives us the symbolic variable of the perturbation parameter.
+        let perturbation_bbd_vars_mapping =
+            self.get_perturbation_bdd_mapping(self.perturbable_variables());
+        let bdd_vars = self.as_symbolic_context().bdd_variable_set();
+        // The list of symbolic variables of perturbation parameters.
+        let perturbation_bdd_vars = Self::get_perturbation_bdd_vars(&perturbation_bbd_vars_mapping);
+
+        let admissible_perturbations = crate::control::_symbolic_utils::mk_bdd_of_bound(
+            bdd_vars,
+            &perturbation_bdd_vars,
+            perturbation_size,
+        );
+        {
+            let factor =
+                2.0f64.powi(bdd_vars.num_vars() as i32 - perturbation_bdd_vars.len() as i32);
+            if verbose {
+                println!(
+                    "[{}] >> Admissible fixed(Q) sets: {}",
+                    perturbation_size,
+                    admissible_perturbations.cardinality() / factor
+                );
+            }
+        }
+        let admissible_perturbations = self.empty_colors().copy(admissible_perturbations);
+        admissible_perturbations
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::perturbation::PerturbationGraph;
+    use biodivine_lib_param_bn::symbolic_async_graph::SymbolicAsyncGraph;
+    use biodivine_lib_param_bn::BooleanNetwork;
+
+    #[test]
+    pub fn test_unit_set_compatibility() {
+        let network = BooleanNetwork::try_from(
+            r#"
+            # This network has:
+            #   - implicit and explicit parameters
+            #   - non-essential regulations
+            #   - monotonicity constraints
+            a -> b
+            a -|? c
+            b -> c
+            c ->? a
+            c -| b
+            $c: f(a) | b
+        "#,
+        )
+        .unwrap();
+
+        // These two do not share a symbolic representation, but we should be able to transfer
+        // colors between them, as long as the perturbation parameters are unconstrained.
+        let stg = SymbolicAsyncGraph::new(&network).unwrap();
+        let p_stg = PerturbationGraph::new(&network);
+
+        let transferred = stg.transfer_from(&p_stg.mk_unit_colored_vertices(), p_stg.as_original());
+        assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
+
+        let transferred = stg.transfer_from(
+            &p_stg.as_original().mk_unit_colored_vertices(),
+            p_stg.as_original(),
+        );
+        assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
+
+        let transferred = stg.transfer_from(
+            &p_stg.as_perturbed().mk_unit_colored_vertices(),
+            p_stg.as_perturbed(),
+        );
+        assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
+
+        let transferred = stg.transfer_from(
+            &p_stg.as_non_perturbable().mk_unit_colored_vertices(),
+            p_stg.as_non_perturbable(),
+        );
+        assert_eq!(stg.mk_unit_colored_vertices(), transferred.unwrap());
     }
 }

@@ -12,19 +12,15 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
     for var in network.variables() {
         if network.get_update_function(var).is_none() {
             // Create an explicit parameter to replace the implicit function.
-            let regulators = network
-                .regulators(var)
-                .into_iter()
-                .map(FnUpdate::mk_var)
-                .collect::<Vec<_>>();
+            let regulators = network.regulators(var);
             let parameter = network
                 .add_parameter(
-                    format!("update_{}", network.get_variable_name(var)).as_str(),
+                    format!("f_{}", network.get_variable_name(var)).as_str(),
                     u32::try_from(regulators.len()).unwrap(),
                 )
                 .unwrap();
             network
-                .add_update_function(var, FnUpdate::Param(parameter, regulators))
+                .add_update_function(var, FnUpdate::mk_basic_param(parameter, &regulators))
                 .unwrap();
         }
     }
@@ -39,12 +35,19 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
             .collect(),
     );
     for regulation in network.as_graph().regulations() {
+        // Make all self-regulations non-monotonic, since this can be influences
+        // by the control transformation.
+        let monotonicity = if regulation.get_regulator() == regulation.get_target() {
+            None
+        } else {
+            regulation.get_monotonicity()
+        };
         result
             .add_regulation(
                 network.get_variable_name(regulation.get_regulator()),
                 network.get_variable_name(regulation.get_target()),
                 false,
-                regulation.get_monotonicity(),
+                monotonicity,
             )
             .unwrap();
     }
@@ -87,7 +90,7 @@ pub fn normalize_network(network: &BooleanNetwork) -> BooleanNetwork {
 pub fn make_original_network(
     network: &BooleanNetwork,
     perturbation_parameters: &mut HashMap<VariableId, ParameterId>,
-    perturb: &[VariableId],
+    perturb: Vec<VariableId>,
 ) -> BooleanNetwork {
     let mut result = BooleanNetwork::new(network.as_graph().clone());
 
@@ -139,7 +142,7 @@ pub fn make_original_network(
 pub fn make_perturbed_network(
     network: &BooleanNetwork,
     perturbation_parameters: &mut HashMap<VariableId, ParameterId>,
-    perturb: &[VariableId],
+    perturb: Vec<VariableId>,
 ) -> BooleanNetwork {
     let mut result = BooleanNetwork::new(network.as_graph().clone());
 

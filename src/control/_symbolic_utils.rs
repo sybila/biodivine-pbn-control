@@ -66,7 +66,7 @@ pub fn mk_bdd_of_bound(ctx: &BddVariableSet, variables: &[BddVariable], bound: u
 
 #[cfg(test)]
 mod tests {
-    use crate::phenotype_control::_symbolic_utils::{mk_bdd_of_bound, mk_bdd_up_to_bound};
+    use crate::control::_symbolic_utils::{mk_bdd_of_bound, mk_bdd_up_to_bound};
     use biodivine_lib_bdd::BddVariableSet;
 
     #[test]
